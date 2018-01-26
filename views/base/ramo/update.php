@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\base\Ramo */
 
-$this->title = 'Update Ramo: {nameAttribute}';
+$this->title = 'Atualizar Ramo: '.$model->id.'';
 $this->params['breadcrumbs'][] = ['label' => 'Ramos', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = ['label' => $model->id];
+$this->params['breadcrumbs'][] = 'Atualizar';
 ?>
 <div class="ramo-update">
 

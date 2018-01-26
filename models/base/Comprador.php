@@ -41,9 +41,9 @@ class Comprador extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'comp_descricao' => 'Comp Descricao',
-            'comp_status' => 'Comp Status',
+            'id' => 'Cód.',
+            'comp_descricao' => 'Nome do Comprador',
+            'comp_status' => 'Status',
         ];
     }
 

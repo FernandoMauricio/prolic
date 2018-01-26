@@ -41,9 +41,9 @@ class Ramo extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'ram_descricao' => 'Ram Descricao',
-            'ram_status' => 'Ram Status',
+            'id' => 'Cód.',
+            'ram_descricao' => 'Descrição',
+            'ram_status' => 'Status',
         ];
     }
 

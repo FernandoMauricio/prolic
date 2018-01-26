@@ -12,12 +12,12 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'rec_descricao')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'rec_descricao')->textInput(['readonly' => !$model->isNewRecord]) ?>
 
-    <?= $form->field($model, 'rec_status')->textInput() ?>
+    <?= $form->field($model, 'rec_status')->radioList(['1' => 'Ativo', '0' => 'Inativo']) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Gravar', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

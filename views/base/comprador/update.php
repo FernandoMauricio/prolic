@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\base\Comprador */
 
-$this->title = 'Update Comprador: {nameAttribute}';
-$this->params['breadcrumbs'][] = ['label' => 'Compradors', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Atualizar Comprador: '.$model->comp_descricao.'';
+$this->params['breadcrumbs'][] = ['label' => 'Listagem de Compradores', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->id];
+$this->params['breadcrumbs'][] = 'Atualizar';
 ?>
 <div class="comprador-update">
 

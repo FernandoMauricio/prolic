@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\base\Modalidade */
 
-$this->title = 'Update Modalidade: {nameAttribute}';
-$this->params['breadcrumbs'][] = ['label' => 'Modalidades', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Atualizar Modalidade:'.$model->id.'';
+$this->params['breadcrumbs'][] = ['label' => 'Listagem de Modalidades', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->id];
+$this->params['breadcrumbs'][] = 'Atualizar';
 ?>
 <div class="modalidade-update">
 

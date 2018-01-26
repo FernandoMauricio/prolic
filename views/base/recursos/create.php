@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\base\Recursos */
 
-$this->title = 'Create Recursos';
-$this->params['breadcrumbs'][] = ['label' => 'Recursos', 'url' => ['index']];
+$this->title = 'Novo Recurso';
+$this->params['breadcrumbs'][] = ['label' => 'Listagem de Recursos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="recursos-create">

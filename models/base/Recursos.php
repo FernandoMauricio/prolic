@@ -41,9 +41,9 @@ class Recursos extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'rec_descricao' => 'Rec Descricao',
-            'rec_status' => 'Rec Status',
+            'id' => 'Cód.',
+            'rec_descricao' => 'Descrição',
+            'rec_status' => 'Status',
         ];
     }
 

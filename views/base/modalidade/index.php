@@ -1,13 +1,13 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\base\ModalidadeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Modalidades';
+$this->title = 'Listagem de Modalidades';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="modalidade-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Modalidade', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Nova Modalidade', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -25,11 +25,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
             'mod_descricao',
-            'mod_status',
+            [
+                'class'=>'kartik\grid\BooleanColumn',
+                'attribute'=>'mod_status', 
+                'vAlign'=>'middle'
+            ], 
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn','template' => '{update}'],
         ],
     ]); ?>
 </div>

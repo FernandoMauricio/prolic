@@ -45,19 +45,6 @@ class CompradorController extends Controller
     }
 
     /**
-     * Displays a single Comprador model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Comprador model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -67,7 +54,8 @@ class CompradorController extends Controller
         $model = new Comprador();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Comprador cadastrado!</b>');
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -87,7 +75,8 @@ class CompradorController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Comprador atualizado!</b>');
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [

@@ -41,9 +41,9 @@ class Modalidade extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'mod_descricao' => 'Mod Descricao',
-            'mod_status' => 'Mod Status',
+            'id' => 'Cód.',
+            'mod_descricao' => 'Descrição',
+            'mod_status' => 'Status',
         ];
     }
 

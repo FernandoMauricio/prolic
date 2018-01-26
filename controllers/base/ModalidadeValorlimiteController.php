@@ -3,6 +3,9 @@
 namespace app\controllers\base;
 
 use Yii;
+use app\models\base\Modalidade;
+use app\models\base\Ano;
+use app\models\base\Ramo;
 use app\models\base\ModalidadeValorlimite;
 use app\models\base\ModalidadeValorlimiteSearch;
 use yii\web\Controller;
@@ -66,12 +69,19 @@ class ModalidadeValorlimiteController extends Controller
     {
         $model = new ModalidadeValorlimite();
 
+        $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
+        $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
+        $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
+            'modalidade' => $modalidade,
+            'ano' => $ano,
+            'ramo' => $ramo,
         ]);
     }
 
@@ -86,12 +96,19 @@ class ModalidadeValorlimiteController extends Controller
     {
         $model = $this->findModel($id);
 
+        $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
+        $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
+        $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'modalidade' => $modalidade,
+            'ano' => $ano,
+            'ramo' => $ramo,
         ]);
     }
 

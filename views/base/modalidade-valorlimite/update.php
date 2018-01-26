@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\base\ModalidadeValorlimite */
 
-$this->title = 'Update Modalidade Valorlimite: {nameAttribute}';
-$this->params['breadcrumbs'][] = ['label' => 'Modalidade Valorlimites', 'url' => ['index']];
+$this->title = 'Atualizar Valor Limite: '.$model->id.'';
+$this->params['breadcrumbs'][] = ['label' => 'Listagem de Valor Limite - Modalidade', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Atualizar';
 ?>
 <div class="modalidade-valorlimite-update">
 
@@ -16,6 +16,9 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'modalidade' => $modalidade,
+        'ano' => $ano,
+        'ramo' => $ramo,
     ]) ?>
 
 </div>

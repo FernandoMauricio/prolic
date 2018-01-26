@@ -18,7 +18,8 @@ class ModalidadeValorlimiteSearch extends ModalidadeValorlimite
     public function rules()
     {
         return [
-            [['id', 'modalidade_id', 'ramo_id', 'ano_id', 'status'], 'integer'],
+            [['id', 'ano_id', 'status'], 'integer'],
+            [['modalidade_id', 'ramo_id'], 'safe'],
             [['valor_limite'], 'number'],
         ];
     }
@@ -57,15 +58,21 @@ class ModalidadeValorlimiteSearch extends ModalidadeValorlimite
             return $dataProvider;
         }
 
+        $query->joinWith('modalidade')
+        ->joinWith('ramo')
+        ->joinWith('ano');
+
+
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'modalidade_id' => $this->modalidade_id,
-            'ramo_id' => $this->ramo_id,
-            'ano_id' => $this->ano_id,
             'valor_limite' => $this->valor_limite,
             'status' => $this->status,
         ]);
+
+        $query->andFilterWhere(['like', 'modalidade.mod_descricao', $this->modalidade_id])
+        ->andFilterWhere(['like', 'ramo.ram_descricao', $this->ramo_id])
+        ->andFilterWhere(['like', 'ano.an_ano', $this->ano_id]);
 
         return $dataProvider;
     }

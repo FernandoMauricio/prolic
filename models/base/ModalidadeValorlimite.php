@@ -44,16 +44,26 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
         ];
     }
 
+    //Replace de ',' por '.' nos valores
+    public function beforeSave($insert) {
+            if (parent::beforeSave($insert)) {
+                $this->valor_limite = str_replace(",", ".", $this->valor_limite);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
     /**
      * @inheritdoc
      */
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'modalidade_id' => 'Modalidade ID',
-            'ramo_id' => 'Ramo ID',
-            'ano_id' => 'Ano ID',
+            'id' => 'Cód.',
+            'modalidade_id' => 'Modalidade',
+            'ramo_id' => 'Ramo',
+            'ano_id' => 'Ano',
             'valor_limite' => 'Valor Limite',
             'status' => 'Status',
         ];

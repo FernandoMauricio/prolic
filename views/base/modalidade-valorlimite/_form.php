@@ -2,6 +2,10 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use kartik\select2\Select2;
+use yii\helpers\Url;
+use kartik\money\MaskMoney;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\base\ModalidadeValorlimite */
@@ -12,18 +16,74 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'modalidade_id')->textInput() ?>
+<div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> Novo Valor Limite</h3>
+      </div>
+        <table class="table table-condensed table-hover">
+          <thead>
+            <tr class="info"><th colspan="12">SEÇÃO 1: Informações</th></tr>
+          </thead>
+        </table>
 
-    <?= $form->field($model, 'ramo_id')->textInput() ?>
-
-    <?= $form->field($model, 'ano_id')->textInput() ?>
-
-    <?= $form->field($model, 'valor_limite')->textInput() ?>
-
-    <?= $form->field($model, 'status')->textInput() ?>
-
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3">
+            <?php
+                $data_modalidade = ArrayHelper::map($modalidade, 'id', 'mod_descricao');
+                echo $form->field($model, 'modalidade_id')->widget(Select2::classname(), [
+                'data' =>  $data_modalidade,
+                'options' => ['placeholder' => 'Selecione a modalidade...'],
+                'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
+            ?>
+            </div>
+            <div class="col-md-5">
+            <?php
+                $data_ramo = ArrayHelper::map($ramo, 'id', 'ram_descricao');
+                echo $form->field($model, 'ramo_id')->widget(Select2::classname(), [
+                'data' =>  $data_ramo,
+                'options' => ['placeholder' => 'Selecione o Ramo...'],
+                'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
+            ?>
+            </div>
+            <div class="col-md-2">
+            <?php
+                $data_ano = ArrayHelper::map($ano, 'id', 'an_ano');
+                echo $form->field($model, 'ano_id')->widget(Select2::classname(), [
+                'data' =>  $data_ano,
+                'options' => ['placeholder' => 'Selecione o Ano...'],
+                'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
+            ?>
+            </div>
+            <div class="col-md-2">
+                 <?= $form->field($model, 'status')->radioList(['1' => 'Ativo', '0' => 'Inativo']) ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <?php echo $form->field($model, 'valor_limite')->widget(MaskMoney::classname(), [
+                        'pluginOptions' => [
+                            'prefix' => 'R$ ',
+                            'allowNegative' => false
+                        ]
+                    ]);
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+    
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Gravar', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

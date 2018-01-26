@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\base\ModalidadeValorlimite */
 
-$this->title = 'Create Modalidade Valorlimite';
-$this->params['breadcrumbs'][] = ['label' => 'Modalidade Valorlimites', 'url' => ['index']];
+$this->title = 'Novo Valor Limite';
+$this->params['breadcrumbs'][] = ['label' => 'Listagem de Valor Limite - Modalidade', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="modalidade-valorlimite-create">
@@ -16,6 +16,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'modalidade' => $modalidade,
+        'ano' => $ano,
+        'ramo' => $ramo,
     ]) ?>
 
 </div>

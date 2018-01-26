@@ -1,13 +1,13 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\base\ModalidadeValorlimiteSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Modalidade Valorlimites';
+$this->title = 'Listagem de Valor Limite - Modalidade';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="modalidade-valorlimite-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Modalidade Valorlimite', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Novo Valor Limite - Modalidade', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -26,13 +26,30 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'modalidade_id',
-            'ramo_id',
-            'ano_id',
-            'valor_limite',
-            //'status',
+            [
+                'attribute' => 'modalidade_id',
+                'value' =>'modalidade.mod_descricao',
+            ],
+            [
+                'attribute' => 'ramo_id',
+                'value' =>'ramo.ram_descricao',
+            ],
+            [
+                'attribute' => 'ano_id',
+                'value' =>'ano.an_ano',
+            ],
+            [
+                'format' => 'Currency',
+                'attribute' => 'valor_limite',
+            ],
+            [
+                'class'=>'kartik\grid\BooleanColumn',
+                'attribute'=>'status', 
+                'vAlign'=>'middle'
+            ], 
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn','template' => '{update}'],
+
         ],
     ]); ?>
 </div>

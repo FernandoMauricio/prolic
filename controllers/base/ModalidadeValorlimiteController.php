@@ -45,8 +45,15 @@ class ModalidadeValorlimiteController extends Controller
                         return;
                     }
                 }
-                echo Json::encode(['output'=>'', 'selected'=>'']);
-            }
+        echo Json::encode(['output'=>'', 'selected'=>'']);
+    }
+
+    //Localiza os dados dos Limites
+    public function actionGetLimite($limiteId)
+    {
+        $getLimite = ModalidadeValorlimite::findOne($limiteId);
+        echo Json::encode($getLimite);
+    }
 
     /**
      * Lists all ModalidadeValorlimite models.

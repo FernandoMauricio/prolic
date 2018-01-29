@@ -84,36 +84,36 @@ use kartik\depdrop\DepDrop;
                             'depends'=>['modalidade-id'],
                             'placeholder'=>'Selecione o Ramo...',
                             'initialize' => true,
-                            'url'=>Url::to(['/base/modalidade-valorlimite/limite'])
-                        ]
-                    ]);
+                            'url'=>Url::to(['/base/modalidade-valorlimite/limite'])],
+                            'options' => [
+                                    'onchange'=>'
+                                            var select = this;
+                                            $.getJSON( "'.Url::toRoute('/base/modalidade-valorlimite/get-limite').'", { limiteId: $(this).val() } )
+                                            .done(function( data ) {
 
-                    // $options = \yii\helpers\ArrayHelper::map($valorlimite, 'id', 'ramo.ram_descricao');
-                    //     echo $form->field($model, 'modalidade_valorlimite_id')->widget(Select2::classname(), [
-                    //         'data' => $options,
-                    //         'options' => ['placeholder' => 'Informe o Ramo...'],
-                    //         'pluginOptions' => [
-                    //             'allowClear' => true
-                    //         ],
-                    //     ]);  
+                                                   var $divPanelBody =  $(select).parent().parent().parent().parent();
+
+                                                   var $inputValorLimite = $divPanelBody.find("input:eq(3)");
+
+                                                   $inputValorLimite.val(data.valor_limite);
+
+                                                });
+                                            '
+                                    ]]);
                 ?>
             </div>
             <div class="col-md-2">
-                <?php echo $form->field($model, 'prolic_valorestimado')->widget(MaskMoney::classname(), [
-                        'pluginOptions' => [
-                            'prefix' => 'R$ ',
-                            'allowNegative' => false
-                        ]
-                    ]);
-                ?>
+                <?= $form->field($model, 'valor_limite_hidden')->textInput() ?>
             </div>
             <div class="col-md-2">
-                <?php echo $form->field($model, 'prolic_valoraditivo')->widget(MaskMoney::classname(), [
-                        'pluginOptions' => [
-                            'prefix' => 'R$ ',
-                            'allowNegative' => false
-                        ]
-                    ]);
+                <?= $form->field($model, 'prolic_valorestimado')->textInput() ?>
+                <?php 
+                // echo $form->field($model, 'prolic_valorestimado')->widget(MaskMoney::classname(), [
+                //         'pluginOptions' => [
+                //             'prefix' => 'R$ ',
+                //             'allowNegative' => false
+                //         ]
+                //     ]);
                 ?>
             </div>
             <div class="col-md-2">
@@ -128,7 +128,6 @@ use kartik\depdrop\DepDrop;
         </div>
 
         <div class="row">
-            <div class="col-md-1"><?= $form->field($model, 'prolic_sequenciamodal')->textInput() ?></div>
 
              <div class="col-md-3">
                 <?php 

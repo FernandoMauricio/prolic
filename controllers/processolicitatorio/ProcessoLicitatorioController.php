@@ -90,9 +90,19 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_datacriacao    = date('Y-m-d');
         $model->prolic_usuariocriacao = $session['sess_nomeusuario'];
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
 
             $model->prolic_destino = implode(", ",$model->prolic_destino);
+            $model->prolic_centrocusto = implode(", ",$model->prolic_centrocusto);
+
+        //Sequencia do cód. da modalidade de acordo com o tipo
+        $query_id = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->where(['modalidade.id'=>$model->modalidadeValorlimite->modalidade_id])->all();
+                foreach ($query_id as $value) {
+                    $incremento = $value['id'];
+                    $incremento++;
+                }
+             $model->prolic_sequenciamodal = $incremento;
+             $model->save();
 
             return $this->redirect(['view', 'id' => $model->id]);
         }

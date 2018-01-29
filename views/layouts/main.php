@@ -52,6 +52,7 @@ AppAsset::register($this);
                          ['label' => 'Recursos', 'url' => ['/base/recursos/index']],
                        ],
             ],
+            ['label' => 'Processo Licitatório', 'url' => ['/processolicitatorio/processo-licitatorio/index']],
         ],
     ]);
     NavBar::end();

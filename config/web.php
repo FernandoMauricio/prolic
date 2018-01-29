@@ -2,6 +2,7 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$db_base = require __DIR__ . '/db_base.php';
 
 $config = [
     'id' => 'basic',
@@ -27,6 +28,12 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '0smwNj3ceWAok2joKhRdCRFHqQEGMplT',
+        ],
+            'formatter' => [
+            'class' => 'yii\i18n\formatter',
+            'decimalSeparator' => ',',
+            'thousandSeparator' => '.',
+            'currencyCode' => 'R$',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -55,6 +62,7 @@ $config = [
             ],
         ],
         'db' => $db,
+        'db_base' => $db_base,
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

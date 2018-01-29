@@ -1,22 +1,27 @@
 <?php
 
-namespace app\controllers\base;
+namespace app\controllers\processolicitatorio;
 
 use Yii;
 use app\models\base\Modalidade;
 use app\models\base\Ano;
 use app\models\base\Ramo;
 use app\models\base\ModalidadeValorlimite;
-use app\models\base\ModalidadeValorlimiteSearch;
+use app\models\base\Unidades;
+use app\models\base\Artigo;
+use app\models\base\Centrocusto;
+use app\models\base\Recursos;
+use app\models\base\Comprador;
+use app\models\processolicitatorio\ProcessoLicitatorio;
+use app\models\processolicitatorio\ProcessoLicitatorioSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\helpers\Json;
 
 /**
- * ModalidadeValorlimiteController implements the CRUD actions for ModalidadeValorlimite model.
+ * ProcessoLicitatorioController implements the CRUD actions for ProcessoLicitatorio model.
  */
-class ModalidadeValorlimiteController extends Controller
+class ProcessoLicitatorioController extends Controller
 {
     /**
      * @inheritdoc
@@ -33,28 +38,13 @@ class ModalidadeValorlimiteController extends Controller
         ];
     }
 
-    //Localiza os limites para a modalidade selecionada
-    public function actionLimite() {
-                $out = [];
-                if (isset($_POST['depdrop_parents'])) {
-                    $parents = $_POST['depdrop_parents'];
-                    if ($parents != null) {
-                        $cat_id = $parents[0];
-                        $out = ModalidadeValorlimite::getLimiteSubCat($cat_id);
-                        echo Json::encode(['output'=>$out, 'selected'=>'']);
-                        return;
-                    }
-                }
-                echo Json::encode(['output'=>'', 'selected'=>'']);
-            }
-
     /**
-     * Lists all ModalidadeValorlimite models.
+     * Lists all ProcessoLicitatorio models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new ModalidadeValorlimiteSearch();
+        $searchModel = new ProcessoLicitatorioSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -64,7 +54,7 @@ class ModalidadeValorlimiteController extends Controller
     }
 
     /**
-     * Displays a single ModalidadeValorlimite model.
+     * Displays a single ProcessoLicitatorio model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -77,19 +67,33 @@ class ModalidadeValorlimiteController extends Controller
     }
 
     /**
-     * Creates a new ModalidadeValorlimite model.
+     * Creates a new ProcessoLicitatorio model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new ModalidadeValorlimite();
+        $session = Yii::$app->session;
 
-        $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
-        $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
-        $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
+        $model = new ProcessoLicitatorio();
+
+        $modalidade  = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
+        $ano         = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
+        $ramo        = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
+        $destinos    = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
+        $valorlimite = ModalidadeValorlimite::find()->where(['status' => 1])->all();
+        $artigo      = Artigo::find()->where(['art_status' => 1])->orderBy('art_descricao')->all();
+        $centrocusto = Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all();
+        $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
+        $comprador   = Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all();
+
+        $model->prolic_datacriacao    = date('Y-m-d');
+        $model->prolic_usuariocriacao = $session['sess_nomeusuario'];
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            $model->prolic_destino = implode(", ",$model->prolic_destino);
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -98,11 +102,17 @@ class ModalidadeValorlimiteController extends Controller
             'modalidade' => $modalidade,
             'ano' => $ano,
             'ramo' => $ramo,
+            'destinos' => $destinos,
+            'valorlimite' => $valorlimite,
+            'artigo' => $artigo,
+            'centrocusto' => $centrocusto,
+            'recurso' => $recurso,
+            'comprador' => $comprador,
         ]);
     }
 
     /**
-     * Updates an existing ModalidadeValorlimite model.
+     * Updates an existing ProcessoLicitatorio model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -112,24 +122,17 @@ class ModalidadeValorlimiteController extends Controller
     {
         $model = $this->findModel($id);
 
-        $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
-        $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
-        $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
-            'modalidade' => $modalidade,
-            'ano' => $ano,
-            'ramo' => $ramo,
         ]);
     }
 
     /**
-     * Deletes an existing ModalidadeValorlimite model.
+     * Deletes an existing ProcessoLicitatorio model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -143,15 +146,15 @@ class ModalidadeValorlimiteController extends Controller
     }
 
     /**
-     * Finds the ModalidadeValorlimite model based on its primary key value.
+     * Finds the ProcessoLicitatorio model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return ModalidadeValorlimite the loaded model
+     * @return ProcessoLicitatorio the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = ModalidadeValorlimite::findOne($id)) !== null) {
+        if (($model = ProcessoLicitatorio::findOne($id)) !== null) {
             return $model;
         }
 

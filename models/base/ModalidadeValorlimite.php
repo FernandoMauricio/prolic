@@ -54,16 +54,6 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
             }
         }
 
-    //Busca dados dos valores limites de cada modalidade
-    public static function getLimiteSubCat($cat_id) {
-        $data=\app\models\base\ModalidadeValorlimite::find()
-        ->joinWith('ramo', false, 'INNER JOIN')
-        ->where(['modalidade_id'=>$cat_id])
-        ->select(['modalidade_valorlimite.id AS id','ram_descricao AS name'])->asArray()->all();
-
-            return $data;
-        }
-
     /**
      * @inheritdoc
      */

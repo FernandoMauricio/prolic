@@ -73,7 +73,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [['ano_id', 'prolic_objeto', 'prolic_codmxm', 'prolic_destino', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_usuariocriacao', 'prolic_datacriacao'], 'required'],
             [['ano_id', 'prolic_codmxm', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'comprador_id', 'situacao_id'], 'integer'],
             [['prolic_objeto', 'prolic_elementodespesa', 'prolic_motivo'], 'string'],
-            [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo', 'valor_limite_hidden'], 'number'],
+            [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo', 'valor_limite_hidden', 'valor_limite_apurado_hidden'], 'number'],
             [['prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_datacriacao', 'prolic_dataatualizacao', 'prolic_destino', 'prolic_centrocusto','modalidade'], 'safe'],
             [['prolic_empresa', 'ramo_descricao', 'prolic_usuariocriacao', 'prolic_usuarioatualizacao'], 'string', 'max' => 255],
             [['ano_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ano::className(), 'targetAttribute' => ['ano_id' => 'id']],
@@ -85,6 +85,26 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
 
             ['prolic_valorestimado', 'compare',  'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number'],
         ];
+    }
+
+    //Busca dados dos valores limites de cada modalidade
+    public static function getLimiteSubCat($cat_id) {
+        $data = ModalidadeValorlimite::find()
+        ->joinWith('ramo', false, 'INNER JOIN')
+        ->where(['modalidade_id'=>$cat_id])
+        ->select(['modalidade_valorlimite.id AS id','ram_descricao AS name'])->asArray()->all();
+
+        return $data;
+    }
+
+    //Localiza a somatório dos Limites
+    public function getSumLimite($cat_id) {
+        $data = ProcessoLicitatorio::find()
+        ->joinWith('modalidadeValorlimite', false, 'INNER JOIN')
+        ->where(['modalidade_id'=>$cat_id])
+        ->select(['sum(prolic_valorestimado) AS valor_limite_apurado_hidden'])->asArray()->one();
+
+        return $data;
     }
 
     /**

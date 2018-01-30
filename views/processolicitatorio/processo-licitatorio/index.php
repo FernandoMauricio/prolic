@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'prolic_cotacoes',
             //'prolic_centrocusto:ntext',
             //'prolic_elementodespesa:ntext',
-            //'prolic_valorestimado',
+            'prolic_valorestimado',
             //'prolic_valoraditivo',
             //'prolic_valorefetivo',
             //'recursos_id',

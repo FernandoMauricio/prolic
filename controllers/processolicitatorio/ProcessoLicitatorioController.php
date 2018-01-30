@@ -17,6 +17,7 @@ use app\models\processolicitatorio\ProcessoLicitatorioSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
 
 /**
  * ProcessoLicitatorioController implements the CRUD actions for ProcessoLicitatorio model.
@@ -36,6 +37,35 @@ class ProcessoLicitatorioController extends Controller
                 ],
             ],
         ];
+    }
+
+    //Localiza os limites para a modalidade selecionada
+    public function actionLimite() {
+                $out = [];
+                if (isset($_POST['depdrop_parents'])) {
+                    $parents = $_POST['depdrop_parents'];
+                    if ($parents != null) {
+                        $cat_id = $parents[0];
+                        $out = ProcessoLicitatorio::getLimiteSubCat($cat_id);
+                        echo Json::encode(['output'=>$out, 'selected'=>'']);
+                        return;
+                    }
+                }
+        echo Json::encode(['output'=>'', 'selected'=>'']);
+    }
+
+    //Localiza os dados dos Limites
+    public function actionGetLimite($limiteId)
+    {
+        $getLimite = ModalidadeValorlimite::findOne($limiteId);
+        echo Json::encode($getLimite);
+    }
+
+    //Localiza a somatório dos Limites
+    public function actionGetSumLimite($limiteId)
+    {
+        $getSumLimite = ProcessoLicitatorio::getSumLimite($limiteId);
+        echo Json::encode($getSumLimite);
     }
 
     /**

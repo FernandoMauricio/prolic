@@ -33,28 +33,6 @@ class ModalidadeValorlimiteController extends Controller
         ];
     }
 
-    //Localiza os limites para a modalidade selecionada
-    public function actionLimite() {
-                $out = [];
-                if (isset($_POST['depdrop_parents'])) {
-                    $parents = $_POST['depdrop_parents'];
-                    if ($parents != null) {
-                        $cat_id = $parents[0];
-                        $out = ModalidadeValorlimite::getLimiteSubCat($cat_id);
-                        echo Json::encode(['output'=>$out, 'selected'=>'']);
-                        return;
-                    }
-                }
-        echo Json::encode(['output'=>'', 'selected'=>'']);
-    }
-
-    //Localiza os dados dos Limites
-    public function actionGetLimite($limiteId)
-    {
-        $getLimite = ModalidadeValorlimite::findOne($limiteId);
-        echo Json::encode($getLimite);
-    }
-
     /**
      * Lists all ModalidadeValorlimite models.
      * @return mixed

@@ -84,31 +84,49 @@ use kartik\depdrop\DepDrop;
                             'depends'=>['modalidade-id'],
                             'placeholder'=>'Selecione o Ramo...',
                             'initialize' => true,
-                            'url'=>Url::to(['/base/modalidade-valorlimite/limite'])],
+                            'url'=>Url::to(['/processolicitatorio/processo-licitatorio/limite'])],
                             'options' => [
-                                    'onchange'=>'
-                                            var select = this;
-                                            $.getJSON( "'.Url::toRoute('/base/modalidade-valorlimite/get-limite').'", { limiteId: $(this).val() } )
-                                            .done(function( data ) {
+                                'onchange'=>'
+                                        var select = this;
+                                        $.getJSON( "'.Url::toRoute('/processolicitatorio/processo-licitatorio/get-limite').'", { limiteId: $(this).val() } )
+                                        .done(function( data ) {
 
-                                                   var $divPanelBody =  $(select).parent().parent().parent().parent();
+                                               var $divPanelBody = $(select).parent().parent().parent().parent();
 
-                                                   var $inputValorLimite = $divPanelBody.find("input:eq(3)");
+                                               var $inputValorLimite = $divPanelBody.find("input:eq(3)");
 
-                                                   $inputValorLimite.val(data.valor_limite);
+                                               $inputValorLimite.val(data.valor_limite);
 
-                                                });
-                                            '
-                                    ]]);
+                                            });
+                                        $.getJSON( "'.Url::toRoute('/processolicitatorio/processo-licitatorio/get-sum-limite').'", { limiteId: $(this).val() } )
+                                        .done(function( data ) {
+
+                                               var $divPanelBody = $(select).parent().parent().parent().parent().parent();
+
+                                               var $inputValorUtilizado = $divPanelBody.find("input:eq(5)");
+
+                                                console.log(data);
+                                               $inputValorUtilizado.val(data.valor_limite_apurado_hidden);
+
+                                            });
+                                        '
+                                ]]);
                 ?>
             </div>
             <div class="col-md-2">
-                <?= $form->field($model, 'valor_limite_hidden')->textInput() ?>
+                <?php 
+                echo $form->field($model, 'valor_limite_hidden')->widget(MaskMoney::classname(), [
+                        'pluginOptions' => [
+                            'prefix' => 'R$ ',
+                            'allowNegative' => false
+                        ]
+                    ]);
+                ?>
             </div>
             <div class="col-md-2">
                 <?= $form->field($model, 'prolic_valorestimado')->textInput() ?>
                 <?php 
-                // echo $form->field($model, 'prolic_valorestimado')->widget(MaskMoney::classname(), [
+                // echo $form->field($model, '')->widget(MaskMoney::classname(), [
                 //         'pluginOptions' => [
                 //             'prefix' => 'R$ ',
                 //             'allowNegative' => false

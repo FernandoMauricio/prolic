@@ -54,6 +54,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     public $modalidade;
     public $valor_limite_hidden;
     public $valor_limite_apurado_hidden;
+    public $valor_saldo_hidden;
 
     /**
      * @inheritdoc
@@ -73,7 +74,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [['ano_id', 'prolic_objeto', 'prolic_codmxm', 'prolic_destino', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_usuariocriacao', 'prolic_datacriacao'], 'required'],
             [['ano_id', 'prolic_codmxm', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'comprador_id', 'situacao_id'], 'integer'],
             [['prolic_objeto', 'prolic_elementodespesa', 'prolic_motivo'], 'string'],
-            [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo', 'valor_limite_hidden', 'valor_limite_apurado_hidden'], 'number'],
+            [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo', 'valor_limite_hidden', 'valor_limite_apurado_hidden', 'valor_saldo_hidden'], 'number'],
             [['prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_datacriacao', 'prolic_dataatualizacao', 'prolic_destino', 'prolic_centrocusto','modalidade'], 'safe'],
             [['prolic_empresa', 'ramo_descricao', 'prolic_usuariocriacao', 'prolic_usuarioatualizacao'], 'string', 'max' => 255],
             [['ano_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ano::className(), 'targetAttribute' => ['ano_id' => 'id']],
@@ -84,6 +85,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [['situacao_id'], 'exist', 'skipOnError' => true, 'targetClass' => Situacao::className(), 'targetAttribute' => ['situacao_id' => 'id']],
 
             ['prolic_valorestimado', 'compare',  'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number'],
+            ['prolic_valorestimado', 'compare',  'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number'],
         ];
     }
 
@@ -97,12 +99,12 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
         return $data;
     }
 
-    //Localiza a somatório dos Limites
+    //Localiza a somatório dos Limites e o Saldo
     public function getSumLimite($cat_id) {
         $data = ProcessoLicitatorio::find()
         ->joinWith('modalidadeValorlimite', false, 'INNER JOIN')
         ->where(['modalidade_id'=>$cat_id])
-        ->select(['sum(prolic_valorestimado) AS valor_limite_apurado_hidden'])->asArray()->one();
+        ->select(['sum(prolic_valorestimado) AS valor_limite_apurado_hidden', 'valor_limite - sum(prolic_valorestimado) AS valor_saldo_hidden'])->asArray()->one();
 
         return $data;
     }
@@ -141,7 +143,10 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'prolic_usuarioatualizacao' => 'Usuario Atualização',
             'prolic_dataatualizacao' => 'Dataa Aualização',
             'modalidade' => 'Modalidade',
-            'valor_limite_hidden' => 'Valor Limite HIDDEN',
+            'valor_limite_hidden' => 'Valor Limite',
+            'valor_limite_apurado_hidden' => 'Valor Apurado',
+            'valor_saldo_hidden' => 'Saldo',
+
         ];
     }
 

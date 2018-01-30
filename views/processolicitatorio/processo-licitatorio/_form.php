@@ -104,49 +104,16 @@ use kartik\depdrop\DepDrop;
                                                var $divPanelBody = $(select).parent().parent().parent().parent().parent();
 
                                                var $inputValorUtilizado = $divPanelBody.find("input:eq(5)");
+                                               var $inputSaldo = $divPanelBody.find("input:eq(7)");
 
-                                                console.log(data);
                                                $inputValorUtilizado.val(data.valor_limite_apurado_hidden);
+                                               $inputSaldo.val(data.valor_saldo_hidden);
 
                                             });
                                         '
                                 ]]);
                 ?>
             </div>
-            <div class="col-md-2">
-                <?php 
-                echo $form->field($model, 'valor_limite_hidden')->widget(MaskMoney::classname(), [
-                        'pluginOptions' => [
-                            'prefix' => 'R$ ',
-                            'allowNegative' => false
-                        ]
-                    ]);
-                ?>
-            </div>
-            <div class="col-md-2">
-                <?= $form->field($model, 'prolic_valorestimado')->textInput() ?>
-                <?php 
-                // echo $form->field($model, '')->widget(MaskMoney::classname(), [
-                //         'pluginOptions' => [
-                //             'prefix' => 'R$ ',
-                //             'allowNegative' => false
-                //         ]
-                //     ]);
-                ?>
-            </div>
-            <div class="col-md-2">
-                <?php echo $form->field($model, 'prolic_valorefetivo')->widget(MaskMoney::classname(), [
-                        'pluginOptions' => [
-                            'prefix' => 'R$ ',
-                            'allowNegative' => false
-                        ]
-                    ]);
-                ?>
-            </div>
-        </div>
-
-        <div class="row">
-
              <div class="col-md-3">
                 <?php 
                     $options = \yii\helpers\ArrayHelper::map($artigo, 'id', 'art_descricao');
@@ -160,6 +127,86 @@ use kartik\depdrop\DepDrop;
                 ?>
             </div>
 
+            <div class="col-md-3">
+                <?php 
+                    $options = \yii\helpers\ArrayHelper::map($recurso, 'id', 'rec_descricao');
+                        echo $form->field($model, 'recursos_id')->widget(Select2::classname(), [
+                            'data' => $options,
+                            'options' => ['placeholder' => 'Informe o Recurso...'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]);  
+                ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2">
+                <?php 
+                echo $form->field($model, 'valor_limite_hidden')->widget(MaskMoney::classname(), [
+                        'pluginOptions' => [
+                            'prefix' => 'R$ ',
+                            'allowNegative' => false,
+                        ],
+                       'readonly'=> true,
+                    ]);
+                ?>
+            </div>
+            <div class="col-md-2">
+                <?php 
+                echo $form->field($model, 'valor_limite_apurado_hidden')->widget(MaskMoney::classname(), [
+                        'pluginOptions' => [
+                            'prefix' => 'R$ ',
+                            'allowNegative' => false,
+                        ],
+                        'readonly'=> true,
+                    ]);
+                ?>
+            </div>
+            <div class="col-md-2">
+                <?php 
+                echo $form->field($model, 'valor_saldo_hidden')->widget(MaskMoney::classname(), [
+                        'pluginOptions' => [
+                            'prefix' => 'R$ ',
+                            'allowNegative' => false,
+                        ],
+                        'readonly'=> true,
+                    ]);
+                ?>
+            </div>
+            <div class="col-md-2">
+                <?php 
+                echo $form->field($model, 'prolic_valorestimado')->widget(MaskMoney::classname(), [
+                        'pluginOptions' => [
+                            'prefix' => 'R$ ',
+                            'allowNegative' => false,
+                        ],
+                    ]);
+                ?>
+            </div>
+            <div class="col-md-2">
+                <?php 
+                echo $form->field($model, 'prolic_valoraditivo')->widget(MaskMoney::classname(), [
+                        'pluginOptions' => [
+                            'prefix' => 'R$ ',
+                            'allowNegative' => false,
+                        ],
+                    ]);
+                ?>
+            </div>
+            <div class="col-md-2">
+                <?php echo $form->field($model, 'prolic_valorefetivo')->widget(MaskMoney::classname(), [
+                        'pluginOptions' => [
+                            'prefix' => 'R$ ',
+                            'allowNegative' => false,
+                        ],
+                    ]);
+                ?>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-md-1"><?= $form->field($model, 'prolic_cotacoes')->textInput() ?></div>
 
             <div class="col-md-4">
@@ -176,21 +223,6 @@ use kartik\depdrop\DepDrop;
             </div>
 
             <div class="col-md-3"><?= $form->field($model, 'prolic_elementodespesa')->textInput() ?></div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-3">
-                <?php 
-                    $options = \yii\helpers\ArrayHelper::map($recurso, 'id', 'rec_descricao');
-                        echo $form->field($model, 'recursos_id')->widget(Select2::classname(), [
-                            'data' => $options,
-                            'options' => ['placeholder' => 'Informe o Recurso...'],
-                            'pluginOptions' => [
-                                'allowClear' => true
-                            ],
-                        ]);  
-                ?>
-            </div>
 
             <div class="col-md-3">
                 <?php 
@@ -204,6 +236,9 @@ use kartik\depdrop\DepDrop;
                         ]);  
                 ?>
             </div>
+        </div>
+
+        <div class="row">
 
             <div class="col-md-3"><?= $form->field($model, 'prolic_datacertame')->textInput() ?></div>
 

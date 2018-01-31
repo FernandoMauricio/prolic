@@ -19,7 +19,7 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
     {
         return [
             [['id', 'ano_id', 'prolic_codmxm', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'comprador_id', 'situacao_id'], 'integer'],
-            [['prolic_objeto', 'prolic_destino', 'prolic_centrocusto', 'prolic_elementodespesa', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_motivo', 'prolic_empresa', 'ramo_descricao', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_usuarioatualizacao', 'prolic_dataatualizacao'], 'safe'],
+            [['prolic_objeto', 'prolic_destino', 'prolic_centrocusto', 'prolic_elementodespesa', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_motivo', 'prolic_empresa', 'ramo_descricao', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_usuarioatualizacao', 'prolic_dataatualizacao', 'modalidade'], 'safe'],
             [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo'], 'number'],
         ];
     }
@@ -58,6 +58,13 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
             return $dataProvider;
         }
 
+        $query->joinWith('modalidadeValorlimite.modalidade');
+
+        $dataProvider->sort->attributes['modalidade'] = [
+        'asc' => ['modalidade.mod_descricao' => SORT_ASC],
+        'desc' => ['modalidade.mod_descricao' => SORT_DESC],
+        ];
+
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
@@ -81,6 +88,7 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
         ]);
 
         $query->andFilterWhere(['like', 'prolic_objeto', $this->prolic_objeto])
+            ->andFilterWhere(['like', 'modalidade_valorlimite.modalidade_id', $this->modalidade])
             ->andFilterWhere(['like', 'prolic_destino', $this->prolic_destino])
             ->andFilterWhere(['like', 'prolic_centrocusto', $this->prolic_centrocusto])
             ->andFilterWhere(['like', 'prolic_elementodespesa', $this->prolic_elementodespesa])

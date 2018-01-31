@@ -102,11 +102,20 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     //Localiza a somatório dos Limites e o Saldo
     public function getSumLimite($cat_id) {
         $data = ProcessoLicitatorio::find()
-        ->joinWith('modalidadeValorlimite', false, 'INNER JOIN')
-        ->where(['modalidade_id'=>$cat_id])
-        ->select(['sum(prolic_valorestimado) AS valor_limite_apurado_hidden', 'valor_limite - sum(prolic_valorestimado) AS valor_saldo_hidden'])->asArray()->one();
+        ->joinWith('modalidadeValorlimite', false, 'LEFT JOIN')
+        ->where(['modalidade_valorlimite.id'=>$cat_id])
+        ->select(['valor_limite', 'sum(prolic_valorestimado) AS valor_limite_apurado_hidden', 'valor_limite - sum(prolic_valorestimado) AS valor_saldo_hidden'])->asArray()->one();
+
+        if($data['valor_limite_apurado_hidden'] != NULL) {
 
         return $data;
+
+    }else{
+            $data['valor_limite_apurado_hidden'] = 0;
+            $data['valor_saldo_hidden'] = $data['valor_limite'];
+
+            return $data;
+        }
     }
 
     /**

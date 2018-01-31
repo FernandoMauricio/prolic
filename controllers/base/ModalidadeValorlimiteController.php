@@ -48,6 +48,26 @@ class ModalidadeValorlimiteController extends Controller
         ]);
     }
 
+    public function actionHomologar($id)
+    {
+        $session = Yii::$app->session;
+        $model = $this->findModel($id);
+
+        if($model->status == 0) { //Cadastros Inativados
+            Yii::$app->session->setFlash('danger', '<b>ERRO! </b>Não é possível homologar um cadastro inativo!</b>');
+            return $this->redirect(['index']);
+            }else{
+            //Homologa o limite da modalidade
+            $connection = Yii::$app->db;
+            $connection->createCommand()
+            ->update('modalidade_valorlimite', ['homologacao_usuario' => $session['sess_nomeusuario'], 'homologacao_data' => date('Y-m-d')], ['id' => $model->id])
+            ->execute();
+
+            Yii::$app->session->setFlash('success', '<b>SUCESSO!</b> Cadastro limite da Modalidade:<b> '.$model->modalidade->mod_descricao.'</b> e Ramo: <b>'.$model->ramo->ram_descricao .'</b> foi HOMOLOGADO!</b>');
+        }
+        return $this->redirect(['index']);
+    }
+
     /**
      * Displays a single ModalidadeValorlimite model.
      * @param integer $id
@@ -102,6 +122,9 @@ class ModalidadeValorlimiteController extends Controller
         $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $model->homologacao_usuario = NULL;
+            $model->homologacao_data    = NULL;
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

@@ -107,11 +107,10 @@ class ProcessoLicitatorioController extends Controller
 
         $model = new ProcessoLicitatorio();
 
-        $modalidade  = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
         $ano         = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
         $ramo        = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
         $destinos    = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
-        $valorlimite = ModalidadeValorlimite::find()->where(['status' => 1])->all();
+        $valorlimite = ModalidadeValorlimite::find()->where(['status' => 1])->andWhere(['!=','homologacao_usuario', ''])->all();
         $artigo      = Artigo::find()->where(['art_status' => 1])->orderBy('art_descricao')->all();
         $centrocusto = Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all();
         $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
@@ -139,7 +138,6 @@ class ProcessoLicitatorioController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'modalidade' => $modalidade,
             'ano' => $ano,
             'ramo' => $ramo,
             'destinos' => $destinos,

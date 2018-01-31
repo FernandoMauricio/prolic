@@ -19,7 +19,7 @@ class ModalidadeValorlimiteSearch extends ModalidadeValorlimite
     {
         return [
             [['id', 'ano_id', 'status'], 'integer'],
-            [['modalidade_id', 'ramo_id'], 'safe'],
+            [['modalidade_id', 'ramo_id', 'homologacao_usuario', 'homologacao_data'], 'safe'],
             [['valor_limite'], 'number'],
         ];
     }
@@ -72,7 +72,9 @@ class ModalidadeValorlimiteSearch extends ModalidadeValorlimite
 
         $query->andFilterWhere(['like', 'modalidade.mod_descricao', $this->modalidade_id])
         ->andFilterWhere(['like', 'ramo.ram_descricao', $this->ramo_id])
-        ->andFilterWhere(['like', 'ano.an_ano', $this->ano_id]);
+        ->andFilterWhere(['like', 'ano.an_ano', $this->ano_id])
+        ->andFilterWhere(['like', 'homologacao_usuario', $this->homologacao_usuario])
+        ->andFilterWhere(['like', 'homologacao_data', $this->homologacao_data]);
 
         return $dataProvider;
     }

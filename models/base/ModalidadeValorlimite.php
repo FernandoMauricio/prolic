@@ -13,6 +13,8 @@ use Yii;
  * @property int $ano_id
  * @property double $valor_limite
  * @property int $status
+ * @property string $homologacao_usuario
+ * @property string $homologacao_data
  *
  * @property Ano $ano
  * @property Modalidade $modalidade
@@ -38,6 +40,8 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
             [['modalidade_id', 'ramo_id', 'ano_id', 'valor_limite', 'status'], 'required'],
             [['modalidade_id', 'ramo_id', 'ano_id', 'status'], 'integer'],
             [['valor_limite'], 'number'],
+            [['homologacao_data'], 'safe'],
+            [['homologacao_usuario'], 'string', 'max' => 255],
             [['ano_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ano::className(), 'targetAttribute' => ['ano_id' => 'id']],
             [['modalidade_id'], 'exist', 'skipOnError' => true, 'targetClass' => Modalidade::className(), 'targetAttribute' => ['modalidade_id' => 'id']],
             [['ramo_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ramo::className(), 'targetAttribute' => ['ramo_id' => 'id']],
@@ -66,6 +70,8 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
             'ano_id' => 'Ano',
             'valor_limite' => 'Valor Limite',
             'status' => 'Status',
+            'homologacao_usuario' => 'Homologado Por',
+            'homologacao_data' => 'Data Homologação',
         ];
     }
 

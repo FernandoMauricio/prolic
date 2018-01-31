@@ -64,7 +64,7 @@ use kartik\depdrop\DepDrop;
         <div class="row">
             <div class="col-md-3">
                 <?php
-                    $data_modalidade = \yii\helpers\ArrayHelper::map($modalidade, 'id', 'mod_descricao');
+                    $data_modalidade = \yii\helpers\ArrayHelper::map($valorlimite, 'id', 'modalidade.mod_descricao');
                     echo $form->field($model, 'modalidade')->widget(Select2::classname(), [
                         'data' => $data_modalidade,
                         'options' => ['id' => 'modalidade-id','placeholder' => 'Selecione a Modalidade...'],
@@ -87,30 +87,35 @@ use kartik\depdrop\DepDrop;
                             'url'=>Url::to(['/processolicitatorio/processo-licitatorio/limite'])],
                             'options' => [
                                 'onchange'=>'
-                                        var select = this;
-                                        $.getJSON( "'.Url::toRoute('/processolicitatorio/processo-licitatorio/get-limite').'", { limiteId: $(this).val() } )
-                                        .done(function( data ) {
+                                    var select = this;
+                                    $.getJSON( "'.Url::toRoute('/processolicitatorio/processo-licitatorio/get-limite').'", { limiteId: $(this).val() } )
+                                    .done(function( data ) {
 
-                                               var $divPanelBody = $(select).parent().parent().parent().parent();
+                                           var $divPanelBody = $(select).parent().parent().parent().parent();
 
-                                               var $inputValorLimite = $divPanelBody.find("input:eq(3)");
+                                           var $inputValorLimite = $divPanelBody.find("input:eq(3)");
 
-                                               $inputValorLimite.val(data.valor_limite);
+                                           $inputValorLimite.val(data.valor_limite);
 
-                                            });
-                                        $.getJSON( "'.Url::toRoute('/processolicitatorio/processo-licitatorio/get-sum-limite').'", { limiteId: $(this).val() } )
-                                        .done(function( data ) {
+                                        });
+                                    $.getJSON( "'.Url::toRoute('/processolicitatorio/processo-licitatorio/get-sum-limite').'", { limiteId: $(this).val() } )
+                                    .done(function( data ) {
 
-                                               var $divPanelBody = $(select).parent().parent().parent().parent().parent();
+                                           var $divPanelBody = $(select).parent().parent().parent().parent().parent();
 
-                                               var $inputValorUtilizado = $divPanelBody.find("input:eq(5)");
-                                               var $inputSaldo = $divPanelBody.find("input:eq(7)");
+                                           var $inputValorUtilizado = $divPanelBody.find("input:eq(5)");
+                                           var $inputSaldo          = $divPanelBody.find("input:eq(7)");
+                                           var $zeravalorestimado   = $divPanelBody.find("input:eq(9)");
+                                           var $zeravaloraditivo    = $divPanelBody.find("input:eq(11)");
+                                           var $zeravalorefetivo    = $divPanelBody.find("input:eq(13)");
 
-                                               $inputValorUtilizado.val(data.valor_limite_apurado_hidden);
-                                               $inputSaldo.val(data.valor_saldo_hidden);
-
-                                            });
-                                        '
+                                           $inputValorUtilizado.val(data.valor_limite_apurado_hidden);
+                                           $inputSaldo.val(data.valor_saldo_hidden);
+                                           $zeravalorestimado.val(0);
+                                           $zeravaloraditivo.val(0);
+                                           $zeravalorefetivo.val(0);
+                                        });
+                                    '
                                 ]]);
                 ?>
             </div>
@@ -159,6 +164,7 @@ use kartik\depdrop\DepDrop;
                         'pluginOptions' => [
                             'prefix' => 'R$ ',
                             'allowNegative' => false,
+                            'allowZero' => true,
                         ],
                         'readonly'=> true,
                     ]);
@@ -170,6 +176,7 @@ use kartik\depdrop\DepDrop;
                         'pluginOptions' => [
                             'prefix' => 'R$ ',
                             'allowNegative' => false,
+                            'allowZero' => true,
                         ],
                         'readonly'=> true,
                     ]);
@@ -181,6 +188,7 @@ use kartik\depdrop\DepDrop;
                         'pluginOptions' => [
                             'prefix' => 'R$ ',
                             'allowNegative' => false,
+                            'allowZero' => true,
                         ],
                     ]);
                 ?>
@@ -191,6 +199,7 @@ use kartik\depdrop\DepDrop;
                         'pluginOptions' => [
                             'prefix' => 'R$ ',
                             'allowNegative' => false,
+                            'allowZero' => true,
                         ],
                     ]);
                 ?>
@@ -200,6 +209,7 @@ use kartik\depdrop\DepDrop;
                         'pluginOptions' => [
                             'prefix' => 'R$ ',
                             'allowNegative' => false,
+                            'allowZero' => true,
                         ],
                     ]);
                 ?>

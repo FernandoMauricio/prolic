@@ -74,6 +74,8 @@ class ProcessoLicitatorioController extends Controller
      */
     public function actionIndex()
     {
+        $this->layout = 'main-full';
+        
         $searchModel = new ProcessoLicitatorioSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

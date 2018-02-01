@@ -7,6 +7,7 @@ use kartik\select2\Select2;
 use yii\helpers\Url;
 use kartik\money\MaskMoney;
 use kartik\depdrop\DepDrop;
+use kartik\number\NumberControl;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
@@ -93,9 +94,9 @@ use kartik\depdrop\DepDrop;
 
                                            var $divPanelBody = $(select).parent().parent().parent().parent();
 
-                                           var $inputValorLimite = $divPanelBody.find("input:eq(3)");
+                                           $divPanelBody.find("input").eq(3).val(data.valor_limite);
+                                           $divPanelBody.find("input").eq(5).val(data.valor_limite);
 
-                                           $inputValorLimite.val(data.valor_limite);
 
                                         });
                                     $.getJSON( "'.Url::toRoute('/processolicitatorio/processo-licitatorio/get-sum-limite').'", { limiteId: $(this).val() } )
@@ -103,17 +104,14 @@ use kartik\depdrop\DepDrop;
 
                                            var $divPanelBody = $(select).parent().parent().parent().parent().parent();
 
-                                           var $inputValorUtilizado = $divPanelBody.find("input:eq(5)");
-                                           var $inputSaldo          = $divPanelBody.find("input:eq(7)");
-                                           var $zeravalorestimado   = $divPanelBody.find("input:eq(9)");
-                                           var $zeravaloraditivo    = $divPanelBody.find("input:eq(11)");
-                                           var $zeravalorefetivo    = $divPanelBody.find("input:eq(13)");
+                                           $divPanelBody.find("input").eq(6).val(data.valor_limite_apurado);
+                                           $divPanelBody.find("input").eq(8).val(data.valor_limite_apurado);
+                                           $divPanelBody.find("input").eq(9).val(data.valor_saldo);
+                                           $divPanelBody.find("input").eq(11).val(data.valor_saldo);
 
-                                           $inputValorUtilizado.val(data.valor_limite_apurado_hidden);
-                                           $inputSaldo.val(data.valor_saldo_hidden);
-                                           $zeravalorestimado.val(0);
-                                           $zeravaloraditivo.val(0);
-                                           $zeravalorefetivo.val(0);
+                                           $divPanelBody.find("input").eq(10).val(1);
+                                           $divPanelBody.find("input").eq(1331).val(2);
+                                           $divPanelBody.find("input").eq(13).val(4);
                                         });
                                     '
                                 ]]);
@@ -149,69 +147,110 @@ use kartik\depdrop\DepDrop;
         <div class="row">
             <div class="col-md-2">
                 <?php 
-                echo $form->field($model, 'valor_limite_hidden')->widget(MaskMoney::classname(), [
-                        'pluginOptions' => [
+                    echo $form->field($model, 'valor_limite')->widget(NumberControl::classname(), [
+                        'maskedInputOptions' => [
                             'prefix' => 'R$ ',
-                            'allowNegative' => false,
+                            'alias' => 'currency',
+                            'digits' => 2,
+                            'digitsOptional' => false,
+                            'groupSeparator' => '.',
+                            'radixPoint' => ',',
+                            'autoGroup' => true,
+                            'autoUnmask' => true,
+                            'unmaskAsNumber' => true,
                         ],
-                       'readonly'=> true,
-                    ]);
+                        'disabled' => true,
+                    ])                
+                ?>
+                <?= $form->field($model, 'valor_limite_hidden')->hiddenInput()->label(false); ?>
+            </div>
+            <div class="col-md-2">
+                <?php 
+                    echo $form->field($model, 'valor_limite_apurado')->widget(NumberControl::classname(), [
+                        'maskedInputOptions' => [
+                            'prefix' => 'R$ ',
+                            'alias' => 'currency',
+                            'digits' => 2,
+                            'digitsOptional' => false,
+                            'groupSeparator' => '.',
+                            'radixPoint' => ',',
+                            'autoGroup' => true,
+                            'autoUnmask' => true,
+                            'unmaskAsNumber' => true,
+                        ],
+                        'disabled' => true,
+                    ])                
+                ?>
+                <?= $form->field($model, 'valor_limite_apurado_hidden')->hiddenInput()->label(false); ?>
+            </div>
+            <div class="col-md-2">
+                <?php 
+                    echo $form->field($model, 'valor_saldo')->widget(NumberControl::classname(), [
+                        'maskedInputOptions' => [
+                            'prefix' => 'R$ ',
+                            'alias' => 'currency',
+                            'digits' => 2,
+                            'digitsOptional' => false,
+                            'groupSeparator' => '.',
+                            'radixPoint' => ',',
+                            'autoGroup' => true,
+                            'autoUnmask' => true,
+                            'unmaskAsNumber' => true,
+                        ],
+                        'disabled' => true,
+                    ])                
+                ?>
+                <?= $form->field($model, 'valor_saldo_hidden')->hiddenInput()->label(false); ?>
+            </div>
+            <div class="col-md-2">
+                <?php 
+                    echo $form->field($model, 'prolic_valorestimado')->widget(NumberControl::classname(), [
+                        'maskedInputOptions' => [
+                            'prefix' => 'R$ ',
+                            'alias' => 'numeric',
+                            'digits' => 2,
+                            'digitsOptional' => false,
+                            'groupSeparator' => '.',
+                            'radixPoint' => ',',
+                            'autoGroup' => true,
+                            'autoUnmask' => true,
+                            'unmaskAsNumber' => true,
+                        ],
+                    ])                
                 ?>
             </div>
             <div class="col-md-2">
                 <?php 
-                echo $form->field($model, 'valor_limite_apurado_hidden')->widget(MaskMoney::classname(), [
-                        'pluginOptions' => [
+                    echo $form->field($model, 'prolic_valoraditivo')->widget(NumberControl::classname(), [
+                        'maskedInputOptions' => [
                             'prefix' => 'R$ ',
-                            'allowNegative' => false,
-                            'allowZero' => true,
+                            'alias' => 'numeric',
+                            'digits' => 2,
+                            'digitsOptional' => false,
+                            'groupSeparator' => '.',
+                            'radixPoint' => ',',
+                            'autoGroup' => true,
+                            'autoUnmask' => true,
+                            'unmaskAsNumber' => true,
                         ],
-                        'readonly'=> true,
-                    ]);
+                    ])                
                 ?>
             </div>
             <div class="col-md-2">
                 <?php 
-                echo $form->field($model, 'valor_saldo_hidden')->widget(MaskMoney::classname(), [
-                        'pluginOptions' => [
+                    echo $form->field($model, 'prolic_valorefetivo')->widget(NumberControl::classname(), [
+                        'maskedInputOptions' => [
                             'prefix' => 'R$ ',
-                            'allowNegative' => false,
-                            'allowZero' => true,
+                            'alias' => 'numeric',
+                            'digits' => 2,
+                            'digitsOptional' => false,
+                            'groupSeparator' => '.',
+                            'radixPoint' => ',',
+                            'autoGroup' => true,
+                            'autoUnmask' => true,
+                            'unmaskAsNumber' => true,
                         ],
-                        'readonly'=> true,
-                    ]);
-                ?>
-            </div>
-            <div class="col-md-2">
-                <?php 
-                echo $form->field($model, 'prolic_valorestimado')->widget(MaskMoney::classname(), [
-                        'pluginOptions' => [
-                            'prefix' => 'R$ ',
-                            'allowNegative' => false,
-                            'allowZero' => true,
-                        ],
-                    ]);
-                ?>
-            </div>
-            <div class="col-md-2">
-                <?php 
-                echo $form->field($model, 'prolic_valoraditivo')->widget(MaskMoney::classname(), [
-                        'pluginOptions' => [
-                            'prefix' => 'R$ ',
-                            'allowNegative' => false,
-                            'allowZero' => true,
-                        ],
-                    ]);
-                ?>
-            </div>
-            <div class="col-md-2">
-                <?php echo $form->field($model, 'prolic_valorefetivo')->widget(MaskMoney::classname(), [
-                        'pluginOptions' => [
-                            'prefix' => 'R$ ',
-                            'allowNegative' => false,
-                            'allowZero' => true,
-                        ],
-                    ]);
+                    ])                
                 ?>
             </div>
         </div>

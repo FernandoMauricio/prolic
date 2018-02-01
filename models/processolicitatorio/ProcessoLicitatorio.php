@@ -52,6 +52,9 @@ use app\models\base\Centrocusto;
 class ProcessoLicitatorio extends \yii\db\ActiveRecord
 {
     public $modalidade;
+    public $valor_limite;
+    public $valor_limite_apurado;
+    public $valor_saldo;
     public $valor_limite_hidden;
     public $valor_limite_apurado_hidden;
     public $valor_saldo_hidden;
@@ -74,7 +77,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [['ano_id', 'prolic_objeto', 'prolic_codmxm', 'prolic_destino', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_usuariocriacao', 'prolic_datacriacao'], 'required'],
             [['ano_id', 'prolic_codmxm', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'comprador_id', 'situacao_id'], 'integer'],
             [['prolic_objeto', 'prolic_elementodespesa', 'prolic_motivo'], 'string'],
-            [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo', 'valor_limite_hidden', 'valor_limite_apurado_hidden', 'valor_saldo_hidden'], 'number'],
+            [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo', 'valor_limite', 'valor_limite_apurado', 'valor_saldo', 'valor_limite_hidden', 'valor_limite_apurado_hidden', 'valor_saldo_hidden'], 'number'],
             [['prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_datacriacao', 'prolic_dataatualizacao', 'prolic_destino', 'prolic_centrocusto','modalidade'], 'safe'],
             [['prolic_empresa', 'ramo_descricao', 'prolic_usuariocriacao', 'prolic_usuarioatualizacao'], 'string', 'max' => 255],
             [['ano_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ano::className(), 'targetAttribute' => ['ano_id' => 'id']],
@@ -104,15 +107,15 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
         $data = ProcessoLicitatorio::find()
         ->joinWith('modalidadeValorlimite', false, 'LEFT JOIN')
         ->where(['modalidade_valorlimite.id'=>$cat_id])
-        ->select(['valor_limite', 'sum(prolic_valorestimado) AS valor_limite_apurado_hidden', 'valor_limite - sum(prolic_valorestimado) AS valor_saldo_hidden'])->asArray()->one();
+        ->select(['valor_limite', 'sum(prolic_valorestimado) AS valor_limite_apurado', 'valor_limite - sum(prolic_valorestimado) AS valor_saldo'])->asArray()->one();
 
-        if($data['valor_limite_apurado_hidden'] != NULL) {
+        if($data['valor_limite_apurado'] != NULL) {
 
         return $data;
 
     }else{
-            $data['valor_limite_apurado_hidden'] = 0;
-            $data['valor_saldo_hidden'] = $data['valor_limite'];
+            $data['valor_limite_apurado'] = 0;
+            $data['valor_saldo'] = $data['valor_limite'];
 
             return $data;
         }

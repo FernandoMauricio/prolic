@@ -7,6 +7,9 @@ use yii\helpers\ArrayHelper;
 
 use app\models\base\Ano;
 use app\models\base\ModalidadeValorlimite;
+use app\models\base\Comprador;
+use app\models\base\Artigo;
+use app\models\base\Situacao;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\processolicitatorio\ProcessoLicitatorioSearch */
@@ -53,7 +56,7 @@ $gridColumns = [
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],
-            'filterInputOptions'=>['placeholder'=>'Selecione a Modalidade'],
+            'filterInputOptions'=>['placeholder'=>'Selecione a Modalidade...'],
             'group'=>true,  // enable grouping
             'subGroupOf'=>1 // supplier column index is the parent group
         ],
@@ -69,9 +72,57 @@ $gridColumns = [
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],
-            'filterInputOptions'=>['placeholder'=>'Selecione o Ramo'],
+            'filterInputOptions'=>['placeholder'=>'Selecione o Ramo...'],
             'group'=>true,  // enable grouping
             'subGroupOf'=>1 // supplier column index is the parent group
+        ],
+
+        'prolic_codmxm',
+        'prolic_sequenciamodal',
+        'prolic_objeto:ntext',
+        'prolic_centrocusto:ntext',
+        'prolic_destino:ntext',
+
+        [
+            'attribute'=>'artigo_id', 
+            'width'=>'250px',
+            'value'=>function ($model, $key, $index, $widget) { 
+                return $model->artigo->art_descricao;
+            },
+            'filterType'=>GridView::FILTER_SELECT2,
+            'filter'=>ArrayHelper::map(Artigo::find()->where(['art_status' => 1])->orderBy('id')->asArray()->all(), 'id', 'art_descricao'), 
+            'filterWidgetOptions'=>[
+                'pluginOptions'=>['allowClear'=>true],
+            ],
+            'filterInputOptions'=>['placeholder'=>'Selecione o Artigo...'],
+        ],
+
+        [
+            'attribute'=>'comprador_id', 
+            'width'=>'200px',
+            'value'=>function ($model, $key, $index, $widget) { 
+                return $model->comprador->comp_descricao;
+            },
+            'filterType'=>GridView::FILTER_SELECT2,
+            'filter'=>ArrayHelper::map(Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->asArray()->all(), 'id', 'comp_descricao'), 
+            'filterWidgetOptions'=>[
+                'pluginOptions'=>['allowClear'=>true],
+            ],
+            'filterInputOptions'=>['placeholder'=>'Selecione o Comprador...'],
+        ],
+
+        [
+            'attribute'=>'situacao_id', 
+            'width'=>'250px',
+            'value'=>function ($model, $key, $index, $widget) { 
+                return $model->situacao->sit_descricao;
+            },
+            'filterType'=>GridView::FILTER_SELECT2,
+            'filter'=>ArrayHelper::map(Situacao::find()->where(['sit_status' => 1])->orderBy('id')->asArray()->all(), 'id', 'sit_descricao'), 
+            'filterWidgetOptions'=>[
+                'pluginOptions'=>['allowClear'=>true],
+            ],
+            'filterInputOptions'=>['placeholder'=>'Selecione a Situação...'],
         ],
 
             ['class' => 'yii\grid\ActionColumn'],
@@ -79,26 +130,13 @@ $gridColumns = [
  ?>
 
 <?php
-
-            // 'id',
-            // 'ano_id',
-            // 'prolic_objeto:ntext',
-            // 'prolic_codmxm',
-            // 'prolic_destino:ntext',
-            // //'',
-            // //'prolic_sequenciamodal',
-            // //'artigo_id',
-            // //'prolic_cotacoes',
-            // //'prolic_centrocusto:ntext',
-            // //'prolic_elementodespesa:ntext',
-            // 'prolic_valorestimado',
-            // //'prolic_valoraditivo',
+            //'prolic_cotacoes',
+            //'prolic_elementodespesa:ntext',
+            //'prolic_valorestimado',
+            //'prolic_valoraditivo',
             //'prolic_valorefetivo',
-            //'recursos_id',
-            //'comprador_id',
             //'prolic_datacertame',
             //'prolic_datadevolucao',
-            //'situacao_id',
             //'prolic_datahomologacao',
             //'prolic_motivo:ntext',
             //'prolic_empresa',
@@ -107,7 +145,6 @@ $gridColumns = [
             //'prolic_datacriacao',
             //'prolic_usuarioatualizacao',
             //'prolic_dataatualizacao',
-
 ?>
 
 
@@ -127,7 +164,7 @@ $gridColumns = [
     'beforeHeader'=>[
         [
             'columns'=>[
-                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>10, 'class'=>'text-center warning']], 
+                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>11, 'class'=>'text-center warning']], 
                 ['content'=>'Área de Ações', 'options'=>['colspan'=>1, 'class'=>'text-center warning']], 
             ],
         ]

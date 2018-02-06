@@ -131,9 +131,10 @@ class ProcessoLicitatorioController extends Controller
             $model->prolic_centrocusto = implode(" / ",$model->prolic_centrocusto);
 
         //Sequencia do cód. da modalidade de acordo com o tipo
+        $incremento = 1;
         $query_id = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->where(['modalidade.id'=>$model->modalidadeValorlimite->modalidade_id])->all();
                 foreach ($query_id as $value) {
-                    $incremento = $value['id'];
+                    $incremento = $value['prolic_sequenciamodal'];
                     $incremento++;
                 }
              $model->prolic_sequenciamodal = $incremento;

@@ -41,7 +41,7 @@ $gridColumns = [
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],
-            'filterInputOptions'=>['placeholder'=>'Selecione o Ano'],
+            'filterInputOptions'=>['placeholder'=>'Ano...'],
             'group'=>true,  // enable grouping
         ],
 
@@ -56,7 +56,7 @@ $gridColumns = [
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],
-            'filterInputOptions'=>['placeholder'=>'Selecione a Modalidade...'],
+            'filterInputOptions'=>['placeholder'=>'Modalidade...'],
             'group'=>true,  // enable grouping
             'subGroupOf'=>1 // supplier column index is the parent group
         ],
@@ -72,13 +72,19 @@ $gridColumns = [
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],
-            'filterInputOptions'=>['placeholder'=>'Selecione o Ramo...'],
+            'filterInputOptions'=>['placeholder'=>'Ramo...'],
             'group'=>true,  // enable grouping
             'subGroupOf'=>1 // supplier column index is the parent group
         ],
 
         'prolic_codmxm',
-        'prolic_sequenciamodal',
+        [
+            'attribute' => 'prolic_sequenciamodal',
+            'value'=>function ($model, $key, $index, $widget) { 
+                return $model->prolic_sequenciamodal . '/' . $model->ano->an_ano;
+            },
+        ],
+
         'prolic_objeto:ntext',
         'prolic_centrocusto:ntext',
         'prolic_destino:ntext',
@@ -94,7 +100,7 @@ $gridColumns = [
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],
-            'filterInputOptions'=>['placeholder'=>'Selecione o Artigo...'],
+            'filterInputOptions'=>['placeholder'=>'Artigo...'],
         ],
 
         [
@@ -108,7 +114,7 @@ $gridColumns = [
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],
-            'filterInputOptions'=>['placeholder'=>'Selecione o Comprador...'],
+            'filterInputOptions'=>['placeholder'=>'Comprador...'],
         ],
 
         [
@@ -122,7 +128,27 @@ $gridColumns = [
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],
-            'filterInputOptions'=>['placeholder'=>'Selecione a Situação...'],
+            'filterInputOptions'=>['placeholder'=>'Situação...'],
+        ],
+
+        [
+            'attribute' => 'ciclototal',
+            'value'=>function ($model, $key, $index, $widget) { 
+                    $data_inicio = new DateTime($model->prolic_datahomologacao);
+                    $data_fim = new DateTime($model->prolic_datacriacao);
+                    $dateInterval = $data_inicio->diff($data_fim);
+                return $dateInterval->days;
+            },
+        ],
+
+        [
+            'attribute' => 'ciclocertame',
+            'value'=>function ($model, $key, $index, $widget) { 
+                    $data_inicio = new DateTime($model->prolic_datahomologacao);
+                    $data_fim = new DateTime($model->prolic_datacertame);
+                    $dateInterval = $data_inicio->diff($data_fim);
+                return $dateInterval->days;
+            },
         ],
 
             ['class' => 'yii\grid\ActionColumn'],
@@ -162,7 +188,7 @@ $gridColumns = [
     'beforeHeader'=>[
         [
             'columns'=>[
-                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>11, 'class'=>'text-center warning']], 
+                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>13, 'class'=>'text-center warning']], 
                 ['content'=>'Área de Ações', 'options'=>['colspan'=>1, 'class'=>'text-center warning']], 
             ],
         ]

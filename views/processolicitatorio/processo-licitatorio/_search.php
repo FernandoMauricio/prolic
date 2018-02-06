@@ -57,10 +57,6 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'prolic_motivo') ?>
 
-    <?php // echo $form->field($model, 'prolic_empresa') ?>
-
-    <?php // echo $form->field($model, 'ramo_descricao') ?>
-
     <?php // echo $form->field($model, 'prolic_usuariocriacao') ?>
 
     <?php // echo $form->field($model, 'prolic_datacriacao') ?>

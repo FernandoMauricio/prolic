@@ -45,6 +45,7 @@ AppAsset::register($this);
                         '<li class="dropdown-header">Área Administrador</li>',
                          ['label' => 'Ano', 'url' => ['/base/ano/index']],
                          ['label' => 'Artigo', 'url' => ['/base/artigo/index']],
+                         ['label' => 'Empresa', 'url' => ['/base/empresa/index']],
                          ['label' => 'Comprador', 'url' => ['/base/comprador/index']],
                          ['label' => 'Modalidade', 'url' => ['/base/modalidade/index']],
                          ['label' => 'Modalidade - Valor Limite', 'url' => ['/base/modalidade-valorlimite/index']],

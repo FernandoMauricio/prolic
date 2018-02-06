@@ -8,6 +8,8 @@ use yii\helpers\Url;
 use kartik\money\MaskMoney;
 use kartik\depdrop\DepDrop;
 use kartik\number\NumberControl;
+use kartik\datecontrol\DateControl;
+use faryshta\widgets\JqueryTagsInput;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
@@ -43,10 +45,9 @@ use kartik\number\NumberControl;
             ?>
             </div>
             <div class="col-md-2"><?= $form->field($model, 'prolic_codmxm')->textInput() ?></div>
-
             <div class="col-md-8">
                 <?php 
-                    $options = \yii\helpers\ArrayHelper::map($destinos, 'uni_nomeabreviado', 'uni_nomeabreviado');
+                    $options = ArrayHelper::map($destinos, 'uni_nomeabreviado', 'uni_nomeabreviado');
                         echo $form->field($model, 'prolic_destino')->widget(Select2::classname(), [
                             'data' => $options,
                             'options' => ['placeholder' => 'Informe os Destinos...', 'multiple'=>true],
@@ -59,13 +60,12 @@ use kartik\number\NumberControl;
         </div>
 
         <div class="row">
-            <div class="col-md-12"><?= $form->field($model, 'prolic_objeto')->textarea(['rows' => 6]) ?></div>
+            <div class="col-md-12"><?= $form->field($model, 'prolic_objeto')->textarea(['rows' => 3]) ?></div>
         </div>
-
         <div class="row">
             <div class="col-md-3">
                 <?php
-                    $data_modalidade = \yii\helpers\ArrayHelper::map($valorlimite, 'id', 'modalidade.mod_descricao');
+                    $data_modalidade = ArrayHelper::map($valorlimite, 'id', 'modalidade.mod_descricao');
                     echo $form->field($model, 'modalidade')->widget(Select2::classname(), [
                         'data' => $data_modalidade,
                         'options' => ['id' => 'modalidade-id','placeholder' => 'Selecione a Modalidade...'],
@@ -119,7 +119,7 @@ use kartik\number\NumberControl;
             </div>
              <div class="col-md-3">
                 <?php 
-                    $options = \yii\helpers\ArrayHelper::map($artigo, 'id', 'art_descricao');
+                    $options = ArrayHelper::map($artigo, 'id', 'art_descricao');
                         echo $form->field($model, 'artigo_id')->widget(Select2::classname(), [
                             'data' => $options,
                             'options' => ['placeholder' => 'Informe o Artigo...'],
@@ -129,10 +129,9 @@ use kartik\number\NumberControl;
                         ]);  
                 ?>
             </div>
-
             <div class="col-md-3">
                 <?php 
-                    $options = \yii\helpers\ArrayHelper::map($recurso, 'id', 'rec_descricao');
+                    $options = ArrayHelper::map($recurso, 'id', 'rec_descricao');
                         echo $form->field($model, 'recursos_id')->widget(Select2::classname(), [
                             'data' => $options,
                             'options' => ['placeholder' => 'Informe o Recurso...'],
@@ -256,11 +255,10 @@ use kartik\number\NumberControl;
         </div>
 
         <div class="row">
-            <div class="col-md-1"><?= $form->field($model, 'prolic_cotacoes')->textInput() ?></div>
-
+            <div class="col-md-2"><?= $form->field($model, 'prolic_cotacoes')->textInput() ?></div>
             <div class="col-md-4">
                 <?php 
-                    $options = \yii\helpers\ArrayHelper::map($centrocusto, 'cen_codcentrocusto', 'cen_centrocustoreduzido');
+                    $options = ArrayHelper::map($centrocusto, 'cen_centrocustoreduzido', 'cen_centrocustoreduzido');
                         echo $form->field($model, 'prolic_centrocusto')->widget(Select2::classname(), [
                             'data' => $options,
                             'options' => ['placeholder' => 'Informe os Centros de Custos...', 'multiple'=>true],
@@ -270,12 +268,23 @@ use kartik\number\NumberControl;
                         ]);  
                 ?>
             </div>
-
-            <div class="col-md-3"><?= $form->field($model, 'prolic_elementodespesa')->textInput() ?></div>
-
             <div class="col-md-3">
                 <?php 
-                    $options = \yii\helpers\ArrayHelper::map($comprador, 'id', 'comp_descricao');
+                    // with ActiveForm
+                    echo $form->field($model, 'prolic_elementodespesa')->widget(JqueryTagsInput::className(), [
+                         'clientOptions' => [
+                            'defaultText' => '',
+                            'width' => '100%',
+                            'height' => '100%',
+                            'delimiter'=> ' / ',
+                            'interactive' => true,
+                         ]
+                    ]);
+                ?>
+            </div>
+            <div class="col-md-3">
+                <?php 
+                    $options = ArrayHelper::map($comprador, 'id', 'comp_descricao');
                         echo $form->field($model, 'comprador_id')->widget(Select2::classname(), [
                             'data' => $options,
                             'options' => ['placeholder' => 'Informe o Comprador...'],
@@ -288,29 +297,75 @@ use kartik\number\NumberControl;
         </div>
 
         <div class="row">
-
-            <div class="col-md-3"><?= $form->field($model, 'prolic_datacertame')->textInput() ?></div>
-
-            <div class="col-md-3"><?= $form->field($model, 'prolic_datadevolucao')->textInput() ?></div>
+            <div class="col-md-3">
+                <?php
+                    echo $form->field($model, 'prolic_datacertame')->widget(DateControl::classname(), [
+                        'type'=>DateControl::FORMAT_DATE,
+                        'ajaxConversion'=>false,
+                        'widgetOptions' => [
+                            'pluginOptions' => [
+                                'autoclose' => true
+                            ]
+                        ]
+                    ]); 
+                ?>
+            </div>
+            <div class="col-md-3">
+                <?php
+                    echo $form->field($model, 'prolic_datadevolucao')->widget(DateControl::classname(), [
+                        'type'=>DateControl::FORMAT_DATE,
+                        'ajaxConversion'=>false,
+                        'widgetOptions' => [
+                            'pluginOptions' => [
+                                'autoclose' => true
+                            ]
+                        ]
+                    ]); 
+                ?>
+            </div>
+            <div class="col-md-3">
+                <?php
+                    echo $form->field($model, 'prolic_datahomologacao')->widget(DateControl::classname(), [
+                        'type'=>DateControl::FORMAT_DATE,
+                        'ajaxConversion'=>false,
+                        'widgetOptions' => [
+                            'pluginOptions' => [
+                                'autoclose' => true
+                            ]
+                        ]
+                    ]); 
+                ?>
+            </div>
+            <div class="col-md-3">
+                <?php 
+                    $options = ArrayHelper::map($situacao, 'id', 'sit_descricao');
+                        echo $form->field($model, 'situacao_id')->widget(Select2::classname(), [
+                            'data' => $options,
+                            'options' => ['placeholder' => 'Informe a Situação...'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]);  
+                ?>
+            </div>
         </div>
 
-    <?= $form->field($model, 'situacao_id')->textInput() ?>
+    <?= $form->field($model, 'prolic_motivo')->textarea(['rows' => 3]) ?>
 
-    <?= $form->field($model, 'prolic_datahomologacao')->textInput() ?>
-
-    <?= $form->field($model, 'prolic_motivo')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'prolic_empresa')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'ramo_descricao')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'prolic_usuariocriacao')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'prolic_datacriacao')->textInput() ?>
-
-    <?= $form->field($model, 'prolic_usuarioatualizacao')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'prolic_dataatualizacao')->textInput() ?>
+        <div class="row">
+            <div class="col-md-12">
+                <?php 
+                    $options = ArrayHelper::map($empresa, 'id', 'emp_descricao');
+                        echo $form->field($model, 'empresa_id')->widget(Select2::classname(), [
+                            'data' => $options,
+                            'options' => ['placeholder' => 'Informe a Empresa...'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]);  
+                ?>
+            </div>
+        </div>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

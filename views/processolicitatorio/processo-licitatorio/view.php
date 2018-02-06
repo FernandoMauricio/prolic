@@ -49,8 +49,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'situacao_id',
             'prolic_datahomologacao',
             'prolic_motivo:ntext',
-            'prolic_empresa',
-            'ramo_descricao',
             'prolic_usuariocriacao',
             'prolic_datacriacao',
             'prolic_usuarioatualizacao',

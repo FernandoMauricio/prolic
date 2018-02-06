@@ -19,7 +19,7 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
     {
         return [
             [['id', 'ano_id', 'prolic_codmxm', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'situacao_id'], 'integer'],
-            [['prolic_objeto', 'prolic_destino', 'prolic_centrocusto', 'prolic_elementodespesa', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_motivo', 'prolic_empresa', 'ramo_descricao', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_usuarioatualizacao', 'prolic_dataatualizacao', 'modalidade', 'comprador_id'], 'safe'],
+            [['prolic_objeto', 'prolic_destino', 'prolic_centrocusto', 'prolic_elementodespesa', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_motivo', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_usuarioatualizacao', 'prolic_dataatualizacao', 'modalidade', 'comprador_id'], 'safe'],
             [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo'], 'number'],
         ];
     }
@@ -92,8 +92,6 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
             ->andFilterWhere(['like', 'prolic_centrocusto', $this->prolic_centrocusto])
             ->andFilterWhere(['like', 'prolic_elementodespesa', $this->prolic_elementodespesa])
             ->andFilterWhere(['like', 'prolic_motivo', $this->prolic_motivo])
-            ->andFilterWhere(['like', 'prolic_empresa', $this->prolic_empresa])
-            ->andFilterWhere(['like', 'ramo_descricao', $this->ramo_descricao])
             ->andFilterWhere(['like', 'prolic_usuariocriacao', $this->prolic_usuariocriacao])
             ->andFilterWhere(['like', 'prolic_usuarioatualizacao', $this->prolic_usuarioatualizacao])
             ->andFilterWhere(['like', 'comprador.comp_descricao', $this->comprador_id]);

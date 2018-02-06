@@ -12,6 +12,8 @@ use app\models\base\Artigo;
 use app\models\base\Centrocusto;
 use app\models\base\Recursos;
 use app\models\base\Comprador;
+use app\models\base\Situacao;
+use app\models\base\Empresa;
 use app\models\processolicitatorio\ProcessoLicitatorio;
 use app\models\processolicitatorio\ProcessoLicitatorioSearch;
 use yii\web\Controller;
@@ -117,14 +119,16 @@ class ProcessoLicitatorioController extends Controller
         $centrocusto = Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all();
         $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
         $comprador   = Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all();
+        $situacao    = Situacao::find()->where(['sit_status' => 1])->orderBy('sit_descricao')->all();
+        $empresa     = Empresa::find()->where(['emp_status' => 1])->orderBy('emp_descricao')->all();
 
         $model->prolic_datacriacao    = date('Y-m-d');
         $model->prolic_usuariocriacao = $session['sess_nomeusuario'];
 
         if ($model->load(Yii::$app->request->post())) {
 
-            $model->prolic_destino = implode(", ",$model->prolic_destino);
-            $model->prolic_centrocusto = implode(", ",$model->prolic_centrocusto);
+            $model->prolic_destino = implode(" / ",$model->prolic_destino);
+            $model->prolic_centrocusto = implode(" / ",$model->prolic_centrocusto);
 
         //Sequencia do cód. da modalidade de acordo com o tipo
         $query_id = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->where(['modalidade.id'=>$model->modalidadeValorlimite->modalidade_id])->all();
@@ -148,6 +152,8 @@ class ProcessoLicitatorioController extends Controller
             'centrocusto' => $centrocusto,
             'recurso' => $recurso,
             'comprador' => $comprador,
+            'situacao' => $situacao,
+            'empresa' => $empresa,
         ]);
     }
 
@@ -160,14 +166,46 @@ class ProcessoLicitatorioController extends Controller
      */
     public function actionUpdate($id)
     {
+        $session = Yii::$app->session;
+
         $model = $this->findModel($id);
 
+        $ano         = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
+        $ramo        = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
+        $destinos    = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
+        $valorlimite = ModalidadeValorlimite::find()->where(['status' => 1])->andWhere(['!=','homologacao_usuario', ''])->all();
+        $artigo      = Artigo::find()->where(['art_status' => 1])->orderBy('art_descricao')->all();
+        $centrocusto = Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all();
+        $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
+        $comprador   = Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all();
+        $situacao    = Situacao::find()->where(['sit_status' => 1])->orderBy('sit_descricao')->all();
+        $empresa     = Empresa::find()->where(['emp_status' => 1])->orderBy('emp_descricao')->all();
+
+        $model->prolic_dataatualizacao    = date('Y-m-d');
+        $model->prolic_usuarioatualizacao = $session['sess_nomeusuario'];
+        $model->prolic_destino = explode(" / ",$model->prolic_destino);
+        $model->prolic_centrocusto = explode(" / ",$model->prolic_centrocusto);
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            $model->prolic_destino = implode(" / ",$model->prolic_destino);
+            $model->prolic_centrocusto = implode(" / ",$model->prolic_centrocusto);
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'ano' => $ano,
+            'ramo' => $ramo,
+            'destinos' => $destinos,
+            'valorlimite' => $valorlimite,
+            'artigo' => $artigo,
+            'centrocusto' => $centrocusto,
+            'recurso' => $recurso,
+            'comprador' => $comprador,
+            'situacao' => $situacao,
+            'empresa' => $empresa,
         ]);
     }
 

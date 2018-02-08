@@ -43,18 +43,44 @@ class ProcessoLicitatorioController extends Controller
 
     //Localiza os limites para a modalidade selecionada
     public function actionLimite() {
-                $out = [];
-                if (isset($_POST['depdrop_parents'])) {
-                    $parents = $_POST['depdrop_parents'];
-                    if ($parents != null) {
-                        $cat_id = $parents[0];
-                        $out = ProcessoLicitatorio::getLimiteSubCat($cat_id);
-                        echo Json::encode(['output'=>$out, 'selected'=>'']);
-                        return;
-                    }
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            if ($parents != null) {
+                $cat_id = $parents[0];
+                $param1 = null;
+                $param2 = null;
+                if (!empty($_POST['depdrop_params'])) {
+                    $params = $_POST['depdrop_params'];
+                    $param1 = $params[0]; // get the value of input-type-1
+                    $param2 = $params[1]; // get the value of input-type-2
                 }
+     
+                $out = ProcessoLicitatorio::getLimiteSubCat($cat_id, $param1, $param2); 
+                
+                $selected = ProcessoLicitatorio::getSumLimite($cat_id);
+                // the getDefaultSubCat function will query the database
+                // and return the default sub cat for the cat_id
+                
+                echo Json::encode(['output'=>$out, 'selected'=>$selected]);
+                return;
+            }
+        }
         echo Json::encode(['output'=>'', 'selected'=>'']);
     }
+    //     public function actionLimite() {
+    //             $out = [];
+    //             if (isset($_POST['depdrop_parents'])) {
+    //                 $parents = $_POST['depdrop_parents'];
+    //                 if ($parents != null) {
+    //                     $cat_id = $parents[0];
+    //                     $out = ProcessoLicitatorio::getLimiteSubCat($cat_id);
+    //                     echo Json::encode(['output'=>$out, 'selected'=>'']);
+    //                     return;
+    //                 }
+    //             }
+    //     echo Json::encode(['output'=>'', 'selected'=>'']);
+    // }
 
     //Localiza os dados dos Limites
     public function actionGetLimite($limiteId)
@@ -127,9 +153,6 @@ class ProcessoLicitatorioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-            $model->prolic_destino = implode(" / ",$model->prolic_destino);
-            $model->prolic_centrocusto = implode(" / ",$model->prolic_centrocusto);
-
         //Sequencia do cód. da modalidade de acordo com o tipo
         $incremento = 1;
         $query_id = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->where(['modalidade.id'=>$model->modalidadeValorlimite->modalidade_id])->all();
@@ -137,10 +160,11 @@ class ProcessoLicitatorioController extends Controller
                     $incremento = $value['prolic_sequenciamodal'];
                     $incremento++;
                 }
-             $model->prolic_sequenciamodal = $incremento;
-             $model->save();
-
-            return $this->redirect(['view', 'id' => $model->id]);
+            $model->prolic_sequenciamodal = $incremento;
+            if ($model->validate()) {
+                   $model->save();
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -184,17 +208,17 @@ class ProcessoLicitatorioController extends Controller
 
         $model->prolic_dataatualizacao    = date('Y-m-d');
         $model->prolic_usuarioatualizacao = $session['sess_nomeusuario'];
-        $model->prolic_destino = explode(" / ",$model->prolic_destino);
+        $model->prolic_destino     = explode(" / ",$model->prolic_destino);
         $model->prolic_centrocusto = explode(" / ",$model->prolic_centrocusto);
+        $model->prolic_empresa     = explode(" / ",$model->prolic_empresa);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
 
-            $model->prolic_destino = implode(" / ",$model->prolic_destino);
-            $model->prolic_centrocusto = implode(" / ",$model->prolic_centrocusto);
-
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->validate()) {
+                   $model->save();
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
-
         return $this->render('update', [
             'model' => $model,
             'ano' => $ano,

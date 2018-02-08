@@ -15,7 +15,7 @@ use app\models\base\Situacao;
 /* @var $searchModel app\models\processolicitatorio\ProcessoLicitatorioSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Acompanhmento de Processos Licitatórios';
+$this->title = 'Acompanhamento de Processos Licitatórios';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="processo-licitatorio-index">

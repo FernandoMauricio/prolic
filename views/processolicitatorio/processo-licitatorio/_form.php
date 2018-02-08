@@ -44,7 +44,7 @@ use faryshta\widgets\JqueryTagsInput;
                 ]);
             ?>
             </div>
-            <div class="col-md-2"><?= $form->field($model, 'prolic_codmxm')->textInput() ?></div>
+            <div class="col-md-2"><?= $form->field($model, 'prolic_codmxm')->textInput(['readonly' => !$model->isNewRecord]) ?></div>
             <div class="col-md-8">
                 <?php 
                     $options = ArrayHelper::map($destinos, 'uni_nomeabreviado', 'uni_nomeabreviado');
@@ -355,10 +355,10 @@ use faryshta\widgets\JqueryTagsInput;
         <div class="row">
             <div class="col-md-12">
                 <?php 
-                    $options = ArrayHelper::map($empresa, 'id', 'emp_descricao');
-                        echo $form->field($model, 'empresa_id')->widget(Select2::classname(), [
+                    $options = ArrayHelper::map($empresa, 'emp_descricao', 'emp_descricao');
+                        echo $form->field($model, 'prolic_empresa')->widget(Select2::classname(), [
                             'data' => $options,
-                            'options' => ['placeholder' => 'Informe a Empresa...'],
+                            'options' => ['placeholder' => 'Informe a Empresa...', 'multiple'=>true],
                             'pluginOptions' => [
                                 'allowClear' => true
                             ],

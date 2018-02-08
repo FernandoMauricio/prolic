@@ -17,7 +17,14 @@
         "php": ">=5.4.0",
         "yiisoft/yii2": "~2.0.5",
         "yiisoft/yii2-bootstrap": "~2.0.0",
-        "yiisoft/yii2-swiftmailer": "~2.0.0"
+        "yiisoft/yii2-swiftmailer": "~2.0.0",
+        "kartik-v/yii2-widgets": "*",
+        "kartik-v/yii2-grid": "@dev",
+        "kartik-v/yii2-money": "dev-master",
+        "kartik-v/yii2-number": "*",
+        "kartik-v/yii2-datecontrol": "dev-master",
+        "faryshta/yii2-jquery-tagsinput": "*",
+        "kartik-v/yii2-detail-view": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

@@ -14,6 +14,7 @@ use app\models\base\Recursos;
 use app\models\base\Comprador;
 use app\models\base\Situacao;
 use app\models\base\Empresa;
+use app\models\processolicitatorio\Observacoes;
 use app\models\processolicitatorio\ProcessoLicitatorio;
 use app\models\processolicitatorio\ProcessoLicitatorioSearch;
 use yii\web\Controller;
@@ -68,19 +69,6 @@ class ProcessoLicitatorioController extends Controller
         }
         echo Json::encode(['output'=>'', 'selected'=>'']);
     }
-    //     public function actionLimite() {
-    //             $out = [];
-    //             if (isset($_POST['depdrop_parents'])) {
-    //                 $parents = $_POST['depdrop_parents'];
-    //                 if ($parents != null) {
-    //                     $cat_id = $parents[0];
-    //                     $out = ProcessoLicitatorio::getLimiteSubCat($cat_id);
-    //                     echo Json::encode(['output'=>$out, 'selected'=>'']);
-    //                     return;
-    //                 }
-    //             }
-    //     echo Json::encode(['output'=>'', 'selected'=>'']);
-    // }
 
     //Localiza os dados dos Limites
     public function actionGetLimite($limiteId)
@@ -94,6 +82,26 @@ class ProcessoLicitatorioController extends Controller
     {
         $getSumLimite = ProcessoLicitatorio::getSumLimite($limiteId);
         echo Json::encode($getSumLimite);
+    }
+
+    public function actionObservacoes($id) 
+    {
+        $session = Yii::$app->session;
+
+        $model = new Observacoes();
+        $processolicitatorio = $this->findModel($id);
+
+        $model->processo_licitatorio_id = $processolicitatorio->id;
+        $model->obs_datacriacao         = date('Y-m-d');
+        $model->obs_usuariocriacao      = $session['sess_nomeusuario'];
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $processolicitatorio->id]);
+        }
+        return $this->renderAjax('observacoes/create', [
+            'model' => $model,
+            'processolicitatorio' => $processolicitatorio,
+        ]);
     }
 
     /**
@@ -121,6 +129,8 @@ class ProcessoLicitatorioController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);

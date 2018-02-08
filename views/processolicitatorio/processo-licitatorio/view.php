@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use kartik\detail\DetailView;
+use yii\bootstrap\Modal;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
@@ -23,14 +25,34 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+
+        <?= Html::button('<span class="glyphicon glyphicon-tags"> </span> Incluir Observação', ['value'=> Url::to(['processolicitatorio/processo-licitatorio/observacoes', 'id' => $model->id ]), 'class' => 'btn btn-primary', 'id'=>'modalButton']) ?>
     </p>
+
+    <?php
+        Modal::begin([
+            'header' => '<h3>Incluir Observação ' . '<small> Processo Licitatório '.$model->id.'</small></h3>',
+            'id' => 'modal',
+            'size' => 'modal-lg',
+            ]);
+
+        echo "<div id='modalContent'></div>";
+
+        Modal::end();
+    ?>
 
 <div class="panel panel-primary">
   <div class="panel-heading">
     <h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> DETALHES DO PROCESSO LICITATÓRIO</h3>
   </div>
-    <div class="panel-body">
-        <div class="row">
+    <div id="rootwizard" class="tabbable tabs-left">
+     <ul>
+       <li><a href="#tab1" data-toggle="tab"><span class="glyphicon glyphicon-file"></span> Processo Licitatório</a></li>
+       <li><a href="#tab2" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> Observações</a></li>
+     </ul>
+
+    <div class="tab-content"><br>
+       <div class="tab-pane" id="tab1">
 <?php
     $attributes=[
             [
@@ -282,7 +304,42 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
 
 ?>
+    </div>
+        <div class="tab-pane" id="tab2">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>Observação</th>
+                    <th>Usuário</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($model->observacoes as $observacao): ?>
+                <tr>
+                    <td><?= $observacao->obs_descricao ?></td>
+                    <td><?= $observacao->obs_usuariocriacao ?></td>
+                    <td><?= $observacao->obs_datacriacao ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
         </div>
+    </div>
     </div>
 </div>
 </div>
+
+
+            <!--          JS etapas dos formularios            -->
+<?php
+$script = <<< JS
+$(document).ready(function() {
+    $('#rootwizard').bootstrapWizard({'tabClass': 'nav nav-tabs'});
+});
+
+JS;
+$this->registerJs($script);
+?>
+
+<?php  $this->registerJsFile(Yii::$app->request->baseUrl.'/js/jquery.bootstrap.wizard.js', ['depends' => [\yii\web\JqueryAsset::className()]]); ?>

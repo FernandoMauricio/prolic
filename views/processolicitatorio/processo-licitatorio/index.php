@@ -78,16 +78,14 @@ $gridColumns = [
         ],
 
         'prolic_codmxm',
-        [
-            'attribute' => 'prolic_sequenciamodal',
-            'value'=>function ($model, $key, $index, $widget) { 
-                return $model->prolic_sequenciamodal . '/' . $model->ano->an_ano;
-            },
-        ],
+        // [
+        //     'attribute' => 'prolic_sequenciamodal',
+        //     'value'=>function ($model, $key, $index, $widget) { 
+        //         return $model->prolic_sequenciamodal . '/' . $model->ano->an_ano;
+        //     },
+        // ],
 
         'prolic_objeto:ntext',
-        'prolic_centrocusto:ntext',
-        'prolic_destino:ntext',
 
         [
             'attribute'=>'artigo_id', 
@@ -155,24 +153,6 @@ $gridColumns = [
     ];
  ?>
 
-<?php
-            //'prolic_cotacoes',
-            //'prolic_elementodespesa:ntext',
-            //'prolic_valorestimado',
-            //'prolic_valoraditivo',
-            //'prolic_valorefetivo',
-            //'prolic_datacertame',
-            //'prolic_datadevolucao',
-            //'prolic_datahomologacao',
-            //'prolic_motivo:ntext',
-            //'prolic_usuariocriacao',
-            //'prolic_datacriacao',
-            //'prolic_usuarioatualizacao',
-            //'prolic_dataatualizacao',
-?>
-
-
-
     <?php Pjax::begin(); ?>
 
     <?php 
@@ -188,7 +168,7 @@ $gridColumns = [
     'beforeHeader'=>[
         [
             'columns'=>[
-                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>13, 'class'=>'text-center warning']], 
+                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>10, 'class'=>'text-center warning']], 
                 ['content'=>'Área de Ações', 'options'=>['colspan'=>1, 'class'=>'text-center warning']], 
             ],
         ]

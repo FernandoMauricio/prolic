@@ -42,6 +42,7 @@ use app\models\base\Empresa;
  * @property string $prolic_usuarioatualizacao
  * @property string $prolic_dataatualizacao
  *
+ * @property Observacoes[] $observacoes
  * @property Ano $ano
  * @property Artigo $artigo
  * @property Comprador $comprador
@@ -173,6 +174,14 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'ciclototal' => 'Ciclo Total',
             'ciclocertame' => 'Ciclo Certame',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getObservacoes()
+    {
+        return $this->hasMany(Observacoes::className(), ['processo_licitatorio_id' => 'id']);
     }
 
     /**

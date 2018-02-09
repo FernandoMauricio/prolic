@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use kartik\detail\DetailView;
 
 ?>
+<link href="../web/css/print-style.css" rel="stylesheet">
+
 <div class="capa-padrao-view">
 
 <table class="table table-bordered">
@@ -61,7 +63,7 @@ use kartik\detail\DetailView;
       <td colspan="2"></td>
     </tr>
     <tr>
-      <td colspan="7" style="height: 450px"></td>
+      <td colspan="7" style="height: 1000px"></td>
     </tr>
   </tbody>
 </table>

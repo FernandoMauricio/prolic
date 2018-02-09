@@ -9,7 +9,7 @@ use yii\helpers\Url;
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Processo Licitatorios', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Listagem de Processo Licitatórios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="processo-licitatorio-view">
@@ -17,16 +17,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('<span class="glyphicon glyphicon-arrow-left"></span> Retornar', ['index'], ['class' => 'btn btn-default']) ?>
+        <?= Html::a('Atualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::button('<span class="glyphicon glyphicon-tags"> </span> Incluir Observação', ['value'=> Url::to(['processolicitatorio/processo-licitatorio/observacoes', 'id' => $model->id ]), 'class' => 'btn btn-success', 'id'=>'modalButton']) ?>
+        <?= Html::button('<span class="glyphicon glyphicon-print"> </span> Gerar Capa', ['value'=> Url::to(['processolicitatorio/capas/gerar-relatorio', 'id' => $model->id ]), 'class' => 'btn btn-warning pull-right', 'id'=>'modalButton2']) ?>
 
-        <?= Html::button('<span class="glyphicon glyphicon-tags"> </span> Incluir Observação', ['value'=> Url::to(['processolicitatorio/processo-licitatorio/observacoes', 'id' => $model->id ]), 'class' => 'btn btn-primary', 'id'=>'modalButton']) ?>
     </p>
 
     <?php
@@ -37,6 +32,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ]);
 
         echo "<div id='modalContent'></div>";
+
+        Modal::end();
+    ?>
+
+    <?php
+        Modal::begin([
+            'header' => '<h3>Imprimir Capa ' . '<small> Processo Licitatório '.$model->id.'</small></h3>',
+            'id' => 'modal2',
+            'size' => 'modal-lg',
+            ]);
+
+        echo "<div id='modalContent2'></div>";
 
         Modal::end();
     ?>

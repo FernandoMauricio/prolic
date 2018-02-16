@@ -4,6 +4,15 @@
     border: 2px solid #333; 
 }
 
+/*Logo Fecomercio e Senac*/
+body > div.wrap > div > div > table > tbody > tr:nth-child(1) > td.logo-esquerda {
+  border-right-style: hidden;
+}
+
+body > div.wrap > div > div > table > tbody > tr:nth-child(1) > td.logo-direita { 
+  border-left-style: hidden;
+}
+
 @media print {
   *,
   *:before,
@@ -74,5 +83,14 @@
   .table-bordered th,
   .table-bordered td {
     border: 2px solid #333 !important;
+  }
+  .table-bordered > tbody > tr:nth-child(1) > td.logo-esquerda {
+    border-right-style: hidden !important;
+  }
+  .table-bordered > tbody > tr:nth-child(1) > td.logo-direita {
+   border-left-style: hidden !important;
+  }
+  .table-bordered > tbody > tr:nth-child(12) > td:nth-child(1) {
+    border-right-style: hidden !important;
   }
 }

@@ -115,6 +115,30 @@ class ProcessoLicitatorioController extends Controller
         $searchModel = new ProcessoLicitatorioSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        if (Yii::$app->request->post('hasEditable')) {
+            // instantiate your ProcessoLicitatorio model for saving
+            $processoLicitatorio = Yii::$app->request->post('editableKey');
+            $model = ProcessoLicitatorio::findOne($processoLicitatorio);
+
+            // store a default json response as desired by editable
+            $out = Json::encode(['output'=>'', 'message'=>'']);
+
+            $posted = current($_POST['ProcessoLicitatorio']);
+            $post = ['ProcessoLicitatorio' => $posted];
+
+            // load model like any single model validation
+            if ($model->load($post)) {
+                // can save model or do something before saving model
+                $model->save(false);
+                $output = '';
+                $out = Json::encode(['output'=>$output, 'message'=>'']);
+            }
+            // return ajax json encoded response and exit
+            echo $out;
+            Yii::$app->session->setFlash('info', '<b>SUCESSO!</b> Processo Licitatório alterado para <b>' .$model->situacao->sit_descricao.'!</b>');
+            return $this->redirect(['index']);
+        }
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -162,6 +186,10 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_usuariocriacao = $session['sess_nomeusuario'];
 
         if ($model->load(Yii::$app->request->post())) {
+        //Junta todos destinos, centros de custos e empresas em uma linha
+        $model->prolic_destino     = implode(', ', $model->prolic_destino);
+        $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto);
+        $model->prolic_empresa     = implode(', ', $model->prolic_empresa);
 
         //Sequencia do cód. da modalidade de acordo com o tipo
         $incremento = 1;
@@ -218,17 +246,22 @@ class ProcessoLicitatorioController extends Controller
 
         $model->prolic_dataatualizacao    = date('Y-m-d');
         $model->prolic_usuarioatualizacao = $session['sess_nomeusuario'];
-        $model->prolic_destino     = explode(" / ",$model->prolic_destino);
-        $model->prolic_centrocusto = explode(" / ",$model->prolic_centrocusto);
-        $model->prolic_empresa     = explode(" / ",$model->prolic_empresa);
+        $model->prolic_destino     = explode(', ', $model->prolic_destino);
+        $model->prolic_centrocusto = explode(', ', $model->prolic_centrocusto);
+        $model->prolic_empresa     = explode(', ', $model->prolic_empresa);
 
         if ($model->load(Yii::$app->request->post())) {
+        //Junta todos destinos, centros de custos e empresas em uma linha
+        $model->prolic_destino     = implode(', ', $model->prolic_destino);
+        $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto);
+        $model->prolic_empresa     = implode(', ', $model->prolic_empresa);
 
             if ($model->validate()) {
                    $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
+        
         return $this->render('update', [
             'model' => $model,
             'ano' => $ano,

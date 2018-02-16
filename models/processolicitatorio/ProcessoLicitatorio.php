@@ -101,14 +101,6 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
         return $scenarios;
     }
 
-    //Junta todos destinos, centros de custos e empresas em uma linha
-    public function beforeSave($insert) { 
-        $this->prolic_destino     = implode(" / ", $this->prolic_destino);
-        $this->prolic_centrocusto = implode(" / ", $this->prolic_centrocusto);
-        $this->prolic_empresa     = implode(" / ", $this->prolic_empresa);    
-        return parent::beforeSave($insert);
-    }
-
     //Busca dados dos valores limites de cada modalidade
     public static function getLimiteSubCat($cat_id) {
         $data = ModalidadeValorlimite::find()
@@ -133,6 +125,13 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             $data['valor_saldo'] = $data['valor_limite'];
             return $data;
         }
+    }
+
+    public function getUnidades($prolic_destino)
+    {
+        $sql = "SELECT GROUP_CONCAT(uni_nomeabreviado SEPARATOR ', ') AS uni_nomeabreviado FROM unidade_uni WHERE uni_codunidade IN($prolic_destino)";
+        $return = Unidades::findBySQL($sql)->one();
+        return $return['uni_nomeabreviado'];
     }
 
     /**

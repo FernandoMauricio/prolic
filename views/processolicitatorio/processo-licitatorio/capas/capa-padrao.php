@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\detail\DetailView;
+use app\models\processolicitatorio\ProcessoLicitatorio;
 
 ?>
 <link href="../web/css/print-style.css" rel="stylesheet">
@@ -37,7 +38,7 @@ use kartik\detail\DetailView;
     </tr>
     <tr>
       <th>DESTINOS</th>
-      <td colspan="6"><?= $model->prolic_destino ?></td>
+      <td colspan="6"><?= ProcessoLicitatorio::getUnidades($model->prolic_destino) ?></td>
     </tr>
     <tr>
       <th>EMPRESA(S) VENCEDORA(S)</th>

@@ -5,6 +5,8 @@ use kartik\detail\DetailView;
 use yii\bootstrap\Modal;
 use yii\helpers\Url;
 
+use app\models\processolicitatorio\ProcessoLicitatorio;
+
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
 
@@ -102,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute'=>'prolic_destino',
                         'format' => 'ntext',
-                        'value'=>$model->prolic_destino,
+                        'value'=> ProcessoLicitatorio::getUnidades($model->prolic_destino),
                         'type'=>DetailView::INPUT_TEXTAREA, 
                         'options'=>['rows'=>4]
                     ]

@@ -47,7 +47,7 @@ use faryshta\widgets\JqueryTagsInput;
             <div class="col-md-2"><?= $form->field($model, 'prolic_codmxm')->textInput(['readonly' => !$model->isNewRecord]) ?></div>
             <div class="col-md-8">
                 <?php 
-                    $options = ArrayHelper::map($destinos, 'uni_nomeabreviado', 'uni_nomeabreviado');
+                    $options = ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado');
                         echo $form->field($model, 'prolic_destino')->widget(Select2::classname(), [
                             'data' => $options,
                             'options' => ['placeholder' => 'Informe os Destinos...', 'multiple'=>true],

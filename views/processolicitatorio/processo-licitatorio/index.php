@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\ArrayHelper;
+use kartik\editable\Editable;
 
 use app\models\base\Ano;
 use app\models\base\ModalidadeValorlimite;
@@ -116,17 +117,26 @@ $gridColumns = [
         ],
 
         [
-            'attribute'=>'situacao_id', 
-            'width'=>'250px',
+            'class' => 'kartik\grid\EditableColumn',
+            'attribute' => 'situacao_id',
             'value'=>function ($model, $key, $index, $widget) { 
                 return $model->situacao->sit_descricao;
             },
+            'readonly'=>function($model, $key, $index, $widget) {
+                return (!$model->situacao_id); // do not allow editing of inactive records
+            },
             'filterType'=>GridView::FILTER_SELECT2,
-            'filter'=>ArrayHelper::map(Situacao::find()->where(['sit_status' => 1])->orderBy('id')->asArray()->all(), 'id', 'sit_descricao'), 
+            'filter'=>ArrayHelper::map(Situacao::find()->where(['sit_status' => 1])->orderBy('id')->asArray()->all(), 'id', 'sit_descricao'),
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],
-            'filterInputOptions'=>['placeholder'=>'Situação...'],
+                'filterInputOptions'=>['placeholder'=>'Situação...'],
+            //CAIXA DE ALTERAÇÕES DA SITUAÇÃO
+            'editableOptions' => [
+                'header' => 'Situação',
+                'data'=>ArrayHelper::map(Situacao::find()->where(['sit_status' => 1])->orderBy('id')->asArray()->all(), 'id', 'sit_descricao'),
+                'inputType' => Editable::INPUT_DROPDOWN_LIST,
+            ],          
         ],
 
         [

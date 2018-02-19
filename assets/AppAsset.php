@@ -25,6 +25,7 @@ class AppAsset extends AssetBundle
     public $js = [
         'js/main.js',
         'js/jquery.bootstrap.wizard.js',
+        'js/processolicitatorio.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

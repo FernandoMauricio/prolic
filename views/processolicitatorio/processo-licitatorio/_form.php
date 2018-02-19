@@ -22,7 +22,7 @@ use faryshta\widgets\JqueryTagsInput;
 
 <div class="panel panel-primary">
       <div class="panel-heading">
-        <h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> Novo Valor Limite</h3>
+        <h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> Novo Processo Licitatório</h3>
       </div>
         <table class="table table-condensed table-hover">
           <thead>
@@ -96,9 +96,8 @@ use faryshta\widgets\JqueryTagsInput;
 
                                            $divPanelBody.find("input").eq(3).val(data.valor_limite);
                                            $divPanelBody.find("input").eq(5).val(data.valor_limite);
-
-
                                         });
+
                                     $.getJSON( "'.Url::toRoute('/processolicitatorio/processo-licitatorio/get-sum-limite').'", { limiteId: $(this).val() } )
                                     .done(function( data ) {
 
@@ -109,9 +108,6 @@ use faryshta\widgets\JqueryTagsInput;
                                            $divPanelBody.find("input").eq(9).val(data.valor_saldo);
                                            $divPanelBody.find("input").eq(11).val(data.valor_saldo);
 
-                                           $divPanelBody.find("input").eq(10).val(1);
-                                           $divPanelBody.find("input").eq(1331).val(2);
-                                           $divPanelBody.find("input").eq(13).val(4);
                                         });
                                     '
                                 ]]);
@@ -197,50 +193,18 @@ use faryshta\widgets\JqueryTagsInput;
                             'unmaskAsNumber' => true,
                         ],
                         'disabled' => true,
-                    ])                
+                    ])
                 ?>
                 <?= $form->field($model, 'valor_saldo_hidden')->hiddenInput()->label(false); ?>
             </div>
-            <div class="col-md-2">
-                <?php 
-                    echo $form->field($model, 'prolic_valorestimado')->widget(NumberControl::classname(), [
-                        'maskedInputOptions' => [
-                            'prefix' => 'R$ ',
-                            'alias' => 'numeric',
-                            'digits' => 2,
-                            'digitsOptional' => false,
-                            'groupSeparator' => '.',
-                            'radixPoint' => ',',
-                            'autoGroup' => true,
-                            'autoUnmask' => true,
-                            'unmaskAsNumber' => true,
-                        ],
-                    ])                
-                ?>
-            </div>
-            <div class="col-md-2">
-                <?php 
-                    echo $form->field($model, 'prolic_valoraditivo')->widget(NumberControl::classname(), [
-                        'maskedInputOptions' => [
-                            'prefix' => 'R$ ',
-                            'alias' => 'numeric',
-                            'digits' => 2,
-                            'digitsOptional' => false,
-                            'groupSeparator' => '.',
-                            'radixPoint' => ',',
-                            'autoGroup' => true,
-                            'autoUnmask' => true,
-                            'unmaskAsNumber' => true,
-                        ],
-                    ])                
-                ?>
-            </div>
+            <div class="col-md-2"><?= $form->field($model, 'prolic_valorestimado')->textInput() ?></div>
+            <div class="col-md-2"><?= $form->field($model, 'prolic_valoraditivo')->textInput() ?></div>
             <div class="col-md-2">
                 <?php 
                     echo $form->field($model, 'prolic_valorefetivo')->widget(NumberControl::classname(), [
                         'maskedInputOptions' => [
                             'prefix' => 'R$ ',
-                            'alias' => 'numeric',
+                            'alias' => 'currency',
                             'digits' => 2,
                             'digitsOptional' => false,
                             'groupSeparator' => '.',
@@ -251,6 +215,7 @@ use faryshta\widgets\JqueryTagsInput;
                         ],
                     ])                
                 ?>
+                <?= $form->field($model, 'prolic_valorefetivo_hidden')->hiddenInput()->label(false); ?>
             </div>
         </div>
 
@@ -367,10 +332,15 @@ use faryshta\widgets\JqueryTagsInput;
             </div>
         </div>
 
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
+    </div>
+</div>
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::className()]]); ?>

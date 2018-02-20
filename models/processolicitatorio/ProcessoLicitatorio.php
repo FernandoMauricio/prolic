@@ -171,6 +171,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'modalidade' => 'Modalidade',
             'ramo' => 'Ramo',
             'valor_limite_hidden' => 'Valor Limite',
+            'valor_limite_apurado' => 'Valor Apurado',
             'valor_limite_apurado_hidden' => 'Valor Apurado',
             'prolic_valorefetivo_hidden' => 'Valor Estimado',
             'valor_saldo_hidden' => 'Saldo',

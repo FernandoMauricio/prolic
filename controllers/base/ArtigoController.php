@@ -44,6 +44,26 @@ class ArtigoController extends Controller
         ]);
     }
 
+    public function actionHomologar($id)
+    {
+        $session = Yii::$app->session;
+        $model = $this->findModel($id);
+
+        if($model->art_status == 0) { //Cadastros Inativados
+            Yii::$app->session->setFlash('danger', '<b>ERRO! </b>Não é possível homologar um cadastro inativo!</b>');
+            return $this->redirect(['index']);
+            }else{
+            //Homologa o limite da modalidade
+            $connection = Yii::$app->db;
+            $connection->createCommand()
+            ->update('artigo', ['art_homologacaousuario' => $session['sess_nomeusuario'], 'art_homologacaodata' => date('Y-m-d')], ['id' => $model->id])
+            ->execute();
+
+            Yii::$app->session->setFlash('success', '<b>SUCESSO!</b> Artigo:<b> '.$model->art_descricao.'</b> foi HOMOLOGADO!</b>');
+        }
+        return $this->redirect(['index']);
+    }
+
     /**
      * Creates a new Artigo model.
      * If creation is successful, the browser will be redirected to the 'view' page.

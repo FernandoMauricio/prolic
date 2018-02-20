@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\base\Artigo */
@@ -13,6 +14,16 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'art_descricao')->textInput(['readonly' => !$model->isNewRecord]) ?>
+
+    <?php
+        echo $form->field($model, 'art_tipo')->widget(Select2::classname(), [
+        'data' =>  ['Normal' => 'Normal', 'Especial' => 'Especial'],
+        'options' => ['placeholder' => 'Selecione o tipo...'],
+        'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ]);
+    ?>
 
     <?= $form->field($model, 'art_status')->radioList(['1' => 'Ativo', '0' => 'Inativo']) ?>
 

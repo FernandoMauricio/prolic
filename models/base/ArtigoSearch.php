@@ -19,7 +19,7 @@ class ArtigoSearch extends Artigo
     {
         return [
             [['id', 'art_status'], 'integer'],
-            [['art_descricao'], 'safe'],
+            [['art_tipo', 'art_descricao', 'art_homologacaousuario', 'art_homologacaodata'], 'safe'],
         ];
     }
 
@@ -63,7 +63,10 @@ class ArtigoSearch extends Artigo
             'art_status' => $this->art_status,
         ]);
 
-        $query->andFilterWhere(['like', 'art_descricao', $this->art_descricao]);
+        $query->andFilterWhere(['like', 'art_descricao', $this->art_descricao])
+              ->andFilterWhere(['like', 'art_homologacaousuario', $this->art_tipo])
+              ->andFilterWhere(['like', 'art_homologacaodata', $this->art_tipo])
+              ->andFilterWhere(['like', 'art_tipo', $this->art_tipo]);
 
         return $dataProvider;
     }

@@ -31,7 +31,9 @@ class Artigo extends \yii\db\ActiveRecord
         return [
             [['art_descricao', 'art_status'], 'required'],
             [['art_status'], 'integer'],
-            [['art_descricao'], 'string', 'max' => 255],
+            [['art_homologacaodata'], 'safe'],
+            [['art_descricao', 'art_homologacaousuario'], 'string', 'max' => 255],
+            [['art_tipo'], 'string', 'max' => 25],
         ];
     }
 
@@ -43,6 +45,9 @@ class Artigo extends \yii\db\ActiveRecord
         return [
             'id' => 'Cód.',
             'art_descricao' => 'Descrição',
+            'art_tipo' => 'Tipo',
+            'art_homologacaousuario' => 'Usuário Homologação',
+            'art_homologacaodata' => 'Data Homologação',
             'art_status' => 'Status',
         ];
     }

@@ -14,6 +14,7 @@ use app\models\base\Recursos;
 use app\models\base\Comprador;
 use app\models\base\Situacao;
 use app\models\base\Empresa;
+use app\models\base\Emailusuario;
 use app\models\processolicitatorio\Observacoes;
 use app\models\processolicitatorio\ProcessoLicitatorio;
 use app\models\processolicitatorio\ProcessoLicitatorioSearch;
@@ -135,8 +136,27 @@ class ProcessoLicitatorioController extends Controller
             }
             // return ajax json encoded response and exit
             echo $out;
-            Yii::$app->session->setFlash('info', '<b>SUCESSO!</b> Processo Licitatório alterado para <b>' .$model->situacao->sit_descricao.'!</b>');
-            return $this->redirect(['index']);
+
+            //ENVIANDO EMAIL PARA O GERENTE INFORMANDO SOBRE O PROCESSO
+            $sql_email = "SELECT emus_email FROM emailusuario_emus, colaborador_col, responsavelambiente_ream WHERE ream_codunidade IN('$model->prolic_destino') AND ream_codcolaborador = col_codcolaborador AND col_codusuario = emus_codusuario";
+         
+            $email_solicitacao = Emailusuario::findBySql($sql_email)->all(); 
+                foreach ($email_solicitacao as $email) {
+                    Yii::$app->mailer->compose()
+                    ->setFrom(['processolicitatorio@am.senac.br' => 'Gerência de Material'])
+                    ->setTo($email['emus_email'])
+                    ->setSubject('Processo Licitatório '.$model->id.' - ' . $model->situacao->sit_descricao)
+                    ->setTextBody('Processo Licitatório: '.$model->id.' está com a situação '.$model->situacao->sit_descricao.' ')
+                    ->setHtmlBody('
+                       <p> Prezado(a) Gerente,</p>
+                       <p> Existe um Processo Licitatório de <b>código: '.$model->id.'</b> com a situação '.$model->situacao->sit_descricao.'.</p>
+                       <p> Por favor, não responda este e-mail. Acesse http://portalsenac.am.senac.br para analisar o Processo Licitatório.</p>
+                       <p> Atenciosamente, <br> Gerência de Material - Senac AM.</p>
+                       ')
+                    ->send();
+               } 
+               Yii::$app->session->setFlash('info', '<b>SUCESSO!</b> Processo Licitatório alterado para <b>' .$model->situacao->sit_descricao.'!</b>');
+               return $this->redirect(['index']);
         }
 
         return $this->render('index', [

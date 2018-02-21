@@ -206,6 +206,10 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_usuariocriacao = $session['sess_nomeusuario'];
 
         if ($model->load(Yii::$app->request->post())) {
+
+        //Somatória dos valores
+        $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
+
         //Junta todos destinos, centros de custos e empresas em uma linha
         is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;
         is_array($model->prolic_centrocusto) ? $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto) : null;
@@ -271,6 +275,10 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_empresa     = explode(', ', $model->prolic_empresa);
 
         if ($model->load(Yii::$app->request->post())) {
+
+        //Somatória dos valores
+        $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
+        
         //Junta todos destinos, centros de custos e empresas em uma linha
         is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;
         is_array($model->prolic_centrocusto) ? $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto) : null;

@@ -134,7 +134,11 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
         $data = ProcessoLicitatorio::find()
         ->joinWith('modalidadeValorlimite', false, 'LEFT JOIN')
         ->where(['modalidade_valorlimite.id'=>$cat_id])
-        ->select(['valor_limite', 'sum(prolic_valorestimado) AS valor_limite_apurado', 'valor_limite - sum(prolic_valorestimado) AS valor_saldo'])->asArray()->one();
+        ->select([
+            'valor_limite', 
+            'sum(prolic_valorestimado + prolic_valoraditivo) AS valor_limite_apurado', 
+            'valor_limite - sum(prolic_valorestimado + prolic_valoraditivo) AS valor_saldo'
+        ])->asArray()->one();
 
         if($data['valor_limite_apurado'] != NULL) {
         return $data;

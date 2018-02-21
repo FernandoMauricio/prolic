@@ -90,11 +90,27 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [['modalidade_valorlimite_id'], 'exist', 'skipOnError' => true, 'targetClass' => ModalidadeValorlimite::className(), 'targetAttribute' => ['modalidade_valorlimite_id' => 'id']],
             [['recursos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Recursos::className(), 'targetAttribute' => ['recursos_id' => 'id']],
             [['situacao_id'], 'exist', 'skipOnError' => true, 'targetClass' => Situacao::className(), 'targetAttribute' => ['situacao_id' => 'id']],
-            ['prolic_valorestimado', 'compare',  'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number'],
-            ['prolic_valorestimado', 'compare',  'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number'],
-            ['prolic_valorefetivo', 'compare',  'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number'],
-            ['prolic_valorefetivo', 'compare',  'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number'],
             ['prolic_codmxm', 'unique', 'on' => 'insert'],
+            ['prolic_valorestimado', 'compare', 'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
+                        return $model->artigo->art_tipo == 'Valor';                 
+                    }, 'whenClient' => "function (attribute, value) {
+                return $('#processolicitatorio-artigo_id').val() == 'Valor';
+            }"],
+            ['prolic_valorestimado', 'compare', 'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
+                        return $model->artigo->art_tipo == 'Valor';                 
+                    }, 'whenClient' => "function (attribute, value) {
+                return $('#processolicitatorio-artigo_id').val() == 'Valor';
+            }"],
+            ['prolic_valoraditivo', 'compare', 'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
+                        return $model->artigo->art_tipo == 'Valor';                 
+                    }, 'whenClient' => "function (attribute, value) {
+                return $('#processolicitatorio-artigo_id').val() == 'Valor';
+            }"],
+            ['prolic_valoraditivo', 'compare', 'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
+                        return $model->artigo->art_tipo == 'Valor';                 
+                    }, 'whenClient' => "function (attribute, value) {
+                return $('#processolicitatorio-artigo_id').val() == 'Valor';
+            }"],
         ];
     }
 
@@ -168,6 +184,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'prolic_datacriacao' => 'Data Criação',
             'prolic_usuarioatualizacao' => 'Usuario Atualização',
             'prolic_dataatualizacao' => 'Data Atualização',
+            'prolic_empresa' => 'Empresa',
             'modalidade' => 'Modalidade',
             'ramo' => 'Ramo',
             'valor_limite_hidden' => 'Valor Limite',

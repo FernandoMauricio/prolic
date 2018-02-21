@@ -143,7 +143,7 @@ class ProcessoLicitatorioController extends Controller
             $email_solicitacao = Emailusuario::findBySql($sql_email)->all(); 
                 foreach ($email_solicitacao as $email) {
                     Yii::$app->mailer->compose()
-                    ->setFrom(['processolicitatorio@am.senac.br' => 'Gerência de Material'])
+                    ->setFrom(['no-reply@am.senac.br' => 'Gerência de Material'])
                     ->setTo($email['emus_email'])
                     ->setSubject('Processo Licitatório '.$model->id.' - ' . $model->situacao->sit_descricao)
                     ->setTextBody('Processo Licitatório: '.$model->id.' está com a situação '.$model->situacao->sit_descricao.' ')
@@ -195,7 +195,7 @@ class ProcessoLicitatorioController extends Controller
         $ramo        = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
         $destinos    = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
         $valorlimite = ModalidadeValorlimite::find()->where(['status' => 1])->andWhere(['!=','homologacao_usuario', ''])->all();
-        $artigo      = Artigo::find()->where(['art_status' => 1])->andWhere(['!=','art_homologacaousuario', ''])->orderBy('art_descricao')->all();
+        $artigo      = Artigo::find()->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])->andWhere(['!=','art_homologacaousuario', ''])->orderBy('art_descricao')->all();
         $centrocusto = Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all();
         $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
         $comprador   = Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all();
@@ -207,9 +207,9 @@ class ProcessoLicitatorioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
         //Junta todos destinos, centros de custos e empresas em uma linha
-        $model->prolic_destino     = implode(', ', $model->prolic_destino);
-        $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto);
-        $model->prolic_empresa     = implode(', ', $model->prolic_empresa);
+        is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;
+        is_array($model->prolic_centrocusto) ? $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto) : null;
+        is_array($model->prolic_empresa) ? $model->prolic_empresa = implode(', ', $model->prolic_empresa) : null;
 
         //Sequencia do cód. da modalidade de acordo com o tipo
         $incremento = 1;
@@ -225,7 +225,7 @@ class ProcessoLicitatorioController extends Controller
             }
         }
 
-        return $this->render('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
             'ano' => $ano,
             'ramo' => $ramo,
@@ -257,7 +257,7 @@ class ProcessoLicitatorioController extends Controller
         $ramo        = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
         $destinos    = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
         $valorlimite = ModalidadeValorlimite::find()->where(['status' => 1])->andWhere(['!=','homologacao_usuario', ''])->all();
-        $artigo      = Artigo::find()->where(['art_status' => 1])->andWhere(['!=','art_homologacaousuario', ''])->orderBy('art_descricao')->all();
+        $artigo      = Artigo::find()->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])->andWhere(['!=','art_homologacaousuario', ''])->orderBy('art_descricao')->all();
         $centrocusto = Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all();
         $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
         $comprador   = Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all();
@@ -272,9 +272,9 @@ class ProcessoLicitatorioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
         //Junta todos destinos, centros de custos e empresas em uma linha
-        $model->prolic_destino     = implode(', ', $model->prolic_destino);
-        $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto);
-        $model->prolic_empresa     = implode(', ', $model->prolic_empresa);
+        is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;
+        is_array($model->prolic_centrocusto) ? $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto) : null;
+        is_array($model->prolic_empresa) ? $model->prolic_empresa = implode(', ', $model->prolic_empresa) : null;
 
             if ($model->validate()) {
                    $model->save();

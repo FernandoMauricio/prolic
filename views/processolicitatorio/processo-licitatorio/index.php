@@ -4,7 +4,9 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use kartik\editable\Editable;
+use yii\bootstrap\Modal;
 
 use app\models\base\Ano;
 use app\models\base\ModalidadeValorlimite;
@@ -25,8 +27,18 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Novo Processo Licitatório', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::button('Novo Processo Licitatório', ['value'=> Url::to(['processolicitatorio/processo-licitatorio/create']), 'class' => 'btn btn-success', 'id'=>'modalButton']) ?>
     </p>
+
+<?php
+    Modal::begin([
+        'header' => '<h3>Novo Processo Licitatório</h3>',
+        'id' => 'modal',
+        'size' => 'modal-lg',
+        ]);
+    echo "<div id='modalContent'></div>";
+    Modal::end();
+?>
 
 <?php
 
@@ -92,7 +104,7 @@ $gridColumns = [
             'attribute'=>'artigo_id', 
             'width'=>'250px',
             'value'=>function ($model, $key, $index, $widget) { 
-                return $model->artigo->art_descricao;
+                return '('.$model->artigo->art_tipo.') - ' . $model->artigo->art_descricao;
             },
             'filterType'=>GridView::FILTER_SELECT2,
             'filter'=>ArrayHelper::map(Artigo::find()->where(['art_status' => 1])->orderBy('id')->asArray()->all(), 'id', 'art_descricao'), 

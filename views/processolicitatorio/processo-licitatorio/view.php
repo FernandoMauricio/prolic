@@ -177,6 +177,17 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'columns' => [
                     [
+                        'label' => 'Empresa(s)',
+                        'attribute'=>'prolic_empresa',
+                        'value'=>$model->prolic_empresa,
+                        'displayOnly'=>true,
+                    ]
+                ],
+            ],
+
+            [
+                'columns' => [
+                    [
                         'attribute'=>'prolic_motivo',
                         'format' => 'ntext',
                         'value'=>$model->prolic_motivo,

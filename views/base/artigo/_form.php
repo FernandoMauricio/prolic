@@ -17,7 +17,7 @@ use kartik\select2\Select2;
 
     <?php
         echo $form->field($model, 'art_tipo')->widget(Select2::classname(), [
-        'data' =>  ['Normal' => 'Normal', 'Especial' => 'Especial'],
+        'data' =>  ['Valor' => 'Valor', 'Situação' => 'Situação'],
         'options' => ['placeholder' => 'Selecione o tipo...'],
         'pluginOptions' => [
                 'allowClear' => true

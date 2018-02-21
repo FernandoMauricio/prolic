@@ -20,6 +20,8 @@ use faryshta\widgets\JqueryTagsInput;
 
     <?php $form = ActiveForm::begin(); ?>
 
+<?php echo $form->errorSummary($model); ?>
+
 <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> Novo Processo Licitatório</h3>
@@ -197,8 +199,37 @@ use faryshta\widgets\JqueryTagsInput;
                 ?>
                 <?= $form->field($model, 'valor_saldo_hidden')->hiddenInput()->label(false); ?>
             </div>
-            <div class="col-md-2"><?= $form->field($model, 'prolic_valorestimado')->textInput() ?></div>
-            <div class="col-md-2"><?= $form->field($model, 'prolic_valoraditivo')->textInput() ?></div>
+            <div class="col-md-2">
+                <?= $form->field($model, 'prolic_valorestimado')->widget(NumberControl::classname(), [
+                        'maskedInputOptions' => [
+                            'prefix' => 'R$ ',
+                            'alias' => 'currency',
+                            'digits' => 2,
+                            'digitsOptional' => false,
+                            'groupSeparator' => '.',
+                            'radixPoint' => ',',
+                            'autoGroup' => true,
+                            'autoUnmask' => true,
+                            'unmaskAsNumber' => true,
+                        ],
+                    ])                
+                ?>
+            </div>
+            <div class="col-md-2">
+                <?= $form->field($model, 'prolic_valoraditivo')->widget(NumberControl::classname(), [
+                        'maskedInputOptions' => [
+                            'prefix' => 'R$ ',
+                            'alias' => 'currency',
+                            'digits' => 2,
+                            'digitsOptional' => false,
+                            'groupSeparator' => '.',
+                            'radixPoint' => ',',
+                            'autoGroup' => true,
+                            'autoUnmask' => true,
+                            'unmaskAsNumber' => true,
+                        ],
+                    ])                
+                ?></div>
             <div class="col-md-2">
                 <?php 
                     echo $form->field($model, 'prolic_valorefetivo')->widget(NumberControl::classname(), [
@@ -213,7 +244,7 @@ use faryshta\widgets\JqueryTagsInput;
                             'autoUnmask' => true,
                             'unmaskAsNumber' => true,
                         ],
-                    ])                
+                    ])                 
                 ?>
                 <?= $form->field($model, 'prolic_valorefetivo_hidden')->hiddenInput()->label(false); ?>
             </div>
@@ -235,7 +266,6 @@ use faryshta\widgets\JqueryTagsInput;
             </div>
             <div class="col-md-3">
                 <?php 
-                    // with ActiveForm
                     echo $form->field($model, 'prolic_elementodespesa')->widget(JqueryTagsInput::className(), [
                          'clientOptions' => [
                             'defaultText' => '',

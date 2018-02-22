@@ -60,7 +60,7 @@ class ProcessoLicitatorioController extends Controller
      
                 $out = ProcessoLicitatorio::getLimiteSubCat($cat_id, $param1, $param2); 
                 
-                $selected = ProcessoLicitatorio::getSumLimite($cat_id);
+                $selected = ProcessoLicitatorio::getSumLimite($cat_id, $param1);
                 // the getDefaultSubCat function will query the database
                 // and return the default sub cat for the cat_id
                 
@@ -79,9 +79,9 @@ class ProcessoLicitatorioController extends Controller
     }
 
     //Localiza a somatório dos Limites
-    public function actionGetSumLimite($limiteId)
+    public function actionGetSumLimite($limiteId, $processo)
     {
-        $getSumLimite = ProcessoLicitatorio::getSumLimite($limiteId);
+        $getSumLimite = ProcessoLicitatorio::getSumLimite($limiteId, $processo);
         echo Json::encode($getSumLimite);
     }
 

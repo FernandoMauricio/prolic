@@ -100,7 +100,7 @@ use faryshta\widgets\JqueryTagsInput;
                                            $divPanelBody.find("input").eq(5).val(data.valor_limite);
                                         });
 
-                                    $.getJSON( "'.Url::toRoute('/processolicitatorio/processo-licitatorio/get-sum-limite').'", { limiteId: $(this).val() } )
+                                    $.getJSON( "'.Url::toRoute('/processolicitatorio/processo-licitatorio/get-sum-limite').'", { limiteId: $(this).val(), processo: '.$model->id.' } )
                                     .done(function( data ) {
 
                                            var $divPanelBody = $(select).parent().parent().parent().parent().parent();

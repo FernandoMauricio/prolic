@@ -111,6 +111,16 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
                     }, 'whenClient' => "function (attribute, value) {
                 return $('#processolicitatorio-artigo_id').val() == 'Valor';
             }"],
+            ['prolic_valorefetivo', 'compare', 'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
+                        return $model->artigo->art_tipo == 'Valor';                 
+                    }, 'whenClient' => "function (attribute, value) {
+                return $('#processolicitatorio-artigo_id').val() == 'Valor';
+            }"],
+            ['prolic_valorefetivo', 'compare', 'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
+                        return $model->artigo->art_tipo == 'Valor';                 
+                    }, 'whenClient' => "function (attribute, value) {
+                return $('#processolicitatorio-artigo_id').val() == 'Valor';
+            }"],
         ];
     }
 
@@ -130,10 +140,12 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     }
 
     //Localiza a somatório dos Limites e o Saldo
-    public function getSumLimite($cat_id) {
+    public function getSumLimite($cat_id, $processo) {
         $data = ProcessoLicitatorio::find()
         ->joinWith('modalidadeValorlimite', false, 'LEFT JOIN')
         ->where(['modalidade_valorlimite.id'=>$cat_id])
+        ->andWhere(['NOT IN', 'processo_licitatorio.id', [$processo]])
+        ->andWhere(['!=', 'situacao_id', 7]) //Exclui processos licitatórios que foram cancelados
         ->select([
             'valor_limite', 
             'sum(prolic_valorestimado + prolic_valoraditivo) AS valor_limite_apurado', 

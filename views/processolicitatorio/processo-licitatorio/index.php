@@ -171,7 +171,40 @@ $gridColumns = [
             },
         ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+        ['class' => 'yii\grid\ActionColumn',
+        'template' => ' {observacoes} {view} {update} {delete}',
+        'contentOptions' => ['style' => 'width: 5%;'],
+        'buttons' => [
+
+            //VISUALIZAR
+            'view' => function ($url, $model) {
+                return Html::a('<span class="glyphicon glyphicon-eye-open"></span> ', $url, [
+                            'class'=>'btn btn-default btn-xs',
+                            'title' => Yii::t('app', 'Visualizar'),
+                        ]);
+            },
+
+            //SOMENTE APARECERÁ CASO O PROCESSO NÃO ESTEJA CANCELADO
+            'update' => function ($url, $model) {
+                return $model->situacao_id !== 7 ? Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                    'class'=>'btn btn-primary btn-xs',
+                    'title' => Yii::t('app', 'Atualizar'),
+                       ]): '';
+            },
+
+            //DELETAR
+            'delete' => function ($url, $model) {
+                return Html::a('<span class="glyphicon glyphicon-trash"></span> ', $url, [
+                            'class'=>'btn btn-danger btn-xs',
+                            'title' => Yii::t('app', 'Deletar'),
+                            'data' =>  [
+                                            'confirm' => 'Você tem CERTEZA que deseja EXCLUIR esse item?',
+                                            'method' => 'post',
+                                       ],
+                        ]);
+                },  
+            ],
+        ],
     ];
  ?>
 

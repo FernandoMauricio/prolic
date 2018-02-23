@@ -17,6 +17,8 @@ class SiteController extends Controller
      */
     public function behaviors()
     {
+        $this->AccessAllow(); //Irá ser verificado se o usuário está logado no sistema
+
         return [
             'access' => [
                 'class' => AccessControl::className(),

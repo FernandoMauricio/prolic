@@ -23,6 +23,8 @@ class ModalidadeValorlimiteController extends Controller
      */
     public function behaviors()
     {
+        $this->AccessAllow(); //Irá ser verificado se o usuário está logado no sistema
+
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -39,18 +41,30 @@ class ModalidadeValorlimiteController extends Controller
      */
     public function actionIndex()
     {
+        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+        $session = Yii::$app->session;
+        if($session['sess_codunidade'] != 6) {
+            return $this->render('/site/acesso-negado');
+        }else{
+
         $searchModel = new ModalidadeValorlimiteSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
+        }
     }
 
     public function actionHomologar($id)
     {
+        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
+        if($session['sess_codunidade'] != 6) {
+            return $this->render('/site/acesso-negado');
+        }else{
+
         $model = $this->findModel($id);
 
         if($model->status == 0) { //Cadastros Inativados
@@ -65,7 +79,8 @@ class ModalidadeValorlimiteController extends Controller
 
             Yii::$app->session->setFlash('success', '<b>SUCESSO!</b> Cadastro limite da Modalidade:<b> '.$model->modalidade->mod_descricao.'</b> e Ramo: <b>'.$model->ramo->ram_descricao .'</b> foi HOMOLOGADO!</b>');
         }
-        return $this->redirect(['index']);
+            return $this->redirect(['index']);
+        }
     }
 
     /**
@@ -76,9 +91,16 @@ class ModalidadeValorlimiteController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+        $session = Yii::$app->session;
+        if($session['sess_codunidade'] != 6) {
+            return $this->render('/site/acesso-negado');
+        }else{
+
+            return $this->render('view', [
+                'model' => $this->findModel($id),
+            ]);
+        }
     }
 
     /**
@@ -88,6 +110,12 @@ class ModalidadeValorlimiteController extends Controller
      */
     public function actionCreate()
     {
+        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+        $session = Yii::$app->session;
+        if($session['sess_codunidade'] != 6) {
+            return $this->render('/site/acesso-negado');
+        }else{
+
         $model = new ModalidadeValorlimite();
 
         $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
@@ -98,12 +126,13 @@ class ModalidadeValorlimiteController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('create', [
-            'model' => $model,
-            'modalidade' => $modalidade,
-            'ano' => $ano,
-            'ramo' => $ramo,
-        ]);
+            return $this->render('create', [
+                'model' => $model,
+                'modalidade' => $modalidade,
+                'ano' => $ano,
+                'ramo' => $ramo,
+            ]);
+        }
     }
 
     /**
@@ -115,6 +144,12 @@ class ModalidadeValorlimiteController extends Controller
      */
     public function actionUpdate($id)
     {
+        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+        $session = Yii::$app->session;
+        if($session['sess_codunidade'] != 6) {
+            return $this->render('/site/acesso-negado');
+        }else{
+
         $model = $this->findModel($id);
 
         $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
@@ -128,12 +163,13 @@ class ModalidadeValorlimiteController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
-            'model' => $model,
-            'modalidade' => $modalidade,
-            'ano' => $ano,
-            'ramo' => $ramo,
-        ]);
+            return $this->render('update', [
+                'model' => $model,
+                'modalidade' => $modalidade,
+                'ano' => $ano,
+                'ramo' => $ramo,
+            ]);
+        }
     }
 
     /**
@@ -164,5 +200,23 @@ class ModalidadeValorlimiteController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function AccessAllow()
+    {
+        $session = Yii::$app->session;
+        if (!isset($session['sess_codusuario']) 
+            && !isset($session['sess_codcolaborador']) 
+            && !isset($session['sess_codunidade']) 
+            && !isset($session['sess_nomeusuario']) 
+            && !isset($session['sess_coddepartamento']) 
+            && !isset($session['sess_codcargo']) 
+            && !isset($session['sess_cargo']) 
+            && !isset($session['sess_setor']) 
+            && !isset($session['sess_unidade']) 
+            && !isset($session['sess_responsavelsetor'])) 
+        {
+           return $this->redirect('http://portalsenac.am.senac.br');
+        }
     }
 }

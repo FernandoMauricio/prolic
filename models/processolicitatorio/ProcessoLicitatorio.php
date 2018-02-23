@@ -95,32 +95,32 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
                         return $model->artigo->art_tipo == 'Valor';                 
                     }, 'whenClient' => "function (attribute, value) {
                 return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            }"],
+            }", 'message' => 'Ultrapassa valor limite!'],
             ['prolic_valorestimado', 'compare', 'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
                         return $model->artigo->art_tipo == 'Valor';                 
                     }, 'whenClient' => "function (attribute, value) {
                 return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            }"],
+            }", 'message' => 'Modalidade sem saldo!'],
             ['prolic_valoraditivo', 'compare', 'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
                         return $model->artigo->art_tipo == 'Valor';                 
                     }, 'whenClient' => "function (attribute, value) {
                 return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            }"],
+            }", 'message' => 'Ultrapassa valor limite!'],
             ['prolic_valoraditivo', 'compare', 'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
                         return $model->artigo->art_tipo == 'Valor';                 
                     }, 'whenClient' => "function (attribute, value) {
                 return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            }"],
+            }", 'message' => 'Modalidade sem saldo!'],
             ['prolic_valorefetivo', 'compare', 'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
                         return $model->artigo->art_tipo == 'Valor';                 
                     }, 'whenClient' => "function (attribute, value) {
                 return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            }"],
+            }", 'message' => 'Ultrapassa valor limite!'],
             ['prolic_valorefetivo', 'compare', 'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
                         return $model->artigo->art_tipo == 'Valor';                 
                     }, 'whenClient' => "function (attribute, value) {
                 return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            }"],
+            }", 'message' => 'Modalidade sem saldo!'],
         ];
     }
 
@@ -175,7 +175,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id' => 'Cód.',
             'ano_id' => 'Ano',
             'prolic_objeto' => 'Objeto',
             'prolic_codmxm' => 'Requisição MXM',

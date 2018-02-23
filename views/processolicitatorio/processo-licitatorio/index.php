@@ -90,6 +90,7 @@ $gridColumns = [
             'subGroupOf'=>1 // supplier column index is the parent group
         ],
 
+        'id',
         'prolic_codmxm',
         // [
         //     'attribute' => 'prolic_sequenciamodal',
@@ -223,7 +224,7 @@ $gridColumns = [
     'beforeHeader'=>[
         [
             'columns'=>[
-                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>10, 'class'=>'text-center warning']], 
+                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>11, 'class'=>'text-center warning']], 
                 ['content'=>'Área de Ações', 'options'=>['colspan'=>1, 'class'=>'text-center warning']], 
             ],
         ]

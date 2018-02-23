@@ -67,7 +67,7 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'processo_licitatorio.id' => $this->id,
             'ano_id' => $this->ano_id,
             'prolic_codmxm' => $this->prolic_codmxm,
             'modalidade_valorlimite_id' => $this->modalidade_valorlimite_id,

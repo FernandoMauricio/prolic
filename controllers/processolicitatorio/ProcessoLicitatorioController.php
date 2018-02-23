@@ -33,6 +33,8 @@ class ProcessoLicitatorioController extends Controller
      */
     public function behaviors()
     {
+        $this->AccessAllow(); //Irá ser verificado se o usuário está logado no sistema
+
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -173,11 +175,17 @@ class ProcessoLicitatorioController extends Controller
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
+        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+        $session = Yii::$app->session;
+        if($session['sess_codunidade'] != 6) {
+            return $this->render('/site/acesso-negado');
+        }else{
+            $model = $this->findModel($id);
 
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+            return $this->render('view', [
+                'model' => $this->findModel($id),
+            ]);
+        }
     }
 
     /**
@@ -187,7 +195,11 @@ class ProcessoLicitatorioController extends Controller
      */
     public function actionCreate()
     {
+        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
+        if($session['sess_codunidade'] != 6) {
+            return $this->render('/site/acesso-negado');
+        }else{
 
         $model = new ProcessoLicitatorio();
 
@@ -229,19 +241,20 @@ class ProcessoLicitatorioController extends Controller
             }
         }
 
-        return $this->renderAjax('create', [
-            'model' => $model,
-            'ano' => $ano,
-            'ramo' => $ramo,
-            'destinos' => $destinos,
-            'valorlimite' => $valorlimite,
-            'artigo' => $artigo,
-            'centrocusto' => $centrocusto,
-            'recurso' => $recurso,
-            'comprador' => $comprador,
-            'situacao' => $situacao,
-            'empresa' => $empresa,
-        ]);
+            return $this->renderAjax('create', [
+                'model' => $model,
+                'ano' => $ano,
+                'ramo' => $ramo,
+                'destinos' => $destinos,
+                'valorlimite' => $valorlimite,
+                'artigo' => $artigo,
+                'centrocusto' => $centrocusto,
+                'recurso' => $recurso,
+                'comprador' => $comprador,
+                'situacao' => $situacao,
+                'empresa' => $empresa,
+            ]);
+        }
     }
 
     /**
@@ -253,7 +266,11 @@ class ProcessoLicitatorioController extends Controller
      */
     public function actionUpdate($id)
     {
+        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
+        if($session['sess_codunidade'] != 6) {
+            return $this->render('/site/acesso-negado');
+        }else{
 
         $model = $this->findModel($id);
 
@@ -290,19 +307,20 @@ class ProcessoLicitatorioController extends Controller
             }
         }
         
-        return $this->render('update', [
-            'model' => $model,
-            'ano' => $ano,
-            'ramo' => $ramo,
-            'destinos' => $destinos,
-            'valorlimite' => $valorlimite,
-            'artigo' => $artigo,
-            'centrocusto' => $centrocusto,
-            'recurso' => $recurso,
-            'comprador' => $comprador,
-            'situacao' => $situacao,
-            'empresa' => $empresa,
-        ]);
+            return $this->render('update', [
+                'model' => $model,
+                'ano' => $ano,
+                'ramo' => $ramo,
+                'destinos' => $destinos,
+                'valorlimite' => $valorlimite,
+                'artigo' => $artigo,
+                'centrocusto' => $centrocusto,
+                'recurso' => $recurso,
+                'comprador' => $comprador,
+                'situacao' => $situacao,
+                'empresa' => $empresa,
+            ]);
+        }
     }
 
     /**
@@ -333,5 +351,23 @@ class ProcessoLicitatorioController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function AccessAllow()
+    {
+        $session = Yii::$app->session;
+        if (!isset($session['sess_codusuario']) 
+            && !isset($session['sess_codcolaborador']) 
+            && !isset($session['sess_codunidade']) 
+            && !isset($session['sess_nomeusuario']) 
+            && !isset($session['sess_coddepartamento']) 
+            && !isset($session['sess_codcargo']) 
+            && !isset($session['sess_cargo']) 
+            && !isset($session['sess_setor']) 
+            && !isset($session['sess_unidade']) 
+            && !isset($session['sess_responsavelsetor'])) 
+        {
+           return $this->redirect('http://portalsenac.am.senac.br');
+        }
     }
 }

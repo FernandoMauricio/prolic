@@ -46,6 +46,16 @@ body {
     padding-bottom: 15px;
     margin-top: 10px;
 
+}
+
+.dropdown-submenu > .dropdown-menu {
+    width: 160%;
+
+}
+
+.popover-x-body.modal-open .modal { /*Conflito por conta das colunas editáveis*/
+
+margin-top: 70px;
 
 }
 
@@ -154,3 +164,38 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+/* BADGES COLORS*/
+
+.badge {
+  padding: 1px 9px 2px;
+  font-size: 12.025px;
+  font-weight: bold;
+  white-space: nowrap;
+  color: #ffffff;
+  background-color: #999999;
+  -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
+}
+.badge-danger {
+  background-color: #b94a48;
+}
+
+.badge-warning {
+  background-color: #f89406;
+}
+
+.badge-success {
+  background-color: #468847;
+}
+
+.badge-info {
+  background-color: #3a87ad;
+}
+
+.badge-inverse {
+  background-color: #333333;
+}
+
+/* FIM BADGES COLORS*/

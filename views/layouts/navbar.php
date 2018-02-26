@@ -2,7 +2,7 @@
 
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
-// use kartik\nav\NavX;
+use kartik\nav\NavX;
 
 ?>
 
@@ -14,14 +14,16 @@ use yii\bootstrap\NavBar;
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            [
-            'label' => 'Parâmetros',
-            'items' => [
-                        '<li class="dropdown-header">Área Administrador</li>',
+
+echo NavX::widget([
+
+'options' => ['class' => 'navbar-nav navbar-right'],
+                
+    'items' => [
+        ['label' => 'Administração', 'items' => [
+
+            ['label' => 'Parâmetros', 'items' => [
+            '<li class="dropdown-header">Administração dos Parâmetros</li>',
                          ['label' => 'Ano', 'url' => ['/base/ano/index']],
                          ['label' => 'Artigo', 'url' => ['/base/artigo/index']],
                          ['label' => 'Empresa', 'url' => ['/base/empresa/index']],
@@ -30,10 +32,16 @@ use yii\bootstrap\NavBar;
                          ['label' => 'Modalidade - Valor Limite', 'url' => ['/base/modalidade-valorlimite/index']],
                          ['label' => 'Ramo', 'url' => ['/base/ramo/index']],
                          ['label' => 'Recursos', 'url' => ['/base/recursos/index']],
-                       ],
-            ],
-            ['label' => 'Processo Licitatório', 'url' => ['/processolicitatorio/processo-licitatorio/index']],
-        ],
-    ]);
+            ]],
+
+            '<li class="divider"></li>',
+            '<li class="dropdown-header">Área do Administrador</li>',
+            ['label' => 'Processos Licitatórios', 'url' => ['/processolicitatorio/processo-licitatorio/index']],
+        ]
+    ],
+
+    ]
+]); 
+
     NavBar::end();
 ?>

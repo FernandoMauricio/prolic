@@ -6,6 +6,7 @@ use yii\bootstrap\Modal;
 use yii\helpers\Url;
 
 use app\models\processolicitatorio\ProcessoLicitatorio;
+use app\models\processolicitatorio\Observacoes;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
@@ -57,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div id="rootwizard" class="tabbable tabs-left">
      <ul>
        <li><a href="#tab1" data-toggle="tab"><span class="glyphicon glyphicon-file"></span> Processo Licitatório</a></li>
-       <li><a href="#tab2" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> Observações</a></li>
+       <li><a href="#tab2" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> Observações <?= Observacoes::getCountObservacoes($model->id) > 0 ? "<span class='badge badge-danger'>" .Observacoes::getCountObservacoes($model->id). "</span>" : '' ?></a></li>
      </ul>
 
     <div class="tab-content"><br>

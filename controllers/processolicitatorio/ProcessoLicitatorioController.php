@@ -99,6 +99,7 @@ class ProcessoLicitatorioController extends Controller
         $model->obs_usuariocriacao      = $session['sess_nomeusuario'];
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('info', '<b>SUCESSO! </b> Observação inserida!</b>');
             return $this->redirect(['view', 'id' => $processolicitatorio->id]);
         }
         return $this->renderAjax('observacoes/create', [

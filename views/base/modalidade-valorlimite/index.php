@@ -1,8 +1,19 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\grid\GridView;
 use kartik\widgets\DatePicker;
+use kartik\grid\GridView;
+use yii\widgets\Pjax;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
+use kartik\editable\Editable;
+use yii\bootstrap\Modal;
+
+use app\models\base\Ano;
+use app\models\base\ModalidadeValorlimite;
+use app\models\base\Comprador;
+use app\models\base\Artigo;
+use app\models\base\Situacao;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\base\ModalidadeValorlimiteSearch */
@@ -20,51 +31,75 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Novo Valor Limite - Modalidade', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+<?php
 
-            'id',
-            [
-                'attribute' => 'modalidade_id',
-                'value' =>'modalidade.mod_descricao',
+$gridColumns = [
+        [
+            'attribute'=>'modalidade_id', 
+            'width'=>'250px',
+            'value'=>function ($model, $key, $index, $widget) { 
+                return $model->modalidade->mod_descricao;
+            },
+            'filterType'=>GridView::FILTER_SELECT2,
+            'filter'=>ArrayHelper::map(ModalidadeValorlimite::find()->select('modalidade_id')->innerJoinWith('modalidade')->where(['status' => 1])->andWhere(['!=','homologacao_usuario', ''])->orderBy('modalidade.id')->asArray()->all(), 'modalidade.mod_descricao', 'modalidade.mod_descricao'), 
+            'filterWidgetOptions'=>[
+                'pluginOptions'=>['allowClear'=>true],
             ],
-            [
-                'attribute' => 'ramo_id',
-                'value' =>'ramo.ram_descricao',
-            ],
-            [
-                'attribute' => 'ano_id',
-                'value' =>'ano.an_ano',
-            ],
-            [
-                'format' => 'Currency',
-                'attribute' => 'valor_limite',
-            ],
-            'homologacao_usuario',
-            [
-                'attribute' => 'homologacao_data',
-                'format' => ['datetime', 'php:d/m/Y'],
-                'width' => '190px',
-                'hAlign' => 'center',
-                'filter'=> DatePicker::widget([
-                'model' => $searchModel, 
-                'attribute' => 'homologacao_data',
-                'pluginOptions' => [
-                     'autoclose'=>true,
-                     'format' => 'yyyy-mm-dd',
-                    ]
-                ])
-            ],
-            [
-                'class'=>'kartik\grid\BooleanColumn',
-                'attribute'=>'status', 
-                'vAlign'=>'middle'
-            ], 
+            'filterInputOptions'=>['placeholder'=>'Modalidade...'],
+            'group'=>true,  // enable grouping
+            'subGroupOf'=>1 // supplier column index is the parent group
+        ],
 
-            ['class' => 'yii\grid\ActionColumn',
+        [
+            'attribute'=>'ramo_id', 
+            'width'=>'250px',
+            'value'=>function ($model, $key, $index, $widget) { 
+                return $model->ramo->ram_descricao;
+            },
+            'filterType'=>GridView::FILTER_SELECT2,
+            'filter'=>ArrayHelper::map(ModalidadeValorlimite::find()->innerJoinWith('ramo')->where(['status' => 1])->andWhere(['!=','homologacao_usuario', ''])->orderBy('id')->asArray()->all(), 'id', 'ramo.ram_descricao'), 
+            'filterWidgetOptions'=>[
+                'pluginOptions'=>['allowClear'=>true],
+            ],
+            'filterInputOptions'=>['placeholder'=>'Ramo...'],
+            'group'=>true,  // enable grouping
+            'subGroupOf'=>1 // supplier column index is the parent group
+        ],
+
+        [
+            'attribute' => 'ano_id',
+            'value' =>'ano.an_ano',
+        ],
+
+        [
+            'format' => 'Currency',
+            'attribute' => 'valor_limite',
+        ],
+
+        'homologacao_usuario',
+
+        [
+            'attribute' => 'homologacao_data',
+            'format' => ['datetime', 'php:d/m/Y'],
+            'width' => '190px',
+            'hAlign' => 'center',
+            'filter'=> DatePicker::widget([
+            'model' => $searchModel, 
+            'attribute' => 'homologacao_data',
+            'pluginOptions' => [
+                 'autoclose'=>true,
+                 'format' => 'yyyy-mm-dd',
+                ]
+            ])
+        ],
+
+        [
+            'class'=>'kartik\grid\BooleanColumn',
+            'attribute'=>'status', 
+            'vAlign'=>'middle'
+        ], 
+
+        ['class' => 'yii\grid\ActionColumn',
                 'template' => '{update} {homologar}',
                 'contentOptions' => ['style' => 'width: 7%;'],
                 'buttons' => [
@@ -89,10 +124,38 @@ $this->params['breadcrumbs'][] = $this->title;
                                             ],
                                 ]);
                         },
-
                 ],
-            ],
-
         ],
-    ]); ?>
+    ];
+ ?>
+
+    <?php Pjax::begin(); ?>
+
+    <?php 
+    echo GridView::widget([
+    'dataProvider'=>$dataProvider,
+    'filterModel'=>$searchModel,
+    'columns'=>$gridColumns,
+    'containerOptions'=>['style'=>'overflow: auto'], // only set when $responsive = false
+    'headerRowOptions'=>['class'=>'kartik-sheet-style'],
+    'filterRowOptions'=>['class'=>'kartik-sheet-style'],
+    'pjax'=>true, // pjax is set to always true for this demo
+
+    'beforeHeader'=>[
+        [
+            'columns'=>[
+                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>7, 'class'=>'text-center warning']], 
+                ['content'=>'Área de Ações', 'options'=>['colspan'=>1, 'class'=>'text-center warning']], 
+            ],
+        ]
+    ],
+        'hover' => true,
+        'panel' => [
+        'type'=>GridView::TYPE_PRIMARY,
+        'heading'=> '<h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> Listagem - Processos Licitatórios</h3>',
+    ],
+]);
+    ?>
+    <?php Pjax::end(); ?>
+
 </div>

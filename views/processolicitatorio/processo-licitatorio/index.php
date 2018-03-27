@@ -65,7 +65,7 @@ $gridColumns = [
                 return $model->modalidadeValorlimite->modalidade->mod_descricao;
             },
             'filterType'=>GridView::FILTER_SELECT2,
-            'filter'=>ArrayHelper::map(ModalidadeValorlimite::find()->innerJoinWith('modalidade')->where(['status' => 1])->andWhere(['!=','homologacao_usuario', ''])->orderBy('id')->asArray()->all(), 'id', 'modalidade.mod_descricao'), 
+            'filter'=>ArrayHelper::map(ModalidadeValorlimite::find()->select('modalidade_id')->innerJoinWith('modalidade')->where(['status' => 1])->andWhere(['!=','homologacao_usuario', ''])->orderBy('modalidade.id')->asArray()->distinct(), 'modalidade.mod_descricao', 'modalidade.mod_descricao'), 
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],

@@ -52,7 +52,7 @@ use kartik\depdrop\DepDrop;
     <div class="row">
         <div class="col-md-3">
             <?php
-                $data_modalidade = ArrayHelper::map($valorlimite, 'id', 'modalidade.mod_descricao');
+                $data_modalidade = ArrayHelper::map($valorlimite, 'id', 'mod_descricao');
                 echo $form->field($model, 'modalidade')->widget(Select2::classname(), [
                     'data' => $data_modalidade,
                     'options' => ['id' => 'modalidade-id','placeholder' => 'Selecione a Modalidade...'],

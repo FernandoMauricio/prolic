@@ -19,7 +19,7 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
     {
         return [
             [['id', 'ano_id', 'prolic_codmxm', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'situacao_id'], 'integer'],
-            [['prolic_objeto', 'prolic_destino', 'prolic_centrocusto', 'prolic_elementodespesa', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_motivo', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_usuarioatualizacao', 'prolic_dataatualizacao', 'modalidade', 'comprador_id'], 'safe'],
+            [['prolic_objeto', 'prolic_destino', 'prolic_centrocusto', 'prolic_elementodespesa', 'prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_motivo', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_usuarioatualizacao', 'prolic_dataatualizacao', 'modalidade', 'comprador_id'], 'safe'],
             [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo'], 'number'],
         ];
     }
@@ -69,6 +69,7 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
         $query->andFilterWhere([
             'processo_licitatorio.id' => $this->id,
             'ano_id' => $this->ano_id,
+            'prolic_dataprocesso' => $this->prolic_dataprocesso,
             'prolic_codmxm' => $this->prolic_codmxm,
             'modalidade_valorlimite_id' => $this->modalidade_valorlimite_id,
             'prolic_sequenciamodal' => $this->prolic_sequenciamodal,

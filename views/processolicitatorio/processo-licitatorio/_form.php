@@ -46,8 +46,21 @@ use faryshta\widgets\JqueryTagsInput;
                 ]);
             ?>
             </div>
+            <div class="col-md-3">
+                <?php
+                    echo $form->field($model, 'prolic_dataprocesso')->widget(DateControl::classname(), [
+                        'type'=>DateControl::FORMAT_DATE,
+                        'ajaxConversion'=>false,
+                        'widgetOptions' => [
+                            'pluginOptions' => [
+                                'autoclose' => true
+                            ]
+                        ]
+                    ]); 
+                ?>
+            </div>
             <div class="col-md-2"><?= $form->field($model, 'prolic_codmxm')->textInput(['readonly' => !$model->isNewRecord]) ?></div>
-            <div class="col-md-8">
+            <div class="col-md-5">
                 <?php 
                     $options = ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado');
                         echo $form->field($model, 'prolic_destino')->widget(Select2::classname(), [
@@ -67,7 +80,7 @@ use faryshta\widgets\JqueryTagsInput;
         <div class="row">
             <div class="col-md-3">
                 <?php
-                    $data_modalidade = ArrayHelper::map($valorlimite, 'id', 'modalidade.mod_descricao');
+                    $data_modalidade = ArrayHelper::map($valorlimite, 'id', 'mod_descricao');
                     echo $form->field($model, 'modalidade')->widget(Select2::classname(), [
                         'data' => $data_modalidade,
                         'options' => ['id' => 'modalidade-id','placeholder' => 'Selecione a Modalidade...'],
@@ -96,8 +109,8 @@ use faryshta\widgets\JqueryTagsInput;
 
                                            var $divPanelBody = $(select).parent().parent().parent().parent();
 
-                                           $divPanelBody.find("input").eq(3).val(data.valor_limite);
                                            $divPanelBody.find("input").eq(5).val(data.valor_limite);
+                                           $divPanelBody.find("input").eq(7).val(data.valor_limite);
                                         });
 
                                     $.getJSON( "'.Url::toRoute('/processolicitatorio/processo-licitatorio/get-sum-limite').'", { limiteId: $(this).val(), processo: '.$model->id.' } )
@@ -105,11 +118,10 @@ use faryshta\widgets\JqueryTagsInput;
 
                                            var $divPanelBody = $(select).parent().parent().parent().parent().parent();
 
-                                           $divPanelBody.find("input").eq(6).val(data.valor_limite_apurado);
                                            $divPanelBody.find("input").eq(8).val(data.valor_limite_apurado);
-                                           $divPanelBody.find("input").eq(9).val(data.valor_saldo);
+                                           $divPanelBody.find("input").eq(10).val(data.valor_limite_apurado);
                                            $divPanelBody.find("input").eq(11).val(data.valor_saldo);
-
+                                           $divPanelBody.find("input").eq(13).val(data.valor_saldo);
                                         });
                                     '
                                 ]]);

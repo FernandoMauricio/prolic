@@ -7,12 +7,14 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use kartik\editable\Editable;
 use yii\bootstrap\Modal;
+use kartik\widgets\DatePicker;
 
 use app\models\base\Ano;
 use app\models\base\ModalidadeValorlimite;
 use app\models\base\Comprador;
 use app\models\base\Artigo;
 use app\models\base\Situacao;
+use app\models\base\Modalidade;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\processolicitatorio\ProcessoLicitatorioSearch */
@@ -59,13 +61,28 @@ $gridColumns = [
         ],
 
         [
+            'attribute' => 'prolic_dataprocesso',
+            'format' => ['date', 'php:d/m/Y'],
+            'width' => '190px',
+            'hAlign' => 'center',
+            'filter'=> DatePicker::widget([
+            'model' => $searchModel, 
+            'attribute' => 'prolic_dataprocesso',
+            'pluginOptions' => [
+                 'autoclose'=>true,
+                 'format' => 'yyyy-mm-dd',
+                ]
+            ])
+        ],
+
+        [
             'attribute'=>'modalidade', 
             'width'=>'250px',
             'value'=>function ($model, $key, $index, $widget) { 
                 return $model->modalidadeValorlimite->modalidade->mod_descricao;
             },
             'filterType'=>GridView::FILTER_SELECT2,
-            'filter'=>ArrayHelper::map(ModalidadeValorlimite::find()->select('modalidade_id')->innerJoinWith('modalidade')->where(['status' => 1])->andWhere(['!=','homologacao_usuario', ''])->orderBy('modalidade.id')->asArray()->distinct(), 'modalidade.mod_descricao', 'modalidade.mod_descricao'), 
+            'filter'=>ArrayHelper::map(Modalidade::find()->where(['mod_status' => 1])->asArray()->all(), 'id', 'mod_descricao'), 
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],
@@ -91,14 +108,13 @@ $gridColumns = [
         ],
 
         'id',
+        [
+            'attribute' => 'prolic_sequenciamodal',
+            'value'=>function ($model, $key, $index, $widget) { 
+                return $model->prolic_sequenciamodal;
+            },
+        ],
         'prolic_codmxm',
-        // [
-        //     'attribute' => 'prolic_sequenciamodal',
-        //     'value'=>function ($model, $key, $index, $widget) { 
-        //         return $model->prolic_sequenciamodal . '/' . $model->ano->an_ano;
-        //     },
-        // ],
-
         'prolic_objeto:ntext',
 
         [
@@ -152,11 +168,15 @@ $gridColumns = [
             ],          
         ],
 
+        // 'prolic_datahomologacao',
+        // 'prolic_datacertame',
+        // 'prolic_datacriacao',
+
         [
             'attribute' => 'ciclototal',
             'value'=>function ($model, $key, $index, $widget) { 
                     $data_inicio = new DateTime($model->prolic_datahomologacao);
-                    $data_fim = new DateTime($model->prolic_datacriacao);
+                    $data_fim = new DateTime($model->prolic_dataprocesso);
                     $dateInterval = $data_inicio->diff($data_fim);
                 return $dateInterval->days;
             },
@@ -224,7 +244,7 @@ $gridColumns = [
     'beforeHeader'=>[
         [
             'columns'=>[
-                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>11, 'class'=>'text-center warning']], 
+                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>13, 'class'=>'text-center warning']], 
                 ['content'=>'Área de Ações', 'options'=>['colspan'=>1, 'class'=>'text-center warning']], 
             ],
         ]

@@ -221,7 +221,7 @@ class ProcessoLicitatorioController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 
         //Somatória dos valores
-        $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
+        // $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
 
         //Junta todos destinos, centros de custos e empresas em uma linha
         is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;
@@ -278,7 +278,7 @@ class ProcessoLicitatorioController extends Controller
         $ano         = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
         $ramo        = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
         $destinos    = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
-        $valorlimite = ModalidadeValorlimite::find()->where(['status' => 1])->andWhere(['!=','homologacao_usuario', ''])->all();
+        $valorlimite = Modalidade::find()->where(['mod_status' => 1])->all();
         $artigo      = Artigo::find()->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])->andWhere(['!=','art_homologacaousuario', ''])->orderBy('art_descricao')->all();
         $centrocusto = Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all();
         $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
@@ -295,7 +295,7 @@ class ProcessoLicitatorioController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 
         //Somatória dos valores
-        $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
+        // $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
         
         //Junta todos destinos, centros de custos e empresas em uma linha
         is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;

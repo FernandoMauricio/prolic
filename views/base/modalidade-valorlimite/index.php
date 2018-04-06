@@ -14,6 +14,7 @@ use app\models\base\ModalidadeValorlimite;
 use app\models\base\Comprador;
 use app\models\base\Artigo;
 use app\models\base\Situacao;
+use app\models\base\Modalidade;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\base\ModalidadeValorlimiteSearch */
@@ -41,7 +42,7 @@ $gridColumns = [
                 return $model->modalidade->mod_descricao;
             },
             'filterType'=>GridView::FILTER_SELECT2,
-            'filter'=>ArrayHelper::map(ModalidadeValorlimite::find()->select('modalidade_id')->innerJoinWith('modalidade')->where(['status' => 1])->andWhere(['!=','homologacao_usuario', ''])->orderBy('modalidade.id')->asArray()->all(), 'modalidade.mod_descricao', 'modalidade.mod_descricao'), 
+            'filter'=>ArrayHelper::map(Modalidade::find()->where(['mod_status' => 1])->asArray()->all(), 'mod_descricao', 'mod_descricao'), 
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],

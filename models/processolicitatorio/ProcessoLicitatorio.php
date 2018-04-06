@@ -140,6 +140,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
         $data = ModalidadeValorlimite::find()
         ->joinWith('ramo', false, 'INNER JOIN')
         ->where(['modalidade_id'=>$cat_id])
+        ->andWhere(['!=','homologacao_usuario', '']) //Localiza apenas Modalidades homologadas
         ->select(['modalidade_valorlimite.id AS id','ram_descricao AS name'])->asArray()->all();
         return $data;
     }

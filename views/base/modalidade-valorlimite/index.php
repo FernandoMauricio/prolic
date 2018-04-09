@@ -95,6 +95,19 @@ $gridColumns = [
         ],
 
         [
+            'attribute'=>'tipo',
+            'format'=>'raw',
+            'width'=>'6%',
+            'value' => function ($data) { return $data->tipo == 0 ? '<span class="label label-warning"> Limitado</span>' : '<span class="label label-success"> Ilimitado</span>'; },
+            'filterType'=>GridView::FILTER_SELECT2,
+            'filter'=> ['0'=>'Limitado','1'=>'Ilimitado'],
+            'filterWidgetOptions'=>[
+                'pluginOptions'=>['allowClear'=>true],
+            ],
+                'filterInputOptions'=>['placeholder'=>'Tipo'],
+        ],
+
+        [
             'class'=>'kartik\grid\BooleanColumn',
             'attribute'=>'status', 
             'vAlign'=>'middle'
@@ -145,7 +158,7 @@ $gridColumns = [
     'beforeHeader'=>[
         [
             'columns'=>[
-                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>7, 'class'=>'text-center warning']], 
+                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>8, 'class'=>'text-center warning']], 
                 ['content'=>'Área de Ações', 'options'=>['colspan'=>1, 'class'=>'text-center warning']], 
             ],
         ]
@@ -154,8 +167,8 @@ $gridColumns = [
         'panel' => [
         'type'=>GridView::TYPE_PRIMARY,
         'heading'=> '<h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> Listagem - Processos Licitatórios</h3>',
-    ],
-]);
+        ],
+    ]);
     ?>
     <?php Pjax::end(); ?>
 

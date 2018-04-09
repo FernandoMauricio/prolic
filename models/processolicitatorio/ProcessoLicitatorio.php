@@ -115,13 +115,13 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             // }", 'message' => 'Modalidade sem saldo!'
             // ],
             ['prolic_valorefetivo', 'compare', 'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
-                        return $model->artigo->art_tipo == 'Valor';                 
+                        return $model->artigo->art_tipo == 'Valor' && $model->modalidadeValorlimite->tipo == 0;                 
                     }, 'whenClient' => "function (attribute, value) {
                 return $('#processolicitatorio-artigo_id').val() == 'Valor';
             }", 'message' => 'Ultrapassa valor limite!'
             ],
             ['prolic_valorefetivo', 'compare', 'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
-                        return $model->artigo->art_tipo == 'Valor';                 
+                        return $model->artigo->art_tipo == 'Valor' && $model->modalidadeValorlimite->tipo == 0;                 
                     }, 'whenClient' => "function (attribute, value) {
                 return $('#processolicitatorio-artigo_id').val() == 'Valor';
             }", 'message' => 'Modalidade sem saldo!'

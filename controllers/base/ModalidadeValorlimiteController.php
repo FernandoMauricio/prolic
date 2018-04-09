@@ -123,7 +123,8 @@ class ModalidadeValorlimiteController extends Controller
         $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Limite cadastrado!</b>');
+            return $this->redirect(['index']);
         }
 
             return $this->render('create', [
@@ -160,7 +161,8 @@ class ModalidadeValorlimiteController extends Controller
             $model->homologacao_usuario = NULL;
             $model->homologacao_data    = NULL;
             $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Limite atualizado!</b>');
+            return $this->redirect(['index']);
         }
 
             return $this->render('update', [

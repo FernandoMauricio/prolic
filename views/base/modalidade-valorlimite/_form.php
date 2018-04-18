@@ -69,7 +69,7 @@ use kartik\money\MaskMoney;
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <?php echo $form->field($model, 'valor_limite')->widget(MaskMoney::classname(), [
                         'pluginOptions' => [
                             'prefix' => 'R$ ',
@@ -77,6 +77,9 @@ use kartik\money\MaskMoney;
                         ]
                     ]);
                 ?>
+            </div>
+            <div class="col-md-2">
+                 <?= $form->field($model, 'tipo')->radioList(['1' => 'Ilimitado', '0' => 'Limitado']) ?>
             </div>
         </div>
     </div>

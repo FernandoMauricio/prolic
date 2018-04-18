@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 use yii\helpers\Url;
 use kartik\depdrop\DepDrop;
+use faryshta\widgets\JqueryTagsInput;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
@@ -18,7 +19,7 @@ use kartik\depdrop\DepDrop;
 
 <div class="panel-body">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
 		    <?php
 		        $data_ano = ArrayHelper::map($ano, 'id', 'an_ano');
 		        echo $form->field($model, 'ano_id')->widget(Select2::classname(), [
@@ -30,7 +31,19 @@ use kartik\depdrop\DepDrop;
 		        ]);
 		    ?>
 	    </div>
-	    <div class="col-md-3"><?= $form->field($model, 'prolic_codmxm')->textInput() ?></div>
+	    <div class="col-md-4">
+                <?php 
+                    echo $form->field($model, 'prolic_codmxm')->widget(JqueryTagsInput::className(), [
+                         'clientOptions' => [
+                            'defaultText' => '',
+                            'width' => '100%',
+                            'height' => '100%',
+                            'delimiter'=> ' / ',
+                            'interactive' => true,
+                         ]
+                    ]);
+                ?>
+        </div>
 	    <div class="col-md-6">
             <?php 
                 $options = ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado');

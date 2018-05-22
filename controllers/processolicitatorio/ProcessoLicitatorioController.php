@@ -231,13 +231,9 @@ class ProcessoLicitatorioController extends Controller
         is_array($model->prolic_empresa) ? $model->prolic_empresa = implode(', ', $model->prolic_empresa) : null;
 
         //Sequencia do cód. da modalidade de acordo com o tipo
-        $incremento = 1;
-        $query_id = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->where(['modalidade.id'=>$model->modalidadeValorlimite->modalidade_id])->all();
-                foreach ($query_id as $value) {
-                    $incremento = $value['prolic_sequenciamodal'];
-                    $incremento++;
-                }
-            $model->prolic_sequenciamodal = $incremento;
+        $incremento = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->where(['modalidade.id'=>$model->modalidadeValorlimite->modalidade_id])->count();
+        $model->prolic_sequenciamodal = $incremento + 1;
+
             if ($model->validate()) {
                    $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);

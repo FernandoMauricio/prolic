@@ -34,7 +34,7 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
     </tr>
     <tr>
       <th>ASSUNTO</th>
-      <td colspan="6"><textarea cols="140" rows="4" style="border-style: none;"><?= $model->prolic_objeto ?></textarea></td>
+      <td colspan="6"><textarea cols="140" rows="4" style="border-style: none;margin: 0px;width: 912px;"><?= $model->prolic_objeto ?></textarea></td>
     </tr>
     <tr>
       <th>EMPRESA(S) VENCEDORA(S)</th>

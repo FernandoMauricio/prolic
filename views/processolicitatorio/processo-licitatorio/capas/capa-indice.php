@@ -6,6 +6,12 @@ use kartik\detail\DetailView;
 ?>
 <link href="../web/css/print-style.css" rel="stylesheet">
 
+<style type="text/css">
+  .wrap > .container {
+    padding: 0 15px 20px;
+  }
+
+</style>
 <div class="capa-padrao-view">
 
 <table class="table table-bordered">

@@ -64,7 +64,7 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
       <td colspan="2"></td>
     </tr>
     <tr>
-      <td colspan="7" style="border-style: 1px;height: 850px;" ></td>
+      <td colspan="7" style="border-style: 1px;height: 850px;"></td>
     </tr>
   </tbody>
 </table>

@@ -19,7 +19,7 @@ use kartik\select2\Select2;
         <div class="col-md-4">
             <?php 
                 echo $form->field($model, 'cap_tipo')->widget(Select2::classname(), [
-                    'data' => [0 => 'Padrão', 1 => 'Fecomércio/Senac', 2 => 'Índice'],
+                    'data' => [0 => 'Capa', 1 => 'Homologação', 2 => 'Índice'],
                     'options' => ['placeholder' => 'Informe o tipo da Capa...'],
                     'pluginOptions' => [
                         'allowClear' => true

@@ -34,7 +34,7 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
     </tr>
     <tr>
       <th>OBJETO</th>
-      <td colspan="6"><textarea cols="140" rows="4" style="border-style: none;"><?= $model->prolic_objeto ?></textarea></td>
+      <td colspan="6"><textarea cols="140" rows="4" style="border-style: none;margin: 0px;width: 912px;"><?= $model->prolic_objeto ?></textarea></td>
     </tr>
     <tr>
       <th>DESTINOS</th>
@@ -64,7 +64,7 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
       <td colspan="2"></td>
     </tr>
     <tr>
-      <td colspan="7" style="height: 1000px"></td>
+      <td colspan="7" style="border-style: 1px;height: 850px;" ></td>
     </tr>
   </tbody>
 </table>

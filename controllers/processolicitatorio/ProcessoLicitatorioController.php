@@ -118,6 +118,7 @@ class ProcessoLicitatorioController extends Controller
         
         $searchModel = new ProcessoLicitatorioSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->sort = ['defaultOrder' => ['id'=>SORT_DESC]];
 
         if (Yii::$app->request->post('hasEditable')) {
             // instantiate your ProcessoLicitatorio model for saving

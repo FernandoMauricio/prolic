@@ -28,9 +28,9 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
     <tr>
       <td colspan="3"><?= $model->artigo->art_descricao ?></td>
       <th>DATA CERTAME</th>
-      <td><?= date('d/m/Y', strtotime($model->prolic_datacertame)) ?></td>
+      <td><?= $model->prolic_datacertame != NULL ? date('d/m/Y', strtotime($model->prolic_datacertame)) : '' ?></td>
       <th>ENCAMINHAR P/ HOMOLOGAÇÃO ATÉ</th>
-      <td><?= date('d/m/Y', strtotime($model->prolic_datahomologacao)) ?></td>
+      <td><?= $model->prolic_datahomologacao != NULL ? date('d/m/Y', strtotime($model->prolic_datahomologacao)) : ''?></td>
     </tr>
     <tr>
       <th>ASSUNTO</th>

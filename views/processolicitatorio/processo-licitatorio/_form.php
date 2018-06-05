@@ -159,7 +159,7 @@ use faryshta\widgets\JqueryTagsInput;
                     echo $form->field($model, 'valor_limite')->widget(NumberControl::classname(), [
                         'maskedInputOptions' => [
                             'prefix' => 'R$ ',
-                            'alias' => 'currency',
+                            //'alias' => 'numeric',
                             'digits' => 2,
                             'digitsOptional' => false,
                             'groupSeparator' => '.',
@@ -178,7 +178,7 @@ use faryshta\widgets\JqueryTagsInput;
                     echo $form->field($model, 'valor_limite_apurado')->widget(NumberControl::classname(), [
                         'maskedInputOptions' => [
                             'prefix' => 'R$ ',
-                            'alias' => 'currency',
+                            //'alias' => 'numeric',
                             'digits' => 2,
                             'digitsOptional' => false,
                             'groupSeparator' => '.',
@@ -197,7 +197,7 @@ use faryshta\widgets\JqueryTagsInput;
                     echo $form->field($model, 'valor_saldo')->widget(NumberControl::classname(), [
                         'maskedInputOptions' => [
                             'prefix' => 'R$ ',
-                            'alias' => 'currency',
+                            //'alias' => 'numeric',
                             'digits' => 2,
                             'digitsOptional' => false,
                             'groupSeparator' => '.',
@@ -215,12 +215,12 @@ use faryshta\widgets\JqueryTagsInput;
                 <?= $form->field($model, 'prolic_valorestimado')->widget(NumberControl::classname(), [
                         'maskedInputOptions' => [
                             'prefix' => 'R$ ',
-                            'alias' => 'currency',
+                            //'alias' => 'numeric',
                             'digits' => 2,
                             'digitsOptional' => false,
                             'groupSeparator' => '.',
                             'radixPoint' => ',',
-                            'autoGroup' => true,
+                            //'autoGroup' => true,
                             'autoUnmask' => true,
                             'unmaskAsNumber' => true,
                         ],
@@ -231,12 +231,12 @@ use faryshta\widgets\JqueryTagsInput;
                 <?= $form->field($model, 'prolic_valoraditivo')->widget(NumberControl::classname(), [
                         'maskedInputOptions' => [
                             'prefix' => 'R$ ',
-                            'alias' => 'currency',
+                            //'alias' => 'numeric',
                             'digits' => 2,
                             'digitsOptional' => false,
                             'groupSeparator' => '.',
                             'radixPoint' => ',',
-                            'autoGroup' => true,
+                            //'autoGroup' => true,
                             'autoUnmask' => true,
                             'unmaskAsNumber' => true,
                         ],
@@ -247,12 +247,12 @@ use faryshta\widgets\JqueryTagsInput;
                     echo $form->field($model, 'prolic_valorefetivo')->widget(NumberControl::classname(), [
                         'maskedInputOptions' => [
                             'prefix' => 'R$ ',
-                            'alias' => 'currency',
+                            //'alias' => 'numeric',
                             'digits' => 2,
                             'digitsOptional' => false,
                             'groupSeparator' => '.',
                             'radixPoint' => ',',
-                            'autoGroup' => true,
+                            //'autoGroup' => true,
                             'autoUnmask' => true,
                             'unmaskAsNumber' => true,
                         ],

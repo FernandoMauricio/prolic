@@ -33,6 +33,7 @@ use kartik\money\MaskMoney;
                 $data_modalidade = ArrayHelper::map($modalidade, 'id', 'mod_descricao');
                 echo $form->field($model, 'modalidade_id')->widget(Select2::classname(), [
                 'data' =>  $data_modalidade,
+                'disabled' => !$model->isNewRecord ? true : false,
                 'options' => ['placeholder' => 'Selecione a modalidade...'],
                 'pluginOptions' => [
                         'allowClear' => true
@@ -45,6 +46,7 @@ use kartik\money\MaskMoney;
                 $data_ramo = ArrayHelper::map($ramo, 'id', 'ram_descricao');
                 echo $form->field($model, 'ramo_id')->widget(Select2::classname(), [
                 'data' =>  $data_ramo,
+                'disabled' => !$model->isNewRecord ? true : false,
                 'options' => ['placeholder' => 'Selecione o Ramo...'],
                 'pluginOptions' => [
                         'allowClear' => true
@@ -65,7 +67,7 @@ use kartik\money\MaskMoney;
             ?>
             </div>
             <div class="col-md-2">
-                 <?= $form->field($model, 'status')->radioList(['1' => 'Ativo', '0' => 'Inativo']) ?>
+                <?= $form->field($model, 'status')->radioList(['1' => 'Ativo', '0' => 'Inativo']) ?>
             </div>
         </div>
         <div class="row">
@@ -79,7 +81,7 @@ use kartik\money\MaskMoney;
                 ?>
             </div>
             <div class="col-md-2">
-                 <?= $form->field($model, 'tipo')->radioList(['1' => 'Ilimitado', '0' => 'Limitado']) ?>
+                <?= $form->field($model, 'tipo')->radioList(['1' => 'Ilimitado', '0' => 'Limitado']) ?>
             </div>
         </div>
     </div>

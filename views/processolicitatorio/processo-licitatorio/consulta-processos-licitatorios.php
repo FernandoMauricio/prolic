@@ -29,20 +29,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::button('Novo Processo Licitatório', ['value'=> Url::to(['processolicitatorio/processo-licitatorio/create']), 'class' => 'btn btn-success', 'id'=>'modalButton']) ?>
-    </p>
-
-<?php
-    Modal::begin([
-        'header' => '<h3>Novo Processo Licitatório</h3>',
-        'id' => 'modal',
-        'size' => 'modal-lg',
-        ]);
-    echo "<div id='modalContent'></div>";
-    Modal::end();
-?>
-
 <?php
 
 $gridColumns = [
@@ -156,27 +142,19 @@ $gridColumns = [
         ],
 
         [
-            'class' => 'kartik\grid\EditableColumn',
             'attribute' => 'situacao_id',
             'width'=>'5%',
             'value'=>function ($model, $key, $index, $widget) { 
                 return $model->situacao->sit_descricao;
             },
-            'readonly'=>function($model, $key, $index, $widget) {
-                return (!$model->situacao_id); // do not allow editing of inactive records
-            },
+            
             'filterType'=>GridView::FILTER_SELECT2,
             'filter'=>ArrayHelper::map(Situacao::find()->where(['sit_status' => 1])->orderBy('id')->asArray()->all(), 'id', 'sit_descricao'),
             'filterWidgetOptions'=>[
                 'pluginOptions'=>['allowClear'=>true],
             ],
                 'filterInputOptions'=>['placeholder'=>'Situação...'],
-            //CAIXA DE ALTERAÇÕES DA SITUAÇÃO
-            'editableOptions' => [
-                'header' => 'Situação',
-                'data'=>ArrayHelper::map(Situacao::find()->where(['sit_status' => 1])->orderBy('id')->asArray()->all(), 'id', 'sit_descricao'),
-                'inputType' => Editable::INPUT_DROPDOWN_LIST,
-            ],          
+         
         ],
 
         // 'prolic_datahomologacao',
@@ -206,37 +184,17 @@ $gridColumns = [
         ],
 
         ['class' => 'yii\grid\ActionColumn',
-        'template' => ' {observacoes} {view} {update}',
+        'template' => '{view-gerencia}',
         'contentOptions' => ['style' => 'width: 5%;'],
         'buttons' => [
 
             //VISUALIZAR
-            'view' => function ($url, $model) {
+            'view-gerencia' => function ($url, $model) {
                 return Html::a('<span class="glyphicon glyphicon-eye-open"></span> ', $url, [
                             'class'=>'btn btn-default btn-xs',
                             'title' => Yii::t('app', 'Visualizar'),
                         ]);
             },
-
-            //SOMENTE APARECERÁ CASO O PROCESSO NÃO ESTEJA CANCELADO
-            'update' => function ($url, $model) {
-                return $model->situacao_id !== 7 ? Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
-                    'class'=>'btn btn-primary btn-xs',
-                    'title' => Yii::t('app', 'Atualizar'),
-                       ]): '';
-            },
-
-            //DELETAR
-            // 'delete' => function ($url, $model) {
-            //     return Html::a('<span class="glyphicon glyphicon-trash"></span> ', $url, [
-            //                 'class'=>'btn btn-danger btn-xs',
-            //                 'title' => Yii::t('app', 'Deletar'),
-            //                 'data' =>  [
-            //                                 'confirm' => 'Você tem CERTEZA que deseja EXCLUIR esse item?',
-            //                                 'method' => 'post',
-            //                            ],
-            //             ]);
-            //     },  
             ],
         ],
     ];

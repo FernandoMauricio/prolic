@@ -12,7 +12,7 @@ use app\models\processolicitatorio\Observacoes;
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Listagem de Processo Licitatórios', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Listagem de Processo Licitatórios', 'url' => ['consulta-processos-licitatorios']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="processo-licitatorio-view">
@@ -20,35 +20,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('<span class="glyphicon glyphicon-arrow-left"></span> Retornar', ['index'], ['class' => 'btn btn-default']) ?>
-        <?= Html::a('Atualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::button('<span class="glyphicon glyphicon-tags"> </span> Incluir Observação', ['value'=> Url::to(['processolicitatorio/processo-licitatorio/observacoes', 'id' => $model->id ]), 'class' => 'btn btn-success', 'id'=>'modalButton']) ?>
-        <?= Html::button('<span class="glyphicon glyphicon-print"> </span> Gerar Capa', ['value'=> Url::to(['processolicitatorio/capas/gerar-relatorio', 'id' => $model->id ]), 'class' => 'btn btn-warning pull-right', 'id'=>'modalButton2']) ?>
+        <?= Html::a('<span class="glyphicon glyphicon-arrow-left"></span> Retornar', ['consulta-processos-licitatorios'], ['class' => 'btn btn-default']) ?>
     </p>
-
-    <?php
-        Modal::begin([
-            'header' => '<h3>Incluir Observação ' . '<small> Processo Licitatório '.$model->id.'</small></h3>',
-            'id' => 'modal',
-            'size' => 'modal-lg',
-            ]);
-
-        echo "<div id='modalContent'></div>";
-
-        Modal::end();
-    ?>
-
-    <?php
-        Modal::begin([
-            'header' => '<h3>Imprimir Capa ' . '<small> Processo Licitatório '.$model->id.'</small></h3>',
-            'id' => 'modal2',
-            'size' => 'modal-lg',
-            ]);
-
-        echo "<div id='modalContent2'></div>";
-
-        Modal::end();
-    ?>
 
 <div class="panel panel-primary">
   <div class="panel-heading">

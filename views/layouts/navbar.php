@@ -7,6 +7,7 @@ use kartik\nav\NavX;
 ?>
 
 <?php
+$session = Yii::$app->session;
     NavBar::begin([
         'brandLabel' => '<img src="css/img/logo_senac_topo.png"/>',
         'brandUrl' => Yii::$app->homeUrl,
@@ -14,6 +15,8 @@ use kartik\nav\NavX;
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+
+if($session['sess_codunidade'] == 6){ //ÁREA DA EQUIPE DO GMA
 
 echo NavX::widget([
 
@@ -41,7 +44,20 @@ echo NavX::widget([
     ],
 
     ]
-]); 
+]);
+
+} else{
+
+echo NavX::widget([
+
+'options' => ['class' => 'navbar-nav navbar-right'],
+                
+    'items' => [
+        ['label' => 'Processos Licitatórios', 'url' => ['/processolicitatorio/processo-licitatorio/consulta-processos-licitatorios']],
+    ]
+]);
+
+}
 
     NavBar::end();
 ?>

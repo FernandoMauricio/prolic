@@ -108,6 +108,35 @@ class ProcessoLicitatorioController extends Controller
         ]);
     }
 
+    public function actionConsultaProcessosLicitatorios()
+    {
+        $this->layout = 'main-full';
+        
+        $searchModel = new ProcessoLicitatorioSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->sort = ['defaultOrder' => ['id'=>SORT_DESC]];
+
+        return $this->render('consulta-processos-licitatorios', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionViewGerencia($id)
+    {
+        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+        $session = Yii::$app->session;
+        if($session['sess_codunidade'] == 6) {
+            return $this->render('/site/acesso-negado');
+        }else{
+            $model = $this->findModel($id);
+
+            return $this->render('view-gerencia', [
+                'model' => $this->findModel($id),
+            ]);
+        }
+    }
+
     /**
      * Lists all ProcessoLicitatorio models.
      * @return mixed

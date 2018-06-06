@@ -43,6 +43,16 @@ echo NavX::widget([
         ]
     ],
 
+        [
+        'label' => 'Usuário (' . utf8_encode(ucwords(strtolower($session['sess_nomeusuario']))) . ')',
+        'items' => [
+                    '<li class="dropdown-header">Área Usuário</li>',
+                        //['label' => 'Alterar Senha', 'url' => ['usuario-usu/update', 'id' => $sess_codusuario]],
+                        ['label' => 'Versões Anteriores', 'url' => ['/site/versao']],
+                        ['label' => 'Sair', 'url' => 'http://portalsenac.am.senac.br/portal_senac/control_base_vermodulos/control_base_vermodulos.php'],
+               ],
+        ],
+
     ]
 ]);
 

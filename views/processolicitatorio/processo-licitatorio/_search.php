@@ -1,7 +1,11 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
+use app\models\base\Ano;
+use app\models\base\Unidades;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorioSearch */
@@ -17,13 +21,34 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'ano_id') ?>
+    <?php   
+        $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
+        $data_ano = ArrayHelper::map($ano, 'id', 'an_ano');
+            echo $form->field($model, 'ano_id')->widget(Select2::classname(), [
+            'data' =>  $data_ano,
+            'options' => ['placeholder' => 'Selecione o Ano...'],
+            'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
+    ?>
 
     <?= $form->field($model, 'prolic_objeto') ?>
 
     <?= $form->field($model, 'prolic_codmxm') ?>
 
-    <?= $form->field($model, 'prolic_destino') ?>
+    <?php
+        $destinos = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
+        $options = ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado');
+            echo $form->field($model, 'prolic_destino')->widget(Select2::classname(), [
+                'data' => $options,
+                'options' => ['placeholder' => 'Informe os Destinos...', 'multiple'=>true],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);  
+    ?>
+
 
     <?php // echo $form->field($model, 'modalidade_valorlimite_id') ?>
 

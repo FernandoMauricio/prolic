@@ -344,7 +344,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td><?= $observacao->obs_descricao ?></td>
                     <td><?= $observacao->obs_usuariocriacao ?></td>
-                    <td><?= $observacao->obs_datacriacao ?></td>
+                    <td><?= date('d/m/Y', strtotime($observacao->obs_datacriacao)); ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

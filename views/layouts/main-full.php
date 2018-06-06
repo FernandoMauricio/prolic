@@ -43,7 +43,7 @@ AppAsset::register($this);
     <div class="container">
         <p class="pull-left">&copy; Gerência de Tecnologia da Informação - GTI <?= date('Y') ?></p>
 
-        <p class="pull-right">PROLIC (v. 1.0)</p>
+        <p class="pull-right">PROLIC (v. 1.1)</p>
     </div>
 </footer>
 

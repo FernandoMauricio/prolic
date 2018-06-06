@@ -9,6 +9,7 @@ use kartik\editable\Editable;
 use yii\bootstrap\Modal;
 use kartik\widgets\DatePicker;
 use yii\helpers\StringHelper;
+use yii\bootstrap\Collapse;
 
 use app\models\base\Ano;
 use app\models\base\ModalidadeValorlimite;
@@ -27,7 +28,19 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="processo-licitatorio-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php
+        echo Collapse::widget([
+                    'items' => [
+                        // equivalent to the above
+                        [
+                            'label' => 'Pesquisa Avançada',
+                            'content' => $this->render('_search', ['model' => $searchModel]),
+                            // open its content by default
+                            //'options' => ['class' => 'panel panel-primary']
+                        ],
+                    ]
+                ]);
+    ?>
 
     <p>
         <?= Html::button('Novo Processo Licitatório', ['value'=> Url::to(['processolicitatorio/processo-licitatorio/create']), 'class' => 'btn btn-success', 'id'=>'modalButton']) ?>

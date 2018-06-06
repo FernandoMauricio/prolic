@@ -91,6 +91,12 @@ class ProcessoLicitatorioController extends Controller
     {
         $session = Yii::$app->session;
 
+        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+       $session = Yii::$app->session;
+        if($session['sess_codunidade'] != 6){
+            return $this->AccessoAdministrador();
+        }
+
         $model = new Observacoes();
         $processolicitatorio = $this->findModel($id);
 
@@ -111,7 +117,6 @@ class ProcessoLicitatorioController extends Controller
     public function actionConsultaProcessosLicitatorios()
     {
         $this->layout = 'main-full';
-        
         $searchModel = new ProcessoLicitatorioSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->sort = ['defaultOrder' => ['id'=>SORT_DESC]];
@@ -124,17 +129,11 @@ class ProcessoLicitatorioController extends Controller
 
     public function actionViewGerencia($id)
     {
-        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-        $session = Yii::$app->session;
-        if($session['sess_codunidade'] == 6) {
-            return $this->render('/site/acesso-negado');
-        }else{
-            $model = $this->findModel($id);
+        $model = $this->findModel($id);
 
-            return $this->render('view-gerencia', [
-                'model' => $this->findModel($id),
-            ]);
-        }
+        return $this->render('view-gerencia', [
+            'model' => $this->findModel($id),
+        ]);
     }
 
     /**
@@ -207,16 +206,15 @@ class ProcessoLicitatorioController extends Controller
     public function actionView($id)
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-        $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
-            return $this->render('/site/acesso-negado');
-        }else{
+       $session = Yii::$app->session;
+       if($session['sess_codunidade'] != 6){
+            return $this->AccessoAdministrador();
+        }
             $model = $this->findModel($id);
 
             return $this->render('view', [
                 'model' => $this->findModel($id),
             ]);
-        }
     }
 
     /**
@@ -227,10 +225,10 @@ class ProcessoLicitatorioController extends Controller
     public function actionCreate()
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-        $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
-            return $this->render('/site/acesso-negado');
-        }else{
+       $session = Yii::$app->session;
+       if($session['sess_codunidade'] != 6){
+            return $this->AccessoAdministrador();
+        }
 
         $model = new ProcessoLicitatorio();
 
@@ -282,7 +280,6 @@ class ProcessoLicitatorioController extends Controller
                 'situacao' => $situacao,
                 'empresa' => $empresa,
             ]);
-        }
     }
 
     /**
@@ -295,10 +292,10 @@ class ProcessoLicitatorioController extends Controller
     public function actionUpdate($id)
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-        $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
-            return $this->render('/site/acesso-negado');
-        }else{
+       $session = Yii::$app->session;
+       if($session['sess_codunidade'] != 6){
+            return $this->AccessoAdministrador();
+        }
 
         $model = $this->findModel($id);
 
@@ -348,7 +345,6 @@ class ProcessoLicitatorioController extends Controller
                 'situacao' => $situacao,
                 'empresa' => $empresa,
             ]);
-        }
     }
 
     /**
@@ -397,5 +393,11 @@ class ProcessoLicitatorioController extends Controller
         {
            return $this->redirect('http://portalsenac.am.senac.br');
         }
+    }
+
+    public function AccessoAdministrador()
+    {
+            $this->layout = 'main-acesso-negado';
+            return $this->render('/site/acesso_negado');
     }
 }

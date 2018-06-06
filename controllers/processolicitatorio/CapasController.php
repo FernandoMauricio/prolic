@@ -35,10 +35,9 @@ class CapasController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
-            return $this->render('/site/acesso-negado');
-        }else{
-
+       if($session['sess_codunidade'] != 6){
+            return $this->AccessoAdministrador();
+        }
         	$model = new Capas();
 
             if ($model->load(Yii::$app->request->post())) {
@@ -64,9 +63,9 @@ class CapasController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
-            return $this->render('/site/acesso-negado');
-        }else{
+       if($session['sess_codunidade'] != 6){
+            return $this->AccessoAdministrador();
+        }
 
         $this->layout = 'main-imprimir';
         $model = $this->findProcessoLicitatorio($id);
@@ -81,9 +80,9 @@ class CapasController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
-            return $this->render('/site/acesso-negado');
-        }else{
+       if($session['sess_codunidade'] != 6){
+            return $this->AccessoAdministrador();
+        }
 
         $this->layout = 'main-imprimir';
         $model = $this->findProcessoLicitatorio($id);
@@ -98,9 +97,9 @@ class CapasController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
-            return $this->render('/site/acesso-negado');
-        }else{
+       if($session['sess_codunidade'] != 6){
+            return $this->AccessoAdministrador();
+        }
 
         $this->layout = 'main-imprimir-indice';
         $model = $this->findProcessoLicitatorio($id);
@@ -135,5 +134,11 @@ class CapasController extends Controller
         {
            return $this->redirect('http://portalsenac.am.senac.br');
         }
+    }
+    
+    public function AccessoAdministrador()
+    {
+            $this->layout = 'main-acesso-negado';
+            return $this->render('/site/acesso_negado');
     }
 }

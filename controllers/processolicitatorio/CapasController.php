@@ -138,7 +138,6 @@ class CapasController extends Controller
     
     public function AccessoAdministrador()
     {
-            $this->layout = 'main-acesso-negado';
-            return $this->render('/site/acesso_negado');
+        return $this->render('/site/acesso-negado');
     }
 }

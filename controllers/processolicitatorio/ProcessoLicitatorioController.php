@@ -116,6 +116,10 @@ class ProcessoLicitatorioController extends Controller
 
     public function actionConsultaProcessosLicitatorios()
     {
+        $session = Yii::$app->session;
+        if($session['sess_responsavelsetor'] == 0){ //Verifica se o colaborador é gerente
+            return $this->AccessoAdministrador();
+        }
         $this->layout = 'main-full';
         $searchModel = new ProcessoLicitatorioSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -129,6 +133,10 @@ class ProcessoLicitatorioController extends Controller
 
     public function actionViewGerencia($id)
     {
+        $session = Yii::$app->session;
+        if($session['sess_responsavelsetor'] == 0){ //Verifica se o colaborador é gerente
+            return $this->AccessoAdministrador();
+        }
         $model = $this->findModel($id);
 
         return $this->render('view-gerencia', [
@@ -397,7 +405,6 @@ class ProcessoLicitatorioController extends Controller
 
     public function AccessoAdministrador()
     {
-            $this->layout = 'main-acesso-negado';
-            return $this->render('/site/acesso_negado');
+        return $this->render('/site/acesso-negado');
     }
 }

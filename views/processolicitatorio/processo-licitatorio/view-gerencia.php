@@ -229,18 +229,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     [
                         'attribute'=>'prolic_datacertame',
+                        'format' => ['date', 'php:d/m/Y'],
                         'value'=> $model->prolic_datacertame, 
                         'displayOnly'=>true,
                     ],
 
                     [
                         'attribute'=>'prolic_datadevolucao',
+                        'format' => ['date', 'php:d/m/Y'],
                         'value'=> $model->prolic_datadevolucao, 
                         'displayOnly'=>true,
                     ],
 
                     [
                         'attribute'=>'prolic_datahomologacao',
+                        'format' => ['date', 'php:d/m/Y'],
                         'value'=> $model->prolic_datahomologacao, 
                         'displayOnly'=>true,
                     ],
@@ -264,6 +267,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     [
                         'attribute'=>'prolic_datacriacao',
+                        'format' => ['date', 'php:d/m/Y'],
                         'value'=> $model->prolic_datacriacao, 
                         'displayOnly'=>true,
                     ],
@@ -280,6 +284,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     [
                         'attribute'=>'prolic_dataatualizacao',
+                        'format' => ['date', 'php:d/m/Y'],
                         'value'=> $model->prolic_dataatualizacao, 
                         'displayOnly'=>true,
                     ],

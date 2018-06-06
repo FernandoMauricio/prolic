@@ -17,7 +17,7 @@ $this->title = 'Processo Seletivo - Senac AM';
                 <div class="panel-heading"><i class="glyphicon glyphicon-star-empty"></i> O que há de novo? - Versão 1.1 - Publicado em 06/06/2018</div>
                 <div class="panel-body">
                     <h4><b style="color: #337ab7;">Implementações</b></h4>
-                        <h5><i class="glyphicon glyphicon-tag"></i><b> Curriculos</b></h5>
+                        <h5><i class="glyphicon glyphicon-tag"></i><b> Processos Licitatórios</b></h5>
                             <h5>- Criado a tela para acompanhamento Gerencial;</h5>
                             <h5>- Criado a pesquisa avançada contendo campos que estão ocultos na listagem dos processos;</h5>
                     <h4><b style="color: #337ab7;">Correções</b></h4>

@@ -56,7 +56,6 @@ class CapasController extends Controller
                   'model' => $model,
                   ]);
             }
-        }
     }
 
     public function actionCapaPadrao($id)
@@ -73,7 +72,6 @@ class CapasController extends Controller
         return $this->render('/processolicitatorio/processo-licitatorio/capas/capa-padrao', [
           'model' => $model, 
           ]);
-      }
     }
 
     public function actionCapaFecomercio($id)
@@ -90,7 +88,6 @@ class CapasController extends Controller
         return $this->render('/processolicitatorio/processo-licitatorio/capas/capa-fecomercio', [
           'model' => $model, 
           ]);
-      }
     }
 
     public function actionCapaIndice($id)
@@ -107,7 +104,6 @@ class CapasController extends Controller
         return $this->render('/processolicitatorio/processo-licitatorio/capas/capa-indice', [
           'model' => $model, 
           ]);
-      }
     }
 
     protected function findProcessoLicitatorio($id)

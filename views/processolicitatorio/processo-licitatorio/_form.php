@@ -59,7 +59,7 @@ use faryshta\widgets\JqueryTagsInput;
                     ]); 
                 ?>
             </div>
-            <div class="col-md-2"><?= $form->field($model, 'prolic_codmxm')->textInput(['readonly' => !$model->isNewRecord]) ?></div>
+            <div class="col-md-2"><?= $form->field($model, 'prolic_codmxm')->textInput() ?></div>
             <div class="col-md-5">
                 <?php 
                     $options = ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado');

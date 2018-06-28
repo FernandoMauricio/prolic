@@ -95,7 +95,7 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
             ->andFilterWhere(['like', 'prolic_motivo', $this->prolic_motivo])
             ->andFilterWhere(['like', 'prolic_usuariocriacao', $this->prolic_usuariocriacao])
             ->andFilterWhere(['like', 'prolic_usuarioatualizacao', $this->prolic_usuarioatualizacao])
-            ->andFilterWhere(['like', 'comprador.comp_descricao', $this->comprador_id]);
+            ->andFilterWhere(['like', 'comprador.id', $this->comprador_id]);
 
         return $dataProvider;
     }

@@ -47,9 +47,9 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
     <tr>
       <td rowspan="4" colspan="5">
         <p><b> Sr(a). Gerente</b></p>
-        <p> Atendendo a solicitação do(s) solicitante(s) acima, foram consultadas <b><?= $model->prolic_cotacoes; ?> empresas</b> especializadas no ramo <b><?= $model->modalidadeValorlimite->ramo->ram_descricao; ?></b>, obetendo as referidas empresas: </p>
+        <p> Atendendo a solicitação do(s) solicitante(s) acima, foram consultadas <b><?= $model->prolic_cotacoes; ?> empresas</b> especializadas no ramo <b><?= $model->modalidadeValorlimite->ramo->ram_descricao; ?></b>, obtendo as referidas empresas: </p>
         <p><b><?= str_replace(" / ","<br>", $model->prolic_empresa); ?></b></p>
-        <p> A ofera mais vantajosa para o SENAC/AM, conforme mapa de cotação anexo no valor total de:</p>
+        <p> A oferta mais vantajosa para o SENAC/AM, conforme mapa de cotação anexo no valor total de:</p>
         <p><b><?= 'R$ ' . number_format($model->prolic_valorefetivo, 2, ',', '.'); ?></b></p>
         <p> Este processo está amparado pela <b> <?= $model->artigo->art_descricao ?></b>.</p>
         <p> Há recursos para o atendimento desta despesa:</p>

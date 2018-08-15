@@ -17,6 +17,7 @@ use app\models\base\Comprador;
 use app\models\base\Artigo;
 use app\models\base\Situacao;
 use app\models\base\Modalidade;
+use app\models\base\Empresa;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\processolicitatorio\ProcessoLicitatorioSearch */
@@ -59,19 +60,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 
 $gridColumns = [
+
         [
             'attribute'=>'ano_id', 
-            'width'=>'5%',
+            'width'=>'2%',
             'value'=>function ($model, $key, $index, $widget) { 
                 return $model->ano->an_ano;
             },
-            'filterType'=>GridView::FILTER_SELECT2,
-            'filter'=>ArrayHelper::map(Ano::find()->orderBy('id')->asArray()->all(), 'id', 'an_ano'), 
-            'filterWidgetOptions'=>[
-                'pluginOptions'=>['allowClear'=>true],
-            ],
-            'filterInputOptions'=>['placeholder'=>'Ano...'],
-            'group'=>true,  // enable grouping
         ],
 
         [
@@ -121,19 +116,39 @@ $gridColumns = [
             'subGroupOf'=>1 // supplier column index is the parent group
         ],
 
-        'prolic_empresa',
+        [
+            'attribute'=>'prolic_empresa',
+            'width'=>'10%',
+            'value'=>function ($model, $key, $index, $widget) { 
+                return $model->prolic_empresa;
+            },
+            'filterType'=>GridView::FILTER_SELECT2,
+            'filter'=>ArrayHelper::map(Empresa::find()->where(['emp_status' => 1])->asArray()->all(), 'emp_descricao', 'emp_descricao'), 
+            'filterWidgetOptions'=>[
+                'pluginOptions'=>['allowClear'=>true],
+            ],
+            'filterInputOptions'=>['placeholder'=>'Empresa...'],
+            'subGroupOf'=>1 // supplier column index is the parent group
+        ],
 
-        'id',
+        [
+            'attribute' => 'id',
+            'width'=>'2%',
+        ],
+
         [
             'attribute' => 'prolic_sequenciamodal',
+            'width'=>'2%',
             'value'=>function ($model, $key, $index, $widget) { 
                 return $model->prolic_sequenciamodal;
             },
         ],
+
         [
             'attribute' => 'prolic_codmxm',
-            'width'=>'5%',
+            'width'=>'2%',
         ],
+        
         [
             'attribute' => 'prolic_objeto',
             'width'=>'20%',
@@ -272,7 +287,7 @@ $gridColumns = [
     'beforeHeader'=>[
         [
             'columns'=>[
-                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>13,'class'=>'text-center warning']], 
+                ['content'=>'Detalhes dos Processos', 'options'=>['colspan'=>13, 'class'=>'text-center warning']], 
                 ['content'=>'Área de Ações', 'options'=>['colspan'=>1, 'class'=>'text-center warning']], 
             ],
         ]

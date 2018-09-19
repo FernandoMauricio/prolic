@@ -7,7 +7,7 @@
         <h1>Acesso Negado!</h1>
         <p>Você não tem permissão para acessar esse módulo, retorne clicando no botão abaixo:</p>
         <p>
-          <a class="btn btn-lg btn-danger" href="http://portalsenac.am.senac.br" role="button">Retornar</a>
+          <a class="btn btn-lg btn-danger" href="https://portalsenac.am.senac.br" role="button">Retornar</a>
         </p>
       </div>
 

@@ -26,11 +26,13 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
       <td><?= $model->recursos->rec_descricao ?></td>
     </tr>
     <tr>
-      <td colspan="3"><?= $model->artigo->art_descricao ?></td>
+      <th>RAMO</th>
+      <td><?= $model->modalidadeValorlimite->ramo->ram_descricao ?></td>
       <th>DATA CERTAME</th>
       <td><?= $model->prolic_datacertame != NULL ? date('d/m/Y', strtotime($model->prolic_datacertame)) : '' ?></td>
       <th>ENCAMINHAR P/ HOMOLOGAÇÃO ATÉ</th>
       <td><?= $model->prolic_datahomologacao != NULL ? date('d/m/Y', strtotime($model->prolic_datahomologacao)) : ''?></td>
+      <td><?= $model->artigo->art_descricao ?></td>
     </tr>
     <tr>
       <th>OBJETO</th>

@@ -18,8 +18,8 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
     public function rules()
     {
         return [
-            [['id', 'ano_id', 'prolic_codmxm', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'situacao_id'], 'integer'],
-            [['prolic_objeto', 'prolic_destino', 'prolic_centrocusto', 'prolic_elementodespesa', 'prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_motivo', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_usuarioatualizacao', 'prolic_dataatualizacao', 'modalidade', 'comprador_id'], 'safe'],
+            [['id', 'ano_id', 'prolic_codmxm', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'situacao_id', 'prolic_codprocesso'], 'integer'],
+            [['prolic_objeto', 'prolic_destino', 'prolic_centrocusto', 'prolic_elementodespesa', 'prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_motivo', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_usuarioatualizacao', 'prolic_dataatualizacao', 'modalidade', 'comprador_id', 'prolic_empresa'], 'safe'],
             [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo'], 'number'],
         ];
     }
@@ -68,7 +68,7 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
         // grid filtering conditions
         $query->andFilterWhere([
             'processo_licitatorio.id' => $this->id,
-            'ano_id' => $this->ano_id,
+            'prolic_codprocesso' => $this->prolic_codprocesso,
             'prolic_dataprocesso' => $this->prolic_dataprocesso,
             'prolic_codmxm' => $this->prolic_codmxm,
             'modalidade_valorlimite_id' => $this->modalidade_valorlimite_id,
@@ -95,7 +95,9 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
             ->andFilterWhere(['like', 'prolic_motivo', $this->prolic_motivo])
             ->andFilterWhere(['like', 'prolic_usuariocriacao', $this->prolic_usuariocriacao])
             ->andFilterWhere(['like', 'prolic_usuarioatualizacao', $this->prolic_usuarioatualizacao])
-            ->andFilterWhere(['like', 'comprador.id', $this->comprador_id]);
+            ->andFilterWhere(['like', 'comprador.id', $this->comprador_id])
+            ->andFilterWhere(['like', 'ano.id', $this->ano_id])
+            ->andFilterWhere(['like', 'prolic_empresa', $this->prolic_empresa]);
 
         return $dataProvider;
     }

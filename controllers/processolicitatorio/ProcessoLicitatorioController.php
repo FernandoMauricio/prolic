@@ -190,7 +190,7 @@ class ProcessoLicitatorioController extends Controller
                     ->setHtmlBody('
                        <p> Prezado(a) Gerente,</p>
                        <p> Existe um Processo Licitatório de <b>código: '.$model->id.'</b> com a situação '.$model->situacao->sit_descricao.'.</p>
-                       <p> Por favor, não responda este e-mail. Acesse http://portalsenac.am.senac.br para analisar o Processo Licitatório.</p>
+                       <p> Por favor, não responda este e-mail. Acesse https://portalsenac.am.senac.br para analisar o Processo Licitatório.</p>
                        <p> Atenciosamente, <br> Gerência de Material - Senac AM.</p>
                        ')
                     ->send();
@@ -265,8 +265,12 @@ class ProcessoLicitatorioController extends Controller
         is_array($model->prolic_centrocusto) ? $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto) : null;
         is_array($model->prolic_empresa) ? $model->prolic_empresa = implode(', ', $model->prolic_empresa) : null;
 
+        //Número do Processo
+        $numeroProcesso = ProcessoLicitatorio::find()->innerJoinWith('ano')->where(['ano.an_ano' => date('Y')])->count();
+        $model->prolic_codprocesso = $numeroProcesso;
+
         //Sequencia do cód. da modalidade de acordo com o tipo
-        $incremento = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->where(['modalidade.id'=>$model->modalidadeValorlimite->modalidade_id])->count();
+        $incremento = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->innerJoinWith('ano')->where(['modalidade.id'=>$model->modalidadeValorlimite->modalidade_id, 'ano.an_ano' => date('Y')])->count();
         $model->prolic_sequenciamodal = $incremento + 1;
 
             if ($model->validate()) {
@@ -399,7 +403,7 @@ class ProcessoLicitatorioController extends Controller
             && !isset($session['sess_unidade']) 
             && !isset($session['sess_responsavelsetor'])) 
         {
-           return $this->redirect('http://portalsenac.am.senac.br');
+           return $this->redirect('https://portalsenac.am.senac.br');
         }
     }
 

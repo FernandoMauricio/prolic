@@ -132,7 +132,7 @@ $gridColumns = [
         ],
 
         [
-            'attribute' => 'id',
+            'attribute' => 'prolic_codprocesso',
             'width'=>'2%',
         ],
 

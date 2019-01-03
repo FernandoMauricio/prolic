@@ -11,7 +11,7 @@ use app\models\processolicitatorio\Observacoes;
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
 
-$this->title = $model->id;
+$this->title = $model->prolic_codprocesso;
 $this->params['breadcrumbs'][] = ['label' => 'Listagem de Processo Licitatórios', 'url' => ['consulta-processos-licitatorios']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

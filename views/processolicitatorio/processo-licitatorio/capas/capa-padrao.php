@@ -18,7 +18,7 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
     </tr>
     <tr>
       <th>PROCESSO Nº</th>
-      <td><?= $model->id ?></td>
+      <td><?= $model->prolic_codprocesso ?></td>
       <th>MODALIDADE</th>
       <td><?= $model->modalidadeValorlimite->modalidade->mod_descricao ?></td>
       <td><?= $model->prolic_sequenciamodal ?></td>

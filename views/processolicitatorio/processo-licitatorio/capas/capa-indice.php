@@ -22,7 +22,7 @@ use kartik\detail\DetailView;
     </tr>
     <tr>
       <th> PROCESSO Nº</th>
-      <td><?= $model->id ?></td>
+      <td><?= $model->prolic_codprocesso ?></td>
       <td><?= $model->modalidadeValorlimite->modalidade->mod_descricao ?></td>
       <td><?= $model->prolic_sequenciamodal ?></td>
     </tr>

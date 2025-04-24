@@ -15,4 +15,12 @@ class FiltroDashboardForm extends Model
             [['ano', 'mes'], 'integer'],
         ];
     }
+
+    public function init()
+    {
+        parent::init();
+        if ($this->ano === null) {
+            $this->ano = (int)date('Y');
+        }
+    }
 }

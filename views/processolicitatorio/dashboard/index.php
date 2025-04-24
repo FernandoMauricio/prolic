@@ -112,15 +112,40 @@ $dataProvider = new ArrayDataProvider([
                             'labels' => ['style' => ['fontSize' => '13px']],
                         ],
                         'yAxis' => [
-                            'title' => ['text' => 'Quantidade'],
-                            'labels' => ['style' => ['fontSize' => '13px']],
+                            'title' => [
+                                'text' => 'Quantidade',
+                                'style' => [
+                                    'fontSize' => '13px',
+                                    'fontWeight' => 'bold',
+                                    'color' => '#333'
+                                ]
+                            ],
+                            'labels' => [
+                                'style' => ['fontSize' => '13px']
+                            ]
+                        ],
+                        'legend' => [
+                            'itemStyle' => [
+                                'fontSize' => '13px',
+                                'fontWeight' => 'bold',
+                            ],
                         ],
                         'tooltip' => [
                             'headerFormat' => '<b>{point.key}</b><br>',
                             'pointFormat' => 'Total: {point.y}',
+                            'style' => ['fontSize' => '13px'],
                         ],
                         'plotOptions' => [
-                            'column' => ['dataLabels' => ['enabled' => true]]
+                            'column' => [
+                                'dataLabels' => [
+                                    'enabled' => true,
+                                    'style' => [
+                                        'fontSize' => '13px',
+                                        'fontWeight' => 'bold',
+                                        'color' => '#000000',
+                                    ],
+                                ],
+                            ]
                         ],
                         'series' => [[
                             'name' => 'Processos',
@@ -152,7 +177,11 @@ $dataProvider = new ArrayDataProvider([
                                 'dataLabels' => [
                                     'enabled' => true,
                                     'format' => '{point.name}: {point.percentage:.1f}%',
-                                    'style' => ['fontSize' => '14px'],
+                                    'style' => [
+                                        'fontSize' => '16px',
+                                        'fontWeight' => 'bold',
+                                        'color' => '#000000',
+                                    ]
                                 ]
                             ]
                         ],
@@ -188,8 +217,29 @@ $dataProvider = new ArrayDataProvider([
                             'categories' => array_column($topCompradores, 'name'),
                             'labels' => ['style' => ['fontSize' => '13px']]
                         ],
-                        'yAxis' => ['title' => ['text' => 'Total de Processos']],
+                        'yAxis' => [
+                            'title' => [
+                                'text' => 'Total de Processos',
+                                'style' => ['fontSize' => '16px', 'fontWeight' => 'bold']
+                            ],
+                            'labels' => [
+                                'style' => ['fontSize' => '13px']
+                            ]
+                        ],
                         'tooltip' => ['pointFormat' => '{point.y} processos'],
+                        'plotOptions' => [
+                            'bar' => [
+                                'dataLabels' => [
+                                    'enabled' => true,
+                                    'style' => [
+                                        'fontSize' => '16px',
+                                        'fontWeight' => 'bold',
+                                        'color' => '#000000',
+                                    ]
+                                ],
+                            ]
+                        ],
+
                         'legend' => ['enabled' => false],
                         'series' => [[
                             'name' => 'Processos',

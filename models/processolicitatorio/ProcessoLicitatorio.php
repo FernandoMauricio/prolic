@@ -221,7 +221,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     //FUNÇÃO PARA COVERTER NUMERO POR EXTENSO
     public function removerFormatacaoNumero($strNumero)
     {
-        $strNumero = trim(str_replace("R$", null, $strNumero));
+        $strNumero = trim(str_replace("R$", '', $strNumero));
         $vetVirgula = explode(",", $strNumero);
         if (count($vetVirgula) == 1) {
             $acentos = array(".");

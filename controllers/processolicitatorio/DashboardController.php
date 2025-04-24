@@ -22,6 +22,7 @@ class DashboardController extends Controller
             'situacoes' => DashboardService::getDistribuicaoPorSituacao($filtroModel),
             'topCompradores' => DashboardService::getTopCompradores($filtroModel),
             'alertas' => DashboardService::getAlertas($filtroModel),
+            'distribuicaoMensal' => DashboardService::getDistribuicaoMensal($filtroModel),
             'anosDisponiveis' => DashboardService::getAnosDisponiveis(),
         ]);
     }

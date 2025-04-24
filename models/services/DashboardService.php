@@ -118,11 +118,10 @@ class DashboardService
         return $results;
     }
 
-
     public static function getAlertas(FiltroDashboardForm $filtro): array
     {
         $query = ProcessoLicitatorio::find()
-            ->where(['situacao_id' => 2])
+            ->where(['situacao_id' => [1, 2, 5, 6]]) // Situações -> Elaboração, Licitação, Andamento, Homologação
             ->andWhere(['<', 'prolic_datacertame', new Expression('DATE_SUB(NOW(), INTERVAL 90 DAY)')])
             ->andWhere(['prolic_datahomologacao' => null]);
 
@@ -135,5 +134,31 @@ class DashboardService
         }
 
         return $query->limit(10)->all();
+    }
+
+    public static function getDistribuicaoMensal(FiltroDashboardForm $filtro): array
+    {
+        $queryProcessos = ProcessoLicitatorio::find()
+            ->select(['mes' => new Expression('MONTH(prolic_datacertame)'), 'y' => new Expression('COUNT(*)')])
+            ->groupBy(['mes'])
+            ->orderBy(['mes' => SORT_ASC]);
+
+        $queryAlertas = ProcessoLicitatorio::find()
+            ->select(['mes' => new Expression('MONTH(prolic_datacertame)'), 'y' => new Expression('COUNT(*)')])
+            ->where(['situacao_id' => [1, 2, 5, 6]]) // Situações -> Elaboração, Licitação, Andamento, Homologação
+            ->andWhere(['<', 'prolic_datacertame', new Expression('DATE_SUB(NOW(), INTERVAL 90 DAY)')])
+            ->andWhere(['prolic_datahomologacao' => null])
+            ->groupBy(['mes'])
+            ->orderBy(['mes' => SORT_ASC]);
+
+        if ($filtro->ano) {
+            $queryProcessos->andWhere(['YEAR(prolic_datacertame)' => $filtro->ano]);
+            $queryAlertas->andWhere(['YEAR(prolic_datacertame)' => $filtro->ano]);
+        }
+
+        return [
+            'processos' => $queryProcessos->asArray()->all(),
+            'alertas' => $queryAlertas->asArray()->all()
+        ];
     }
 }

@@ -97,6 +97,137 @@ $dataProvider = new ArrayDataProvider([
     <?php endforeach; ?>
 </div>
 
+<!-- Distribuição Mensal de Processos e Alertas -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Distribuição Mensal de Processos e Alertas</strong></div>
+            <div class="panel-body">
+                <?php
+                $meses = [
+                    1 => 'Jan',
+                    2 => 'Fev',
+                    3 => 'Mar',
+                    4 => 'Abr',
+                    5 => 'Mai',
+                    6 => 'Jun',
+                    7 => 'Jul',
+                    8 => 'Ago',
+                    9 => 'Set',
+                    10 => 'Out',
+                    11 => 'Nov',
+                    12 => 'Dez'
+                ];
+                $dadosProcessos = array_fill(1, 12, 0);
+                foreach ($distribuicaoMensal['processos'] as $p) {
+                    $dadosProcessos[(int)$p['mes']] = (int)$p['y'];
+                }
+                $dadosAlertas = array_fill(1, 12, 0);
+                foreach ($distribuicaoMensal['alertas'] as $a) {
+                    $dadosAlertas[(int)$a['mes']] = (int)$a['y'];
+                }
+
+                echo Highcharts::widget([
+                    'options' => [
+                        'chart' => [
+                            'type' => 'column',
+                            'style' => [
+                                'fontFamily' => 'Arial',
+                                'fontSize' => '13px',
+                            ],
+                        ],
+                        'title' => false,
+                        'xAxis' => [
+                            'categories' => array_values($meses),
+                            'labels' => ['style' => ['fontSize' => '13px']],
+                            'title' => [
+                                'text' => 'Mês',
+                                'style' => ['fontSize' => '13px']
+                            ]
+                        ],
+                        'yAxis' => [
+                            'title' => [
+                                'text' => 'Quantidade de Processos',
+                                'style' => ['fontSize' => '13px']
+                            ],
+                            'labels' => ['style' => ['fontSize' => '13px']],
+                        ],
+                        'tooltip' => [
+                            'pointFormat' => '<span style="color:{series.color}"> {series.name}: <b>{point.y}</b></span><br>',
+                            'style' => [
+                                'fontSize' => '13px',
+                                'fontFamily' => 'Arial',
+                            ],
+                        ],
+                        'plotOptions' => [
+                            'column' => [
+                                'dataLabels' => [
+                                    'enabled' => true,
+                                    'style' => [
+                                        'fontSize' => '12px',
+                                        'fontWeight' => 'bold',
+                                        'color' => '#000'
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'series' => [
+                            [
+                                'name' => 'Processos',
+                                'data' => array_values($dadosProcessos),
+                                'color' => '#007bff'
+                            ],
+                            [
+                                'name' => 'Alertas',
+                                'data' => array_values($dadosAlertas),
+                                'color' => '#dc3545'
+                            ]
+                        ]
+                    ]
+                ]);
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Alertas -->
+<?php if (!empty($alertas)): ?>
+    <div class="panel panel-danger">
+        <div class="panel-heading"><strong>⚠️ Processos com Possível Atraso</strong></div>
+        <div class="panel-body">
+            <ul class="list-group">
+                <?php foreach ($alertas as $processo): ?>
+                    <?php
+                    switch ($processo->situacao_id) {
+                        case 1:
+                            $class = 'list-group-item-success';
+                            break;
+                        case 2:
+                            $class = 'list-group-item-warning';
+                            break;
+                        case 5:
+                            $class = 'list-group-item-danger';
+                            break;
+                        case 6:
+                            $class = 'list-group-item-info';
+                            break;
+                        default:
+                            $class = 'list-group-item-default';
+                    }
+                    ?>
+                    <li class="list-group-item <?= $class ?>">
+                        <strong><?= Html::encode($processo->prolic_codprocesso) ?></strong> —
+                        <?= Html::encode(StringHelper::truncate($processo->prolic_objeto, 80)) ?> —
+                        Certame: <?= Yii::$app->formatter->asDate($processo->prolic_datacertame) ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
+<?php endif; ?>
+
 <!-- Gráficos Modalidade e Situação -->
 <div class="row">
     <div class="col-md-6">
@@ -132,7 +263,7 @@ $dataProvider = new ArrayDataProvider([
                         ],
                         'tooltip' => [
                             'headerFormat' => '<b>{point.key}</b><br>',
-                            'pointFormat' => 'Total: {point.y}',
+                            'pointFormat' => '<span style="color:{series.color}">Total: <b>{point.y}</b></span><br>',
                             'style' => ['fontSize' => '13px'],
                         ],
                         'plotOptions' => [
@@ -226,7 +357,13 @@ $dataProvider = new ArrayDataProvider([
                                 'style' => ['fontSize' => '13px']
                             ]
                         ],
-                        'tooltip' => ['pointFormat' => '{point.y} processos'],
+                        'tooltip' => [
+                            'pointFormat' => '<span style="color:{series.color}"><b>{point.y} processos</b><br>',
+                            'style' => [
+                                'fontSize' => '13px',
+                                'fontFamily' => 'Arial',
+                            ],
+                        ],
                         'plotOptions' => [
                             'bar' => [
                                 'dataLabels' => [
@@ -239,7 +376,6 @@ $dataProvider = new ArrayDataProvider([
                                 ],
                             ]
                         ],
-
                         'legend' => ['enabled' => false],
                         'series' => [[
                             'name' => 'Processos',
@@ -251,36 +387,3 @@ $dataProvider = new ArrayDataProvider([
         </div>
     </div>
 </div>
-
-<!-- Alertas -->
-<?php if (!empty($alertas)): ?>
-    <div class="panel panel-danger">
-        <div class="panel-heading"><strong>⚠️ Processos com Possível Atraso</strong></div>
-        <div class="panel-body">
-            <ul class="list-group">
-                <?php foreach ($alertas as $processo): ?>
-                    <?php
-                    switch ($processo->situacao_id) {
-                        case 1:
-                            $class = 'list-group-item-success';
-                            break;
-                        case 2:
-                            $class = 'list-group-item-warning';
-                            break;
-                        case 7:
-                            $class = 'list-group-item-danger';
-                            break;
-                        default:
-                            $class = 'list-group-item-default';
-                    }
-                    ?>
-                    <li class="list-group-item <?= $class ?>">
-                        <strong><?= Html::encode($processo->prolic_codprocesso) ?></strong> —
-                        <?= Html::encode(StringHelper::truncate($processo->prolic_objeto, 80)) ?> —
-                        Certame: <?= Yii::$app->formatter->asDate($processo->prolic_datacertame) ?>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    </div>
-<?php endif; ?>

@@ -42,7 +42,7 @@ $config = [
             ],
      
             // set your display timezone
-            'displayTimezone' => 'Asia/Kolkata',
+            'displayTimezone' => 'America/Manaus',
      
             // set your timezone for date saved to db
             'saveTimezone' => 'UTC',
@@ -77,10 +77,10 @@ $config = [
             'cookieValidationKey' => '0smwNj3ceWAok2joKhRdCRFHqQEGMplT',
         ],
             'formatter' => [
-            'class' => 'yii\i18n\formatter',
+            'class' => 'yii\i18n\Formatter',
             'decimalSeparator' => ',',
             'thousandSeparator' => '.',
-            'currencyCode' => 'R$',
+            //'currencyCode' => 'R$',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -128,7 +128,7 @@ if (YII_ENV_DEV) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+       'allowedIPs' => ['*'],
     ];
 
     $config['bootstrap'][] = 'gii';

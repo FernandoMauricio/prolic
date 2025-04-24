@@ -24,7 +24,11 @@
         "kartik-v/yii2-number": "*",
         "kartik-v/yii2-datecontrol": "dev-master",
         "faryshta/yii2-jquery-tagsinput": "*",
-        "kartik-v/yii2-detail-view": "*"
+        "kartik-v/yii2-detail-view": "*",
+        "kartik-v/yii2-editable": "*",
+        "kartik-v/yii2-nav-x": "*",
+        "miloschuman/yii2-highcharts-widget": "^11.0",
+        "kartik-v/yii2-export": "^1.4"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
@@ -36,7 +40,10 @@
         "codeception/specify": "~0.4.3"
     },
     "config": {
-        "process-timeout": 1800
+        "process-timeout": 1800,
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
     },
     "scripts": {
         "post-install-cmd": [

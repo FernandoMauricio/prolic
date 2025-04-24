@@ -10,7 +10,6 @@ use kartik\detail\DetailView;
   .wrap > .container {
     padding: 0 15px 20px;
   }
-
 </style>
 <div class="capa-padrao-view">
 
@@ -32,52 +31,52 @@ use kartik\detail\DetailView;
 <table class="table table-bordered">
   <tbody>
     <tr>
-      <td colspan="2"></td>
+      <td ></td>
       <td style="text-align: center;"> DE</td>
       <td style="text-align: center;"> ATÉ</td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align: center;"> REQUISIÇÃO DE COMPRA</td>
+      <td  style="text-align: center;"> REQUISIÇÃO DE COMPRA</td>
       <td style="padding: 30px;"></td>
       <td style="padding: 30px;"></td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align: center;"> EDITAL E PLANILHA DE COTAÇÃO</td>
+      <td  style="text-align: center;"> EDITAL E PLANILHA DE COTAÇÃO</td>
       <td style="padding: 30px;"></td>
       <td style="padding: 30px;"></td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align: center;">RELAÇÃO DE EMPRESAS</td>
+      <td  style="text-align: center;">RELAÇÃO DE EMPRESAS</td>
       <td style="padding: 30px;"></td>
       <td style="padding: 30px;"></td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align: center;"> DOCUMENTAÇÃO</td>
+      <td  style="text-align: center;"> DOCUMENTAÇÃO</td>
       <td style="padding: 30px;"></td>
       <td style="padding: 30px;"></td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align: center;"> PROPOSTAS COMERCIAIS</td>
+      <td  style="text-align: center;"> PROPOSTAS COMERCIAIS</td>
       <td style="padding: 30px;"></td>
       <td style="padding: 30px;"></td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align: center;"> MAPA DE APURAÇÃO</td>
+      <td  style="text-align: center;"> MAPA DE APURAÇÃO</td>
       <td style="padding: 30px;"></td>
       <td style="padding: 30px;"></td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align: center;"> HOMOLOGAÇÃO E ADJUDICAÇÃO</td>
+      <td  style="text-align: center;"> HOMOLOGAÇÃO E ADJUDICAÇÃO</td>
       <td style="padding: 30px;"></td>
       <td style="padding: 30px;"></td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align: center;"> ORDEM DE COMPRA</td>
+      <td  style="text-align: center;"> ORDEM DE COMPRA</td>
       <td style="padding: 30px;"></td>
       <td style="padding: 30px;"></td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align: center;"> REGISTRO DE ATENDIMENTO / NOTAS FISCAIS</td>
+      <td  style="text-align: center;"> REGISTRO DE ATENDIMENTO / NOTAS FISCAIS</td>
       <td style="padding: 30px;"></td>
       <td style="padding: 30px;"></td>
     </tr>
@@ -87,7 +86,7 @@ use kartik\detail\DetailView;
 <table class="table table-bordered">
   <tbody>
     <tr>
-      <td style="text-align: center;"><b> ÁREA RESERVADO À GMA</b></td>
+      <td style="text-align: center;"><b> ÁREA RESERVADO À GSP</b></td>
     </tr>
     <tr>
       <td style="padding-top: 30px">

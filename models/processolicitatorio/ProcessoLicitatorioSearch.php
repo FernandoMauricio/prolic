@@ -61,8 +61,8 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
         $query->joinWith(['modalidadeValorlimite.modalidade', 'comprador']);
 
         $dataProvider->sort->attributes['modalidade'] = [
-        'asc' => ['modalidade.mod_descricao' => SORT_ASC],
-        'desc' => ['modalidade.mod_descricao' => SORT_DESC],
+            'asc' => ['modalidade.mod_descricao' => SORT_ASC],
+            'desc' => ['modalidade.mod_descricao' => SORT_DESC],
         ];
 
         // grid filtering conditions
@@ -96,7 +96,7 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
             ->andFilterWhere(['like', 'prolic_usuariocriacao', $this->prolic_usuariocriacao])
             ->andFilterWhere(['like', 'prolic_usuarioatualizacao', $this->prolic_usuarioatualizacao])
             ->andFilterWhere(['like', 'comprador.id', $this->comprador_id])
-            ->andFilterWhere(['like', 'ano.id', $this->ano_id])
+            ->andFilterWhere(['like', 'processo_licitatorio.ano_id', $this->ano_id])
             ->andFilterWhere(['like', 'prolic_empresa', $this->prolic_empresa]);
 
         return $dataProvider;

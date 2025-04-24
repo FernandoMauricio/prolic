@@ -12,6 +12,8 @@ use app\models\base\Situacao;
 use app\models\base\Unidades;
 use app\models\base\Centrocusto;
 use app\models\base\Empresa;
+use yii\db\Expression;
+
 /**
  * This is the model class for table "processo_licitatorio".
  *
@@ -114,54 +116,95 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             //     return $('#processolicitatorio-artigo_id').val() == 'Valor';
             // }", 'message' => 'Modalidade sem saldo!'
             // ],
-            ['prolic_valorefetivo', 'compare', 'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
-                        return $model->artigo->art_tipo == 'Valor' && $model->modalidadeValorlimite->tipo == 0;                 
-                    }, 'whenClient' => "function (attribute, value) {
+            [
+                'prolic_valorefetivo',
+                'compare',
+                'compareAttribute' => 'valor_limite_hidden',
+                'operator' => '<=',
+                'type' => 'number',
+                'when' => function ($model) {
+                    return $model->artigo->art_tipo == 'Valor' && $model->modalidadeValorlimite->tipo == 0;
+                },
+                'whenClient' => "function (attribute, value) {
                 return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            }", 'message' => 'Ultrapassa valor limite!'
+            }",
+                'message' => 'Ultrapassa valor limite!'
             ],
-            ['prolic_valorefetivo', 'compare', 'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
-                        return $model->artigo->art_tipo == 'Valor' && $model->modalidadeValorlimite->tipo == 0;                 
-                    }, 'whenClient' => "function (attribute, value) {
+            [
+                'prolic_valorefetivo',
+                'compare',
+                'compareAttribute' => 'valor_saldo_hidden',
+                'operator' => '<=',
+                'type' => 'number',
+                'when' => function ($model) {
+                    return $model->artigo->art_tipo == 'Valor' && $model->modalidadeValorlimite->tipo == 0;
+                },
+                'whenClient' => "function (attribute, value) {
                 return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            }", 'message' => 'Modalidade sem saldo!'
+            }",
+                'message' => 'Modalidade sem saldo!'
             ],
         ];
     }
 
-    public function scenarios() {
+    public function getCicloTotal()
+    {
+        if ($this->prolic_datahomologacao && $this->prolic_dataprocesso) {
+            return (new \DateTime($this->prolic_datahomologacao))->diff(new \DateTime($this->prolic_dataprocesso))->days;
+        }
+        return null;
+    }
+
+    public function getCicloCertame()
+    {
+        if ($this->prolic_datahomologacao && $this->prolic_datacertame) {
+            return (new \DateTime($this->prolic_datahomologacao))->diff(new \DateTime($this->prolic_datacertame))->days;
+        }
+        return null;
+    }
+
+    public function scenarios()
+    {
         $scenarios = parent::scenarios();
-        $scenarios['insert'] = ['prolic_codmxm'];//Scenario Values Only Accepted
+        $scenarios['insert'] = ['prolic_codmxm']; //Scenario Values Only Accepted
         return $scenarios;
     }
 
     //Busca dados dos valores limites de cada modalidade
-    public static function getLimiteSubCat($cat_id) {
+    public static function getLimiteSubCat($cat_id)
+    {
         $data = ModalidadeValorlimite::find()
-        ->joinWith('ramo', false, 'INNER JOIN')
-        ->where(['modalidade_id'=>$cat_id])
-        ->andWhere(['!=','homologacao_usuario', '']) //Localiza apenas Modalidades homologadas
-        ->select(['modalidade_valorlimite.id AS id','ram_descricao AS name'])->asArray()->all();
+            ->joinWith('ramo', false, 'INNER JOIN')
+            ->where(['modalidade_id' => $cat_id])
+            ->andWhere(['IS NOT', 'homologacao_usuario', null]) //Localiza apenas Modalidades homologadas
+            ->andWhere(['=', 'ano_id', 8]) //ano corrente 2025
+            ->select(['modalidade_valorlimite.id AS id', 'ram_descricao AS name'])->asArray()->all();
         return $data;
     }
 
     //Localiza a somatório dos Limites e o Saldo
-    public function getSumLimite($cat_id, $processo) {
+    public function getSumLimite($cat_id, $processo)
+    {
         $data = ProcessoLicitatorio::find()
-        ->joinWith('modalidadeValorlimite', false, 'LEFT JOIN')
-        ->where(['modalidade_valorlimite.id'=>$cat_id])
-        ->andWhere(['NOT IN', 'processo_licitatorio.id', [$processo]])
-        ->andWhere(['!=', 'situacao_id', 7]) //Exclui processos licitatórios que foram cancelados
-        ->select([
-            'valor_limite', 
-            'sum(prolic_valorestimado + prolic_valoraditivo) AS valor_limite_apurado', 
-            'valor_limite - sum(prolic_valorestimado + prolic_valoraditivo) AS valor_saldo'
-        ])->asArray()->one();
+            ->joinWith('modalidadeValorlimite', false, 'LEFT JOIN')
+            ->where(['modalidade_valorlimite.id' => $cat_id])
+            ->andWhere(['NOT IN', 'processo_licitatorio.id', [$processo]])
+            ->andWhere(['!=', 'situacao_id', 7]) //Exclui processos licitatórios que foram cancelados
+            ->select([
+                'modalidade_valorlimite.valor_limite', // Inclua a coluna valor_limite explicitamente
+                'sum(prolic_valorestimado + prolic_valoraditivo) AS valor_limite_apurado',
+                'modalidade_valorlimite.valor_limite - sum(prolic_valorestimado + prolic_valoraditivo) AS valor_saldo'
+            ])->asArray()->one();
 
-        if($data['valor_limite_apurado'] != NULL) {
-        return $data;
+        // Verifique se o valor está sendo retornado corretamente
+        $valorLimite = ModalidadeValorlimite::findOne($cat_id);
+        if ($valorLimite) {
+            $data['valor_limite'] = $valorLimite->valor_limite;
+        }
 
-    }else{
+        if ($data['valor_limite_apurado'] != NULL) {
+            return $data;
+        } else {
             $data['valor_limite_apurado'] = 0;
             $data['valor_saldo'] = $data['valor_limite'];
             return $data;
@@ -174,6 +217,79 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
         $return = Unidades::findBySQL($sql)->one();
         return $return['uni_nomeabreviado'];
     }
+
+    //FUNÇÃO PARA COVERTER NUMERO POR EXTENSO
+    public function removerFormatacaoNumero($strNumero)
+    {
+        $strNumero = trim(str_replace("R$", null, $strNumero));
+        $vetVirgula = explode(",", $strNumero);
+        if (count($vetVirgula) == 1) {
+            $acentos = array(".");
+            $resultado = str_replace($acentos, "", $strNumero);
+            return $resultado;
+        } else if (count($vetVirgula) != 2) {
+            return $strNumero;
+        }
+        $strNumero = $vetVirgula[0];
+        $strDecimal = mb_substr($vetVirgula[1], 0, 2);
+        $acentos = array(".");
+        $resultado = str_replace($acentos, "", $strNumero);
+        $resultado = $resultado . "." . $strDecimal;
+        return $resultado;
+    }
+    public  function converte($valor = 0, $bolExibirMoeda = true, $bolPalavraFeminina = false)
+    {
+        $valor = self::removerFormatacaoNumero($valor);
+        $singular = null;
+        $plural = null;
+        if ($bolExibirMoeda) {
+            $singular = array("centavo", "real", "mil", "milhão", "bilhão", "trilhão", "quatrilhão");
+            $plural = array("centavos", "reais", "mil", "milhões", "bilhões", "trilhões", "quatrilhões");
+        } else {
+            $singular = array("", "", "mil", "milhão", "bilhão", "trilhão", "quatrilhão");
+            $plural = array("", "", "mil", "milhões", "bilhões", "trilhões", "quatrilhões");
+        }
+        $c = array("", "cem", "duzentos", "trezentos", "quatrocentos", "quinhentos", "seiscentos", "setecentos", "oitocentos", "novecentos");
+        $d = array("", "dez", "vinte", "trinta", "quarenta", "cinquenta", "sessenta", "setenta", "oitenta", "noventa");
+        $d10 = array("dez", "onze", "doze", "treze", "quatorze", "quinze", "dezesseis", "dezesete", "dezoito", "dezenove");
+        $u = array("", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove");
+        if ($bolPalavraFeminina) {
+            if ($valor == 1)
+                $u = array("", "uma", "duas", "três", "quatro", "cinco", "seis", "sete", "oito", "nove");
+            else
+                $u = array("", "um", "duas", "três", "quatro", "cinco", "seis", "sete", "oito", "nove");
+            $c = array("", "cem", "duzentas", "trezentas", "quatrocentas", "quinhentas", "seiscentas", "setecentas", "oitocentas", "novecentas");
+        }
+        $z = 0;
+        $valor = number_format($valor, 2, ".", ".");
+        $inteiro = explode(".", $valor);
+        for ($i = 0; $i < count($inteiro); $i++)
+            for ($ii = mb_strlen($inteiro[$i]); $ii < 3; $ii++)
+                $inteiro[$i] = "0" . $inteiro[$i];
+        // $fim identifica onde que deve se dar junção de centenas por "e" ou por "," ;)
+        $rt = null;
+        $fim = count($inteiro) - ($inteiro[count($inteiro) - 1] > 0 ? 1 : 2);
+        for ($i = 0; $i < count($inteiro); $i++) {
+            $valor = $inteiro[$i];
+            $rc = (($valor > 100) && ($valor < 200)) ? "cento" : $c[$valor[0]];
+            $rd = ($valor[1] < 2) ? "" : $d[$valor[1]];
+            $ru = ($valor > 0) ? (($valor[1] == 1) ? $d10[$valor[2]] : $u[$valor[2]]) : "";
+            $r = $rc . (($rc && ($rd || $ru)) ? " e " : "") . $rd . (($rd && $ru) ? " e " : "") . $ru;
+            $t = count($inteiro) - 1 - $i;
+            $r .= $r ? " " . ($valor > 1 ? $plural[$t] : $singular[$t]) : "";
+            if ($valor == "000")
+                $z++;
+            elseif ($z > 0)
+                $z--;
+            if (($t == 1) && ($z > 0) && ($inteiro[0] > 0))
+                $r .= (($z > 1) ? " de " : "") . $plural[$t];
+            if ($r)
+                $rt = $rt . ((($i > 0) && ($i <= $fim) && ($inteiro[0] > 0) && ($z < 1)) ? (($i < $fim) ? ", " : " e ") : " ") . $r;
+        }
+        $rt = mb_substr($rt, 1);
+        return ($rt ? trim($rt) : "zero");
+    }
+
 
     /**
      * @inheritdoc

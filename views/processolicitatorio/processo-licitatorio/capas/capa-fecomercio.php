@@ -7,6 +7,11 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
 ?>
 <link href="../web/css/print-style.css" rel="stylesheet">
 
+<style>
+.wrap > .container {
+    padding: 10px 15px 20px;
+}
+</style>
 <div class="capa-padrao-view">
 
 <table class="table table-bordered">
@@ -29,12 +34,12 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
       <td colspan="3"><?= $model->artigo->art_descricao ?></td>
       <th>DATA CERTAME</th>
       <td><?= $model->prolic_datacertame != NULL ? date('d/m/Y', strtotime($model->prolic_datacertame)) : '' ?></td>
-      <th>ENCAMINHAR P/ HOMOLOGAÇÃO ATÉ</th>
+      <th>ENCAMINHAR P/ HOMOLOGAÇÃO</th>
       <td><?= $model->prolic_datahomologacao != NULL ? date('d/m/Y', strtotime($model->prolic_datahomologacao)) : ''?></td>
     </tr>
     <tr>
       <th>ASSUNTO</th>
-      <td colspan="6"><textarea cols="140" rows="4" style="border-style: none;margin: 0px;width: 912px;"><?= $model->prolic_objeto ?></textarea></td>
+      <td colspan="6"><textarea cols="140" rows="4" style="border-style: none;margin: 0px;width: 912px;resize: none;"><?= $model->prolic_objeto ?></textarea></td>
     </tr>
     <tr>
       <th>EMPRESA(S) VENCEDORA(S)</th>
@@ -47,10 +52,10 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
     <tr>
       <td rowspan="4" colspan="5">
         <p><b> Sr(a). Gerente</b></p>
-        <p> Atendendo a solicitação do(s) solicitante(s) acima, foram consultadas <b><?= $model->prolic_cotacoes; ?> empresas</b> especializadas no ramo <b><?= $model->modalidadeValorlimite->ramo->ram_descricao; ?></b>, obetendo as referidas empresas: </p>
+        <p> Atendendo a solicitação do(s) solicitante(s) acima, foram consultadas <b><?= $model->prolic_cotacoes; ?> empresas</b> especializadas no ramo <b><?= $model->modalidadeValorlimite->ramo->ram_descricao; ?></b>, obtendo das referidas empresas: </p>
         <p><b><?= str_replace(" / ","<br>", $model->prolic_empresa); ?></b></p>
-        <p> A ofera mais vantajosa para o SENAC/AM, conforme mapa de cotação anexo no valor total de:</p>
-        <p><b><?= 'R$ ' . number_format($model->prolic_valorefetivo, 2, ',', '.'); ?></b></p>
+        <p> A oferta mais vantajosa para o SENAC/AM, conforme mapa de cotação anexo no valor total de:</p>
+        <p><b><?= 'R$ ' . number_format($model->prolic_valorefetivo, 2, ',', '.'); ?> - <?php echo ProcessoLicitatorio::converte(number_format($model->prolic_valorefetivo, 2, ',', '.')); ?></b></p>
         <p> Este processo está amparado pela <b> <?= $model->artigo->art_descricao ?></b>.</p>
         <p> Há recursos para o atendimento desta despesa:</p>
         <p> CENTRO DE CUSTO: <b><?= $model->prolic_centrocusto?></b></p>
@@ -64,8 +69,8 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
         <p> [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;] Homologo e adjudico o objeto deste à(s) empresa(s) vencedora(s)</p>
         <p> [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;] Não Homologo</p>
         <p> [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;] À DRG para homologação</p><br /><br /><br />
-        <p style="text-align: center;"><b> Neilon Márcio Batista da Silva</b><br />
-        Gerência Administrativa<br /><br />
+        <p style="text-align: center;"><b>Carmen Maria Honorato de Souza </b><br />
+        Diretor (a) da Divisão Administrativa<br /><br />
         Data:_____/_____/_______</p>
       </td>
     </tr>
@@ -74,8 +79,8 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
         <p> [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;] Homologo e adjudico o objeto deste à(s) empresa(s) vencedora(s)</p>
         <p> [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;] Não Homologo</p>
         <p> [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;] Ao Sr. Presidente para homologação</p><br /><br /><br />
-        <p style="text-align: center;"><b> Silvana Maria Ferreira de Carvalho</b><br />
-        Direção Regional<br /><br />
+        <p style="text-align: center;"><b> Silvana Maria Ferreira de Carvalho </b><br />
+        Diretora Regional<br /><br />
         Data:_____/_____/_______</p>
       </td>
     </tr>
@@ -83,8 +88,8 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
       <td colspan="2">
         <p> [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;] Homologo e adjudico o objeto deste à(s) empresa(s) vencedora(s)</p>
         <p> [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;] Não Homologo</p><br /><br />
-        <p style="text-align: center;"><b> José Roberto Tadros</b><br />
-        Presidência<br /><br />
+        <p style="text-align: center;"><b> Aderson Santos da Frota</b><br />
+        Presidente em exercício<br /><br />
         Data:_____/_____/_______</p>
       </td>
     </tr>
@@ -95,10 +100,10 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
     </tr>
     <tr>
       <td colspan="4" style="border-right-style: hidden;">
-        <b>Autorização de Despesas - Resolução 014/2016</b><br />
-        <b>Gerência Administrativa</b> - Até R$ 2.500,00<br />
-        <b>Direção Regional</b> - Acima de R$ 2.500,00 até R$ 6.500,00<br />
-        <b>Presidência</b> - Acima de R$ 6.500,00<br />
+        <b>Autorização de Despesas - Resolução  003/2024</b><br />
+        <b>Diretor (a) da Divisão Administrativa</b> - Até R$ 92.000,00<br />
+        <b>Direção Regional</b> - De R$92.000,01 até R$826.000,00<br />
+        <b>Presidência</b> - A partir de R$826.000,01<br />
       </td>
       <td colspan="4">Comprador: <?= $model->comprador->comp_descricao; ?></td>
     </tr>

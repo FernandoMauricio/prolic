@@ -31,6 +31,8 @@ class CapasController extends Controller
         ];
     }
 
+  
+    
     public function actionGerarRelatorio($id)
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)

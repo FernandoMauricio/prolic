@@ -8,7 +8,7 @@ use yii\helpers\Html;
 ?>
 <div class="processo-licitatorio-create">
 
-    <?= $this->render('gerar-processo-licitatorio', [
+    <?= $this->renderAjax('gerar-processo-licitatorio', [
         'model' => $model,
         'ano' => $ano,
         'ramo' => $ramo,

@@ -30,7 +30,7 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
       <td><?= $model->modalidadeValorlimite->ramo->ram_descricao ?></td>
       <th>DATA CERTAME</th>
       <td><?= $model->prolic_datacertame != NULL ? date('d/m/Y', strtotime($model->prolic_datacertame)) : '' ?></td>
-      <th>ENCAMINHAR P/ HOMOLOGAÇÃO ATÉ</th>
+      <th>ENCAMINHAR P/ HOMOLOGAÇÃO</th>
       <td><?= $model->prolic_datahomologacao != NULL ? date('d/m/Y', strtotime($model->prolic_datahomologacao)) : ''?></td>
       <td><?= $model->artigo->art_descricao ?></td>
     </tr>
@@ -59,14 +59,18 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
     </tr>
     <tr>
       <th>DE</th>
-      <td></td>
+      <td>GSP</td>
       <th>PARA</th>
-      <td></td>
+      <td>DDAD</td>
       <th>DATA:</th>
       <td colspan="2"></td>
     </tr>
     <tr>
-      <td colspan="7" style="border-style: 1px;height: 850px;"></td>
+      <td colspan="7" style="border-style: 1px;height: 850px;">
+        <H4>Senhor (a) Diretor (a),<P/>
+        <br/>  
+        Segue para análise e providências cabíveis.</H4>  
+      </td>
     </tr>
   </tbody>
 </table>

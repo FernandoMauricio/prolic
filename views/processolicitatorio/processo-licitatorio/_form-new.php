@@ -93,39 +93,25 @@ use faryshta\widgets\JqueryTagsInput;
                             ],
                         ]);
                     } else {
-                        $valorlimiteUpdate = ModalidadeValorlimite::find()
-                            ->innerJoinWith('modalidade')
-                            ->where(['mod_status' => 1])
-                            ->andWhere(['!=', 'homologacao_usuario', ''])
-                            ->andWhere(['modalidade_id' => $model->modalidadeValorlimite->modalidade->id])
-                            ->all();
-
-                        $data_modalidadeUpdate = ArrayHelper::map($valorlimiteUpdate, 'modalidade.id', 'modalidade.mod_descricao');
-                        echo $form->field($model, 'modalidade')->widget(Select2::classname(), [
-                            'data' => $data_modalidadeUpdate,
-                            'options' => ['id' => 'modalidade-id', 'placeholder' => 'Selecione a Modalidade...'],
-                            'pluginOptions' => [
-                                'allowClear' => true
-                            ],
-                        ]);
+                        echo $form->field($model, 'modalidade.modalidadeValorlimite.modalidade.mod_descricao')->textInput(['value' => $model->modalidadeValorlimite->modalidade->mod_descricao, 'readonly' => true])->label('Modalidade');
                     }
-
                     ?>
                 </div>
                 <div class="col-md-3">
                     <?php
-                    echo $form->field($model, 'modalidade_valorlimite_id')->widget(DepDrop::classname(), [
-                        'type' => DepDrop::TYPE_SELECT2,
-                        'select2Options' => ['pluginOptions' => ['allowClear' => true]],
-                        'options' => ['id' => 'valorlimite-id'],
-                        'pluginOptions' => [
-                            'depends' => ['modalidade-id'],
-                            'placeholder' => 'Selecione o Ramo...',
-                            'initialize' => true,
-                            'url' => Url::to(['/processolicitatorio/processo-licitatorio/limite'])
-                        ],
-                        'options' => [
-                            'onchange' => '
+                    if ($model->isNewRecord) {
+                        echo $form->field($model, 'modalidade_valorlimite_id')->widget(DepDrop::classname(), [
+                            'type' => DepDrop::TYPE_SELECT2,
+                            'select2Options' => ['pluginOptions' => ['allowClear' => true]],
+                            'options' => ['id' => 'valorlimite-id'],
+                            'pluginOptions' => [
+                                'depends' => ['modalidade-id'],
+                                'placeholder' => 'Selecione o Ramo...',
+                                'initialize' => true,
+                                'url' => Url::to(['/processolicitatorio/processo-licitatorio/limite'])
+                            ],
+                            'options' => [
+                                'onchange' => '
                                     var select = this;
                                     $.getJSON( "' . Url::toRoute('/processolicitatorio/processo-licitatorio/get-limite') . '", { limiteId: $(this).val() } )
                                     .done(function( data ) {
@@ -147,9 +133,24 @@ use faryshta\widgets\JqueryTagsInput;
                                            $divPanelBody.find("input").eq(13).val(data.valor_saldo);
                                         });
                                     '
-                        ]
-                    ]);
+                            ]
+                        ]);
+                    } else {
+                        $ramo = ArrayHelper::map(ModalidadeValorlimite::find()
+                            ->joinWith('ramo', false, 'INNER JOIN')
+                            ->where(['modalidade_id' => $model->modalidadeValorlimite->modalidade->id])
+                            ->andWhere(['!=', 'homologacao_usuario', '']) //Localiza apenas Modalidades homologadas
+                            ->andWhere(['=', 'ano_id', 7]) //ano corrente 2024
+                            ->select(['modalidade_valorlimite.id AS id', 'ram_descricao AS name'])->asArray()->all(), 'id', 'name');
 
+                        echo  $form->field($model, 'modalidade_valorlimite_id')->widget(Select2::class, [
+                            'data' =>  $ramo,
+                            'options' => ['placeholder' => 'Selecione o Ramo...'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]);
+                    }
                     ?>
                 </div>
                 <div class="col-md-3">

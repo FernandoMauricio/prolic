@@ -46,7 +46,8 @@ class ProcessoLicitatorioController extends Controller
     }
 
     //Localiza os limites para a modalidade selecionada
-    public function actionLimite() {
+    public function actionLimite()
+    {
         $out = [];
         if (isset($_POST['depdrop_parents'])) {
             $parents = $_POST['depdrop_parents'];
@@ -59,18 +60,18 @@ class ProcessoLicitatorioController extends Controller
                     $param1 = $params[0]; // get the value of input-type-1
                     $param2 = $params[1]; // get the value of input-type-2
                 }
-     
-                $out = ProcessoLicitatorio::getLimiteSubCat($cat_id, $param1, $param2); 
-                
+
+                $out = ProcessoLicitatorio::getLimiteSubCat($cat_id, $param1, $param2);
+
                 $selected = ProcessoLicitatorio::getSumLimite($cat_id, $param1);
                 // the getDefaultSubCat function will query the database
                 // and return the default sub cat for the cat_id
-                
-                echo Json::encode(['output'=>$out, 'selected'=>$selected]);
+
+                echo Json::encode(['output' => $out, 'selected' => $selected]);
                 return;
             }
         }
-        echo Json::encode(['output'=>'', 'selected'=>'']);
+        echo Json::encode(['output' => '', 'selected' => '']);
     }
 
     //Localiza os dados dos Limites
@@ -87,13 +88,13 @@ class ProcessoLicitatorioController extends Controller
         echo Json::encode($getSumLimite);
     }
 
-    public function actionObservacoes($id) 
+    public function actionObservacoes($id)
     {
         $session = Yii::$app->session;
 
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-       $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6){
+        $session = Yii::$app->session;
+        if ($session['sess_codunidade'] != 6) {
             return $this->AccessoAdministrador();
         }
 
@@ -117,13 +118,13 @@ class ProcessoLicitatorioController extends Controller
     public function actionConsultaProcessosLicitatorios()
     {
         $session = Yii::$app->session;
-        if($session['sess_responsavelsetor'] == 0){ //Verifica se o colaborador é gerente
+        if ($session['sess_responsavelsetor'] == 0) { //Verifica se o colaborador é gerente
             return $this->AccessoAdministrador();
         }
         $this->layout = 'main-full';
         $searchModel = new ProcessoLicitatorioSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->sort = ['defaultOrder' => ['id'=>SORT_DESC]];
+        $dataProvider->sort = ['defaultOrder' => ['id' => SORT_DESC]];
 
         return $this->render('consulta-processos-licitatorios', [
             'searchModel' => $searchModel,
@@ -134,7 +135,7 @@ class ProcessoLicitatorioController extends Controller
     public function actionViewGerencia($id)
     {
         $session = Yii::$app->session;
-        if($session['sess_responsavelsetor'] == 0){ //Verifica se o colaborador é gerente
+        if ($session['sess_responsavelsetor'] == 0) { //Verifica se o colaborador é gerente
             return $this->AccessoAdministrador();
         }
         $model = $this->findModel($id);
@@ -151,10 +152,10 @@ class ProcessoLicitatorioController extends Controller
     public function actionIndex()
     {
         $this->layout = 'main-full';
-        
+
         $searchModel = new ProcessoLicitatorioSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->sort = ['defaultOrder' => ['id'=>SORT_DESC]];
+        $dataProvider->sort = ['defaultOrder' => ['id' => SORT_DESC]];
 
         if (Yii::$app->request->post('hasEditable')) {
             // instantiate your ProcessoLicitatorio model for saving
@@ -162,7 +163,7 @@ class ProcessoLicitatorioController extends Controller
             $model = ProcessoLicitatorio::findOne($processoLicitatorio);
 
             // store a default json response as desired by editable
-            $out = Json::encode(['output'=>'', 'message'=>'']);
+            $out = Json::encode(['output' => '', 'message' => '']);
 
             $posted = current($_POST['ProcessoLicitatorio']);
             $post = ['ProcessoLicitatorio' => $posted];
@@ -172,31 +173,31 @@ class ProcessoLicitatorioController extends Controller
                 // can save model or do something before saving model
                 $model->save(false);
                 $output = '';
-                $out = Json::encode(['output'=>$output, 'message'=>'']);
+                $out = Json::encode(['output' => $output, 'message' => '']);
             }
             // return ajax json encoded response and exit
             echo $out;
 
             //ENVIANDO EMAIL PARA O GERENTE INFORMANDO SOBRE O PROCESSO
             $sql_email = "SELECT emus_email FROM emailusuario_emus, colaborador_col, responsavelambiente_ream WHERE ream_codunidade IN('$model->prolic_destino') AND ream_codcolaborador = col_codcolaborador AND col_codusuario = emus_codusuario";
-         
-            $email_solicitacao = Emailusuario::findBySql($sql_email)->all(); 
-                foreach ($email_solicitacao as $email) {
-                    Yii::$app->mailer->compose()
+
+            $email_solicitacao = Emailusuario::findBySql($sql_email)->all();
+            foreach ($email_solicitacao as $email) {
+                Yii::$app->mailer->compose()
                     ->setFrom(['no-reply@am.senac.br' => 'Gerência de Material'])
                     ->setTo($email['emus_email'])
-                    ->setSubject('Processo Licitatório '.$model->id.' - ' . $model->situacao->sit_descricao)
-                    ->setTextBody('Processo Licitatório: '.$model->id.' está com a situação '.$model->situacao->sit_descricao.' ')
+                    ->setSubject('Processo Licitatório ' . $model->id . ' - ' . $model->situacao->sit_descricao)
+                    ->setTextBody('Processo Licitatório: ' . $model->id . ' está com a situação ' . $model->situacao->sit_descricao . ' ')
                     ->setHtmlBody('
                        <p> Prezado(a) Gerente,</p>
-                       <p> Existe um Processo Licitatório de <b>código: '.$model->id.'</b> com a situação '.$model->situacao->sit_descricao.'.</p>
+                       <p> Existe um Processo Licitatório de <b>código: ' . $model->id . '</b> com a situação ' . $model->situacao->sit_descricao . '.</p>
                        <p> Por favor, não responda este e-mail. Acesse https://portalsenac.am.senac.br para analisar o Processo Licitatório.</p>
                        <p> Atenciosamente, <br> Gerência de Material - Senac AM.</p>
                        ')
                     ->send();
-               } 
-               Yii::$app->session->setFlash('info', '<b>SUCESSO!</b> Processo Licitatório alterado para <b>' .$model->situacao->sit_descricao.'!</b>');
-               return $this->redirect(['index']);
+            }
+            Yii::$app->session->setFlash('info', '<b>SUCESSO!</b> Processo Licitatório alterado para <b>' . $model->situacao->sit_descricao . '!</b>');
+            return $this->redirect(['index']);
         }
 
         return $this->render('index', [
@@ -214,15 +215,15 @@ class ProcessoLicitatorioController extends Controller
     public function actionView($id)
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-       $session = Yii::$app->session;
-       if($session['sess_codunidade'] != 6){
+        $session = Yii::$app->session;
+        if ($session['sess_codunidade'] != 6) {
             return $this->AccessoAdministrador();
         }
-            $model = $this->findModel($id);
+        $model = $this->findModel($id);
 
-            return $this->render('view', [
-                'model' => $this->findModel($id),
-            ]);
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
     }
 
     /**
@@ -230,11 +231,11 @@ class ProcessoLicitatorioController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionGerarProcessoLicitatorio()
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-       $session = Yii::$app->session;
-       if($session['sess_codunidade'] != 6){
+        $session = Yii::$app->session;
+        if ($session['sess_codunidade'] != 6) {
             return $this->AccessoAdministrador();
         }
 
@@ -244,8 +245,8 @@ class ProcessoLicitatorioController extends Controller
         $ramo        = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
         $destinos    = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
         //$valorlimite = Modalidade::find()->where(['mod_status' => 1])->all();
-        $valorlimite = ModalidadeValorlimite::find()->innerJoinWith('modalidade')->where(['mod_status' => 1])->andWhere(['!=','homologacao_usuario', ''])->all();
-        $artigo      = Artigo::find()->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])->andWhere(['!=','art_homologacaousuario', ''])->orderBy('art_descricao')->all();
+        $valorlimite = ModalidadeValorlimite::find()->innerJoinWith('modalidade')->where(['mod_status' => 1])->andWhere(['!=', 'homologacao_usuario', ''])->all();
+        $artigo      = Artigo::find()->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])->andWhere(['!=', 'art_homologacaousuario', ''])->orderBy('art_descricao')->all();
         $centrocusto = Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all();
         $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
         $comprador   = Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all();
@@ -257,41 +258,42 @@ class ProcessoLicitatorioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-        //Somatória dos valores
-        // $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
+            //Somatória dos valores
+            // $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
 
-        //Junta todos destinos, centros de custos e empresas em uma linha
-        is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;
-        is_array($model->prolic_centrocusto) ? $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto) : null;
-        is_array($model->prolic_empresa) ? $model->prolic_empresa = implode(', ', $model->prolic_empresa) : null;
+            //Junta todos destinos, centros de custos e empresas em uma linha
+            is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;
+            is_array($model->prolic_centrocusto) ? $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto) : null;
+            is_array($model->prolic_empresa) ? $model->prolic_empresa = implode(', ', $model->prolic_empresa) : null;
 
-        //Número do Processo
-        $numeroProcesso = ProcessoLicitatorio::find()->innerJoinWith('ano')->where(['ano.an_ano' => date('Y')])->count();
-        $model->prolic_codprocesso = $numeroProcesso;
+            //Número do Processo
+            $numeroProcesso = ProcessoLicitatorio::find()->innerJoinWith('ano')->where(['ano.an_ano' => date('Y')])->max('prolic_codprocesso');
+            $model->prolic_codprocesso = $numeroProcesso + 1;
 
-        //Sequencia do cód. da modalidade de acordo com o tipo
-        $incremento = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->innerJoinWith('ano')->where(['modalidade.id'=>$model->modalidadeValorlimite->modalidade_id, 'ano.an_ano' => date('Y')])->count();
-        $model->prolic_sequenciamodal = $incremento + 1;
-
+            //Sequencia do cód. da modalidade de acordo com o tipo
+            if (isset($model->modalidadeValorlimite->modalidade_id)) {
+                $incremento = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->innerJoinWith('ano')->where(['modalidade.id' => $model->modalidadeValorlimite->modalidade_id, 'ano.an_ano' => date('Y')])->count('prolic_sequenciamodal');
+                $model->prolic_sequenciamodal = $incremento + 1;
+            }
             if ($model->validate()) {
-                   $model->save();
+                $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
 
-            return $this->renderAjax('create', [
-                'model' => $model,
-                'ano' => $ano,
-                'ramo' => $ramo,
-                'destinos' => $destinos,
-                'valorlimite' => $valorlimite,
-                'artigo' => $artigo,
-                'centrocusto' => $centrocusto,
-                'recurso' => $recurso,
-                'comprador' => $comprador,
-                'situacao' => $situacao,
-                'empresa' => $empresa,
-            ]);
+        return $this->renderAjax('gerar-processo-licitatorio', [
+            'model' => $model,
+            'ano' => $ano,
+            'ramo' => $ramo,
+            'destinos' => $destinos,
+            'valorlimite' => $valorlimite,
+            'artigo' => $artigo,
+            'centrocusto' => $centrocusto,
+            'recurso' => $recurso,
+            'comprador' => $comprador,
+            'situacao' => $situacao,
+            'empresa' => $empresa,
+        ]);
     }
 
     /**
@@ -304,8 +306,8 @@ class ProcessoLicitatorioController extends Controller
     public function actionUpdate($id)
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-       $session = Yii::$app->session;
-       if($session['sess_codunidade'] != 6){
+        $session = Yii::$app->session;
+        if ($session['sess_codunidade'] != 6) {
             return $this->AccessoAdministrador();
         }
 
@@ -314,8 +316,8 @@ class ProcessoLicitatorioController extends Controller
         $ano         = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
         $ramo        = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
         $destinos    = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
-        $valorlimite = ModalidadeValorlimite::find()->innerJoinWith('modalidade')->where(['mod_status' => 1])->andWhere(['!=','homologacao_usuario', ''])->all();
-        $artigo      = Artigo::find()->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])->andWhere(['!=','art_homologacaousuario', ''])->orderBy('art_descricao')->all();
+        $valorlimite = ModalidadeValorlimite::find()->innerJoinWith('modalidade')->where(['mod_status' => 1])->andWhere(['!=', 'homologacao_usuario', ''])->all();
+        $artigo      = Artigo::find()->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])->andWhere(['!=', 'art_homologacaousuario', ''])->orderBy('art_descricao')->all();
         $centrocusto = Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all();
         $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
         $comprador   = Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all();
@@ -330,33 +332,37 @@ class ProcessoLicitatorioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-        //Somatória dos valores
-        // $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
-        
-        //Junta todos destinos, centros de custos e empresas em uma linha
-        is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;
-        is_array($model->prolic_centrocusto) ? $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto) : null;
-        is_array($model->prolic_empresa) ? $model->prolic_empresa = implode(', ', $model->prolic_empresa) : null;
+            //Somatória dos valores
+            // $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
+
+            $incremento = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->innerJoinWith('ano')->where(['modalidade.id' => $model->modalidadeValorlimite->modalidade_id, 'ano.an_ano' => date('Y')])->count();
+            if ($model->modalidade !=  $_POST['ProcessoLicitatorio']['modalidade']) {
+                $model->prolic_sequenciamodal = $incremento + 1;
+            }
+            //Junta todos destinos, centros de custos e empresas em uma linha
+            is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;
+            is_array($model->prolic_centrocusto) ? $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto) : null;
+            is_array($model->prolic_empresa) ? $model->prolic_empresa = implode(', ', $model->prolic_empresa) : null;
 
             if ($model->validate()) {
-                   $model->save();
+                $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
-        
-            return $this->render('update', [
-                'model' => $model,
-                'ano' => $ano,
-                'ramo' => $ramo,
-                'destinos' => $destinos,
-                'valorlimite' => $valorlimite,
-                'artigo' => $artigo,
-                'centrocusto' => $centrocusto,
-                'recurso' => $recurso,
-                'comprador' => $comprador,
-                'situacao' => $situacao,
-                'empresa' => $empresa,
-            ]);
+
+        return $this->render('update', [
+            'model' => $model,
+            'ano' => $ano,
+            'ramo' => $ramo,
+            'destinos' => $destinos,
+            'valorlimite' => $valorlimite,
+            'artigo' => $artigo,
+            'centrocusto' => $centrocusto,
+            'recurso' => $recurso,
+            'comprador' => $comprador,
+            'situacao' => $situacao,
+            'empresa' => $empresa,
+        ]);
     }
 
     /**
@@ -392,18 +398,19 @@ class ProcessoLicitatorioController extends Controller
     public function AccessAllow()
     {
         $session = Yii::$app->session;
-        if (!isset($session['sess_codusuario']) 
-            && !isset($session['sess_codcolaborador']) 
-            && !isset($session['sess_codunidade']) 
-            && !isset($session['sess_nomeusuario']) 
-            && !isset($session['sess_coddepartamento']) 
-            && !isset($session['sess_codcargo']) 
-            && !isset($session['sess_cargo']) 
-            && !isset($session['sess_setor']) 
-            && !isset($session['sess_unidade']) 
-            && !isset($session['sess_responsavelsetor'])) 
-        {
-           return $this->redirect('https://portalsenac.am.senac.br');
+        if (
+            !isset($session['sess_codusuario'])
+            && !isset($session['sess_codcolaborador'])
+            && !isset($session['sess_codunidade'])
+            && !isset($session['sess_nomeusuario'])
+            && !isset($session['sess_coddepartamento'])
+            && !isset($session['sess_codcargo'])
+            && !isset($session['sess_cargo'])
+            && !isset($session['sess_setor'])
+            && !isset($session['sess_unidade'])
+            && !isset($session['sess_responsavelsetor'])
+        ) {
+            return $this->redirect('https://portalsenac.am.senac.br');
         }
     }
 

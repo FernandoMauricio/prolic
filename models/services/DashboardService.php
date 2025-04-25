@@ -113,7 +113,6 @@ class DashboardService
         }
 
         $results = $query->asArray()->all();
-        \Yii::info("TOP COMPRADORES RESULTADO: " . print_r($results, true), __METHOD__);
 
         return $results;
     }
@@ -152,8 +151,8 @@ class DashboardService
             ->orderBy(['mes' => SORT_ASC]);
 
         if ($filtro->ano) {
-            $queryProcessos->andWhere(['YEAR(prolic_datacertame)' => $filtro->ano]);
-            $queryAlertas->andWhere(['YEAR(prolic_datacertame)' => $filtro->ano]);
+            $queryProcessos->andWhere(['YEAR(prolic_dataprocesso)' => $filtro->ano]);
+            $queryAlertas->andWhere(['YEAR(prolic_dataprocesso)' => $filtro->ano]);
         }
 
         return [

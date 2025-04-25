@@ -218,9 +218,9 @@ $dataProvider = new ArrayDataProvider([
                     }
                     ?>
                     <li class="list-group-item <?= $class ?>">
-                        <strong><?= Html::encode($processo->prolic_codprocesso) ?></strong> —
-                        <?= Html::encode(StringHelper::truncate($processo->prolic_objeto, 80)) ?> —
-                        Certame: <?= Yii::$app->formatter->asDate($processo->prolic_datacertame) ?>
+                        <strong><?= Html::encode($processo->prolic_codprocesso) . '</strong> (' . Html::encode($processo->situacao->sit_descricao) . ')' ?> —
+                            <?= Html::encode(StringHelper::truncate($processo->prolic_objeto, 80)) ?> —
+                            Certame: <?= Yii::$app->formatter->asDate($processo->prolic_datacertame) ?>
                     </li>
                 <?php endforeach; ?>
             </ul>

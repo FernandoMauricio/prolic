@@ -97,10 +97,11 @@ class DashboardService
             ->alias('p')
             ->joinWith(['comprador c'], false)
             ->select([
-                'name' => new Expression('UPPER(c.comp_descricao)'),
+                'name' => 'c.comp_descricao',
+                'comprador_id' => 'c.id',
                 'y' => new Expression('COUNT(*)')
             ])
-            ->groupBy(new Expression('UPPER(c.comp_descricao)'))
+            ->groupBy('c.id')
             ->orderBy(['y' => SORT_DESC])
             ->limit(5);
 
@@ -112,9 +113,7 @@ class DashboardService
             $query->andWhere(['MONTH(p.prolic_dataprocesso)' => $filtro->mes]);
         }
 
-        $results = $query->asArray()->all();
-
-        return $results;
+        return $query->asArray()->all();
     }
 
     public static function getAlertas(FiltroDashboardForm $filtro): array
@@ -232,14 +231,13 @@ class DashboardService
      */
     public static function getCompradoresSituacao(FiltroDashboardForm $filtro): array
     {
-        // Primeiro, obter os top 5 compradores
         $topCompradores = self::getTopCompradores($filtro);
-        $nomes = array_column($topCompradores, 'name');
 
         $data = [];
-        foreach ($nomes as $nome) {
+        foreach ($topCompradores as $comprador) {
             $entry = [
-                'comprador'      => $nome,
+                'comprador'      => $comprador['name'],
+                'comprador_id'   => $comprador['comprador_id'],
                 'Em Licitação'   => 0,
                 'Concluido'      => 0,
                 'Deserto'        => 0,
@@ -250,24 +248,24 @@ class DashboardService
 
             $rows = ProcessoLicitatorio::find()
                 ->alias('p')
-                ->joinWith(['comprador c', 'situacao s'], false)
+                ->joinWith(['situacao s'], false)
                 ->select([
                     'situacao' => 's.sit_descricao',
                     'count' => new Expression('COUNT(*)')
                 ])
-                ->andWhere(new Expression('UPPER(c.comp_descricao) = :nome', [':nome' => $nome]))
+                ->where(['p.comprador_id' => $comprador['comprador_id']])
                 ->groupBy('s.sit_descricao');
 
             if ($filtro->ano) {
                 $rows->andWhere(['YEAR(p.prolic_dataprocesso)' => $filtro->ano]);
             }
+
             if ($filtro->mes) {
                 $rows->andWhere(['MONTH(p.prolic_dataprocesso)' => $filtro->mes]);
             }
 
             foreach ($rows->asArray()->all() as $row) {
-                $situacao = $row['situacao'];
-                $entry[$situacao] = (int)$row['count'];
+                $entry[$row['situacao']] = (int)$row['count'];
             }
 
             $data[] = $entry;

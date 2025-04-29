@@ -66,15 +66,32 @@ class DashboardController extends Controller
         return $this->renderPartial('detalhes-processos', compact('processos'));
     }
 
-    public function actionDetalhesComprador($nome, $situacao)
+    public function actionDetalhesComprador($id, $situacao, $ano = null, $mes = null)
     {
-        $processos = ProcessoLicitatorio::find()
+        $query = ProcessoLicitatorio::find()
             ->alias('p')
-            ->joinWith(['situacao s', 'comprador c'])
-            ->where(['like', 'c.comp_descricao', $nome])
-            ->andWhere(['like', 's.sit_descricao', $situacao])
-            ->all();
+            ->joinWith(['comprador c', 'situacao s', 'modalidadeValorlimite.modalidade', 'modalidadeValorlimite.ramo', 'recursos'])
+            ->where(['p.comprador_id' => $id])
+            ->andWhere(['s.sit_descricao' => $situacao]);
 
-        return $this->renderPartial('detalhes-processos', compact('processos'));
+        if ($ano) {
+            $query->andWhere(new \yii\db\Expression('YEAR(p.prolic_dataprocesso) = :ano', [':ano' => $ano]))
+                ->addParams([':ano' => $ano]);
+        }
+
+        if ($mes) {
+            $query->andWhere(new \yii\db\Expression('MONTH(p.prolic_dataprocesso) = :mes', [':mes' => $mes]))
+                ->addParams([':mes' => $mes]);
+        }
+
+        $processos = $query->all();
+
+        $compradorNome = ($processos && $processos[0]->comprador) ? $processos[0]->comprador->comp_descricao : 'Comprador';
+
+        return $this->renderPartial('detalhes-comprador', [
+            'nome' => $compradorNome,
+            'situacao' => $situacao,
+            'processos' => $processos,
+        ]);
     }
 }

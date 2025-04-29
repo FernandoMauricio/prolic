@@ -97,7 +97,27 @@ JS);
     </div>
 </div>
 
-<!-- Novos Insights -->
+<!-- KPIs -->
+<div class="row text-center">
+    <?php foreach (
+        [
+            ['label' => 'Total de Processos', 'value' => $kpi['total'], 'class' => 'primary'],
+            ['label' => 'Valor Estimado', 'value' => 'R$ ' . number_format($kpi['valor_estimado'], 2, ',', '.'), 'class' => 'info'],
+            ['label' => 'Valor Efetivo', 'value' => 'R$ ' . number_format($kpi['valor_efetivo'], 2, ',', '.'), 'class' => 'success'],
+            ['label' => 'Ciclo Médio', 'value' => $kpi['ciclo_medio'] . ' dias', 'class' => 'warning'],
+        ] as $kpiCard
+    ): ?>
+        <div class="col-md-3">
+            <div class="panel panel-<?= $kpiCard['class'] ?>">
+                <div class="panel-heading"><?= $kpiCard['label'] ?></div>
+                <div class="panel-body">
+                    <h4><?= $kpiCard['value'] ?></h4>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+
 <div class="row" style="margin-bottom:30px;">
     <!-- Top 5 Unidades Atendidas -->
     <div class="col-md-4">
@@ -190,14 +210,20 @@ JS);
                 if (!empty($compradoresSituacao)) {
                     $keys = array_keys($compradoresSituacao[0]);
                     foreach ($keys as $key) {
-                        if ($key === 'comprador') continue;
+                        if ($key === 'comprador' || $key === 'comprador_id') continue;
                         $series[] = [
                             'name' => $key,
-                            'data' => array_map(function ($item) use ($key) {
+                            'data' => array_map(function ($item) use ($key, $filtroModel) {
                                 return [
                                     'name' => $item['comprador'],
                                     'y' => (int)($item[$key] ?? 0),
-                                    'url' => Url::to(['detalhes-comprador', 'nome' => $item['comprador'], 'situacao' => $key])
+                                    'url' => Url::to([
+                                        'detalhes-comprador',
+                                        'id' => $item['comprador_id'],
+                                        'situacao' => $key,
+                                        'ano' => $filtroModel->ano,
+                                        'mes' => $filtroModel->mes,
+                                    ])
                                 ];
                             }, $compradoresSituacao),
                         ];
@@ -208,8 +234,13 @@ JS);
                     'options' => [
                         'chart' => ['type' => 'column'],
                         'title' => false,
-                        'xAxis' => ['categories' => array_column($compradoresSituacao, 'comprador')],
-                        'yAxis' => ['title' => ['text' => 'Processos']],
+                        'xAxis' => [
+                            'categories' => array_column($compradoresSituacao, 'comprador'),
+                            'labels' => ['style' => ['fontSize' => '13px']]
+                        ],
+                        'yAxis' => [
+                            'title' => ['text' => 'Processos', 'style' => ['fontSize' => '13px']]
+                        ],
                         'plotOptions' => [
                             'column' => [
                                 'stacking' => 'normal',
@@ -228,27 +259,7 @@ JS);
             </div>
         </div>
     </div>
-</div>
 
-<!-- KPIs -->
-<div class="row text-center">
-    <?php foreach (
-        [
-            ['label' => 'Total de Processos', 'value' => $kpi['total'], 'class' => 'primary'],
-            ['label' => 'Valor Estimado', 'value' => 'R$ ' . number_format($kpi['valor_estimado'], 2, ',', '.'), 'class' => 'info'],
-            ['label' => 'Valor Efetivo', 'value' => 'R$ ' . number_format($kpi['valor_efetivo'], 2, ',', '.'), 'class' => 'success'],
-            ['label' => 'Ciclo Médio', 'value' => $kpi['ciclo_medio'] . ' dias', 'class' => 'warning'],
-        ] as $kpiCard
-    ): ?>
-        <div class="col-md-3">
-            <div class="panel panel-<?= $kpiCard['class'] ?>">
-                <div class="panel-heading"><?= $kpiCard['label'] ?></div>
-                <div class="panel-body">
-                    <h4><?= $kpiCard['value'] ?></h4>
-                </div>
-            </div>
-        </div>
-    <?php endforeach; ?>
 </div>
 
 <!-- Distribuição Mensal de Processos e Alertas -->

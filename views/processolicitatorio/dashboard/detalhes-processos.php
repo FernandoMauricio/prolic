@@ -9,6 +9,7 @@ use yii\helpers\Html;
     <?php foreach ($processos as $p): ?>
         <li class="list-group-item">
             <h5><strong>Processo:</strong> <?= Html::encode($p->prolic_codprocesso . '/' . $p->ano->an_ano) ?></h5>
+            <h5><strong>MXM:</strong> <?= Html::encode($p->prolic_codmxm) ?></h5>
 
             <p>
                 <span class="label label-primary" style="margin-right: 5px;">

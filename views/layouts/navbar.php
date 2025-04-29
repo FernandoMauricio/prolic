@@ -16,7 +16,7 @@ NavBar::begin([
     ],
 ]);
 
-if ($session['sess_codunidade'] == 6) { //ÁREA DA EQUIPE DO GMA
+if ($session['sess_codunidade'] == 6) { //ÁREA DA EQUIPE DO GSP
 
     echo NavX::widget([
 

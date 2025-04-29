@@ -6,6 +6,7 @@ use miloschuman\highcharts\Highcharts;
 use yii\widgets\ActiveForm;
 use kartik\export\ExportMenu;
 use yii\data\ArrayDataProvider;
+use app\models\processolicitatorio\ProcessoLicitatorio;
 
 /* @var $this yii\web\View */
 /* @var $filtroModel \app\models\FiltroDashboardForm */
@@ -73,6 +74,74 @@ $dataProvider = new ArrayDataProvider([
             ],
             'dropdownOptions' => ['label' => 'Exportar', 'class' => 'btn btn-default']
         ]); ?>
+    </div>
+</div>
+
+<!-- Novos Insights -->
+<div class="row" style="margin-bottom:30px;">
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Top 5 Unidades Atendidas</strong></div>
+            <div class="panel-body">
+                <?= Highcharts::widget([
+                    'options' => [
+                        'chart' => ['type' => 'column'],
+                        'title' => false,
+                        'xAxis' => ['categories' => array_column($topUnidadesAtendidas, 'unidade')],
+                        'yAxis' => ['title' => ['text' => 'Processos']],
+                        'series' => [['name' => 'Processos', 'data' => array_column($topUnidadesAtendidas, 'count')]],
+                        'credits' => ['enabled' => false],
+                    ]
+                ]) ?>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Top 10 Maiores Requisições</strong></div>
+            <div class="panel-body">
+                <?= Highcharts::widget([
+                    'options' => [
+                        'chart' => ['type' => 'bar'],
+                        'title' => false,
+                        'xAxis' => ['categories' => array_column($maioresRequisicoes, 'numero_processo')],
+                        'yAxis' => ['title' => ['text' => 'R$']],
+                        'series' => [[
+                            'name' => 'Valor Estimado',
+                            'data' => array_map('floatval', array_column($maioresRequisicoes, 'valor_estimado')),
+                        ]],
+                        'credits' => ['enabled' => false],
+                    ],
+                ]) ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Top 5 Compradores por Situação</strong></div>
+            <div class="panel-body">
+                <?= Highcharts::widget([
+                    'options' => [
+                        'chart' => ['type' => 'column'],
+                        'title' => false,
+                        'xAxis' => ['categories' => array_column($compradoresSituacao, 'comprador')],
+                        'plotOptions' => ['column' => ['stacking' => 'normal']],
+                        'yAxis' => ['title' => ['text' => 'Processos']],
+                        'series' => [
+                            ['name' => 'Em Elaboração', 'data' => array_column($compradoresSituacao, 'Em Elaboração')],
+                            ['name' => 'Em Licitação', 'data' => array_column($compradoresSituacao, 'Em Licitação')],
+                            ['name' => 'Concluido', 'data' => array_column($compradoresSituacao, 'Concluido')],
+                            ['name' => 'Deserto', 'data' => array_column($compradoresSituacao, 'Deserto')],
+                            ['name' => 'Em Andamento', 'data' => array_column($compradoresSituacao, 'Em Andamento')],
+                            ['name' => 'Em Homologação', 'data' => array_column($compradoresSituacao, 'Em Homologação')],
+                            ['name' => 'Cancelado', 'data' => array_column($compradoresSituacao, 'Cancelado')],
+                        ],
+                        'credits' => ['enabled' => false],
+                    ]
+                ]) ?>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -190,7 +259,6 @@ $dataProvider = new ArrayDataProvider([
         </div>
     </div>
 </div>
-
 
 <!-- Alertas -->
 <?php if (!empty($alertas)): ?>

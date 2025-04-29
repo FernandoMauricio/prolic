@@ -160,4 +160,105 @@ class DashboardService
             'alertas' => $queryAlertas->asArray()->all()
         ];
     }
+
+    /**
+     * Retorna o top 5 de unidades atendidas, filtrado por ano/mês se fornecido.
+     */
+    public static function getTopUnidadesAtendidas(FiltroDashboardForm $filtro): array
+    {
+        // Busca o código das unidades com contagem
+        $rows = ProcessoLicitatorio::find()
+            ->select([
+                'codigo' => 'prolic_destino',
+                'count'  => new Expression('COUNT(*)')
+            ])
+            ->groupBy('prolic_destino')
+            ->orderBy(['count' => SORT_DESC])
+            ->limit(5)
+            ->asArray()
+            ->all();
+
+        // Converte o código em nome abreviado
+        foreach ($rows as &$row) {
+            /** @var ProcessoLicitatorio $model */
+            $model = new ProcessoLicitatorio();
+            $row['unidade'] = $model->getUnidades($row['codigo']);
+            unset($row['codigo']);
+            $row['count'] = (int)$row['count'];
+        }
+
+        return $rows;
+    }
+
+    /**
+     * Retorna o top 10 de processos com maior valor estimado.
+     */
+    public static function getMaioresRequisicoes(FiltroDashboardForm $filtro): array
+    {
+        $query = ProcessoLicitatorio::find()
+            ->select([
+                'numero_processo' => 'prolic_codprocesso',
+                'valor_estimado' => 'prolic_valorestimado'
+            ])
+            ->orderBy(['prolic_valorestimado' => SORT_DESC])
+            ->limit(10);
+
+        if ($filtro->ano) {
+            $query->andWhere(['YEAR(prolic_dataprocesso)' => $filtro->ano]);
+        }
+        if ($filtro->mes) {
+            $query->andWhere(['MONTH(prolic_dataprocesso)' => $filtro->mes]);
+        }
+
+        return $query->asArray()->all();
+    }
+
+    /**
+     * Retorna o top 5 de compradores com a contagem de processos por situação (stacked).
+     */
+    public static function getCompradoresSituacao(FiltroDashboardForm $filtro): array
+    {
+        // Primeiro, obter os top 5 compradores
+        $topCompradores = self::getTopCompradores($filtro);
+        $nomes = array_column($topCompradores, 'name');
+
+        $data = [];
+        foreach ($nomes as $nome) {
+            $entry = [
+                'comprador'      => $nome,
+                'Em Licitação'   => 0,
+                'Concluido'      => 0,
+                'Deserto'        => 0,
+                'Em Andamento'   => 0,
+                'Em Homologação' => 0,
+                'Cancelado'      => 0,
+            ];
+
+            $rows = ProcessoLicitatorio::find()
+                ->alias('p')
+                ->joinWith(['comprador c', 'situacao s'], false)
+                ->select([
+                    'situacao' => 's.sit_descricao',
+                    'count' => new Expression('COUNT(*)')
+                ])
+                ->andWhere(new Expression('UPPER(c.comp_descricao) = :nome', [':nome' => $nome]))
+                ->groupBy('s.sit_descricao');
+
+            if ($filtro->ano) {
+                $rows->andWhere(['YEAR(p.prolic_dataprocesso)' => $filtro->ano]);
+            }
+            if ($filtro->mes) {
+                $rows->andWhere(['MONTH(p.prolic_dataprocesso)' => $filtro->mes]);
+            }
+
+            foreach ($rows->asArray()->all() as $row) {
+                $situacao = $row['situacao'];
+                $entry[$situacao] = (int)$row['count'];
+            }
+
+            $data[] = $entry;
+        }
+
+        return $data;
+    }
 }

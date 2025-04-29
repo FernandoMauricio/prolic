@@ -16,14 +16,17 @@ class DashboardController extends Controller
         $filtroModel->load(Yii::$app->request->get());
 
         return $this->render('index', [
-            'filtroModel' => $filtroModel,
-            'kpi' => DashboardService::getKpis($filtroModel),
-            'modalidades' => DashboardService::getDistribuicaoPorModalidade($filtroModel),
-            'situacoes' => DashboardService::getDistribuicaoPorSituacao($filtroModel),
-            'topCompradores' => DashboardService::getTopCompradores($filtroModel),
-            'alertas' => DashboardService::getAlertas($filtroModel),
-            'distribuicaoMensal' => DashboardService::getDistribuicaoMensal($filtroModel),
-            'anosDisponiveis' => DashboardService::getAnosDisponiveis(),
+            'filtroModel'            => $filtroModel,
+            'kpi'                    => DashboardService::getKpis($filtroModel),
+            'modalidades'            => DashboardService::getDistribuicaoPorModalidade($filtroModel),
+            'situacoes'              => DashboardService::getDistribuicaoPorSituacao($filtroModel),
+            'topCompradores'         => DashboardService::getTopCompradores($filtroModel),
+            'alertas'                => DashboardService::getAlertas($filtroModel),
+            'distribuicaoMensal'     => DashboardService::getDistribuicaoMensal($filtroModel),
+            'anosDisponiveis'        => DashboardService::getAnosDisponiveis(),
+            'topUnidadesAtendidas'   => DashboardService::getTopUnidadesAtendidas($filtroModel),
+            'maioresRequisicoes'     => DashboardService::getMaioresRequisicoes($filtroModel),
+            'compradoresSituacao'    => DashboardService::getCompradoresSituacao($filtroModel),
         ]);
     }
 }

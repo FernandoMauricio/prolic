@@ -226,6 +226,20 @@ class ProcessoLicitatorioController extends Controller
         ]);
     }
 
+    public function actionView2($id)
+    {
+        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+        $session = Yii::$app->session;
+        if ($session['sess_codunidade'] != 6) {
+            return $this->AccessoAdministrador();
+        }
+        $model = $this->findModel($id);
+
+        return $this->render('view2', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
     /**
      * Creates a new ProcessoLicitatorio model.
      * If creation is successful, the browser will be redirected to the 'view' page.

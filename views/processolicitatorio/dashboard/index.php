@@ -112,11 +112,16 @@ JS);
                         'yAxis' => ['title' => ['text' => 'Processos']],
                         'series' => [[
                             'name' => 'Processos',
-                            'data' => array_map(function ($item) {
+                            'data' => array_map(function ($item) use ($filtroModel) {
                                 return [
                                     'name' => $item['unidade'],
                                     'y' => $item['count'],
-                                    'url' => Url::to(['detalhes-unidade', 'nome' => $item['unidade']])
+                                    'url' => Url::to([
+                                        'detalhes-unidade',
+                                        'codigo' => $item['codigo'],
+                                        'ano' => $filtroModel->ano,
+                                        'mes' => $filtroModel->mes
+                                    ])
                                 ];
                             }, $topUnidadesAtendidas),
                         ]],

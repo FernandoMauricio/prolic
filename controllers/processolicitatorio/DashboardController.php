@@ -30,13 +30,31 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function actionDetalhesUnidade($nome)
+    public function actionDetalhesUnidade($codigo, $ano = null, $mes = null)
     {
-        $processos = ProcessoLicitatorio::find()
-            ->where(['like', 'prolic_destino', $nome])
-            ->all();
+        $query = ProcessoLicitatorio::find()
+            ->alias('p')
+            ->with(['modalidadeValorlimite.modalidade', 'modalidadeValorlimite.ramo', 'recursos'])
+            ->where(new \yii\db\Expression('FIND_IN_SET(:codigo, p.prolic_destino) > 0'), [':codigo' => $codigo]);
 
-        return $this->renderPartial('detalhes-processos', compact('processos'));
+        if ($ano) {
+            $query->andWhere(['YEAR(p.prolic_dataprocesso)' => $ano]);
+        }
+
+        if ($mes) {
+            $query->andWhere(['MONTH(p.prolic_dataprocesso)' => $mes]);
+        }
+
+        $processos = $query->all();
+
+        $model = new \app\models\processolicitatorio\ProcessoLicitatorio();
+        $nome = $model->getUnidades($codigo);
+
+        return $this->renderPartial('detalhes-unidade', [
+            'codigo' => $codigo,
+            'nome' => $nome,
+            'processos' => $processos,
+        ]);
     }
 
     public function actionDetalhesRequisicao($codigo)

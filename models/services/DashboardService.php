@@ -166,28 +166,41 @@ class DashboardService
      */
     public static function getTopUnidadesAtendidas(FiltroDashboardForm $filtro): array
     {
-        // Busca o código das unidades com contagem
-        $rows = ProcessoLicitatorio::find()
-            ->select([
-                'codigo' => 'prolic_destino',
-                'count'  => new Expression('COUNT(*)')
-            ])
-            ->groupBy('prolic_destino')
-            ->orderBy(['count' => SORT_DESC])
-            ->limit(5)
-            ->asArray()
-            ->all();
+        // 1. Buscar todas unidades no db_base
+        $unidades = \Yii::$app->db_base->createCommand("
+        SELECT uni_codunidade, uni_nomeabreviado FROM unidade_uni
+    ")->queryAll();
 
-        // Converte o código em nome abreviado
-        foreach ($rows as &$row) {
-            /** @var ProcessoLicitatorio $model */
-            $model = new ProcessoLicitatorio();
-            $row['unidade'] = $model->getUnidades($row['codigo']);
-            unset($row['codigo']);
-            $row['count'] = (int)$row['count'];
+        $top = [];
+
+        // 2. Para cada unidade, contar processos no banco principal db
+        foreach ($unidades as $unidade) {
+            $query = ProcessoLicitatorio::find()
+                ->where(new \yii\db\Expression('FIND_IN_SET(:codigo, prolic_destino) > 0'), [':codigo' => $unidade['uni_codunidade']]);
+
+            if ($filtro->ano) {
+                $query->andWhere(['YEAR(prolic_dataprocesso)' => $filtro->ano]);
+            }
+            if ($filtro->mes) {
+                $query->andWhere(['MONTH(prolic_dataprocesso)' => $filtro->mes]);
+            }
+
+            $count = (int)$query->count();
+
+            if ($count > 0) {
+                $top[] = [
+                    'codigo' => $unidade['uni_codunidade'],
+                    'unidade' => $unidade['uni_nomeabreviado'],
+                    'count' => $count
+                ];
+            }
         }
 
-        return $rows;
+        // 3. Ordenar descrescente e pegar os 5 maiores
+        usort($top, fn($a, $b) => $b['count'] <=> $a['count']);
+        $top = array_slice($top, 0, 5);
+
+        return $top;
     }
 
     /**

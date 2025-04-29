@@ -197,7 +197,7 @@ class DashboardService
     {
         $query = ProcessoLicitatorio::find()
             ->select([
-                'codigo' => 'id',
+                'codigo' => 'processo_licitatorio.id',
                 'numero_processo' => 'prolic_codmxm',
                 'valor_estimado' => 'prolic_valorestimado'
             ])

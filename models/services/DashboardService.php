@@ -197,7 +197,8 @@ class DashboardService
     {
         $query = ProcessoLicitatorio::find()
             ->select([
-                'numero_processo' => 'prolic_codprocesso',
+                'codigo' => 'id',
+                'numero_processo' => 'prolic_codmxm',
                 'valor_estimado' => 'prolic_valorestimado'
             ])
             ->orderBy(['prolic_valorestimado' => SORT_DESC])

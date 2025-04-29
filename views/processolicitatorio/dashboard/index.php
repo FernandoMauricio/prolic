@@ -6,7 +6,9 @@ use miloschuman\highcharts\Highcharts;
 use yii\widgets\ActiveForm;
 use kartik\export\ExportMenu;
 use yii\data\ArrayDataProvider;
-use app\models\processolicitatorio\ProcessoLicitatorio;
+use yii\helpers\Url;
+use yii\bootstrap\Modal;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $filtroModel \app\models\FiltroDashboardForm */
@@ -24,6 +26,24 @@ $dataProvider = new ArrayDataProvider([
     'allModels' => $alertas,
     'pagination' => false,
 ]);
+
+Modal::begin([
+    'id' => 'detalheModal',
+    'header' => '<h4>Detalhes do Processo</h4>',
+    'size' => Modal::SIZE_LARGE,
+]);
+
+echo '<div id="detalheModalContent">Carregando...</div>';
+
+Modal::end();
+
+$this->registerJs(<<<JS
+function abrirModalDetalhes(url) {
+  $('#detalheModal').modal('show')
+    .find('#detalheModalContent')
+    .load(url);
+}
+JS);
 ?>
 
 <h1 class="page-header"><?= Html::encode($this->title) ?></h1>
@@ -79,6 +99,7 @@ $dataProvider = new ArrayDataProvider([
 
 <!-- Novos Insights -->
 <div class="row" style="margin-bottom:30px;">
+    <!-- Top 5 Unidades Atendidas -->
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading"><strong>Top 5 Unidades Atendidas</strong></div>
@@ -89,13 +110,34 @@ $dataProvider = new ArrayDataProvider([
                         'title' => false,
                         'xAxis' => ['categories' => array_column($topUnidadesAtendidas, 'unidade')],
                         'yAxis' => ['title' => ['text' => 'Processos']],
-                        'series' => [['name' => 'Processos', 'data' => array_column($topUnidadesAtendidas, 'count')]],
+                        'series' => [[
+                            'name' => 'Processos',
+                            'data' => array_map(function ($item) {
+                                return [
+                                    'name' => $item['unidade'],
+                                    'y' => $item['count'],
+                                    'url' => Url::to(['detalhes-unidade', 'nome' => $item['unidade']])
+                                ];
+                            }, $topUnidadesAtendidas),
+                        ]],
+                        'plotOptions' => [
+                            'column' => [
+                                'cursor' => 'pointer',
+                                'point' => [
+                                    'events' => [
+                                        'click' => new JsExpression("function () { abrirModalDetalhes(this.options.url); }")
+                                    ]
+                                ]
+                            ]
+                        ],
                         'credits' => ['enabled' => false],
                     ]
                 ]) ?>
             </div>
         </div>
     </div>
+
+    <!-- Top 10 Maiores Requisições -->
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading"><strong>Top 10 Maiores Requisições</strong></div>
@@ -108,8 +150,24 @@ $dataProvider = new ArrayDataProvider([
                         'yAxis' => ['title' => ['text' => 'R$']],
                         'series' => [[
                             'name' => 'Valor Estimado',
-                            'data' => array_map('floatval', array_column($maioresRequisicoes, 'valor_estimado')),
+                            'data' => array_map(function ($item) {
+                                return [
+                                    'name' => $item['numero_processo'],
+                                    'y' => (float)$item['valor_estimado'],
+                                    'url' => Url::to(['detalhes-requisicao', 'codigo' => $item['codigo']])
+                                ];
+                            }, $maioresRequisicoes),
                         ]],
+                        'plotOptions' => [
+                            'bar' => [
+                                'cursor' => 'pointer',
+                                'point' => [
+                                    'events' => [
+                                        'click' => new JsExpression("function () { abrirModalDetalhes(this.options.url); }")
+                                    ]
+                                ]
+                            ]
+                        ],
                         'credits' => ['enabled' => false],
                     ],
                 ]) ?>
@@ -117,26 +175,48 @@ $dataProvider = new ArrayDataProvider([
         </div>
     </div>
 
+    <!-- Top 5 Compradores por Situação -->
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading"><strong>Top 5 Compradores por Situação</strong></div>
             <div class="panel-body">
+                <?php
+                $series = [];
+                if (!empty($compradoresSituacao)) {
+                    $keys = array_keys($compradoresSituacao[0]);
+                    foreach ($keys as $key) {
+                        if ($key === 'comprador') continue;
+                        $series[] = [
+                            'name' => $key,
+                            'data' => array_map(function ($item) use ($key) {
+                                return [
+                                    'name' => $item['comprador'],
+                                    'y' => (int)($item[$key] ?? 0),
+                                    'url' => Url::to(['detalhes-comprador', 'nome' => $item['comprador'], 'situacao' => $key])
+                                ];
+                            }, $compradoresSituacao),
+                        ];
+                    }
+                }
+                ?>
                 <?= Highcharts::widget([
                     'options' => [
                         'chart' => ['type' => 'column'],
                         'title' => false,
                         'xAxis' => ['categories' => array_column($compradoresSituacao, 'comprador')],
-                        'plotOptions' => ['column' => ['stacking' => 'normal']],
                         'yAxis' => ['title' => ['text' => 'Processos']],
-                        'series' => [
-                            ['name' => 'Em Elaboração', 'data' => array_column($compradoresSituacao, 'Em Elaboração')],
-                            ['name' => 'Em Licitação', 'data' => array_column($compradoresSituacao, 'Em Licitação')],
-                            ['name' => 'Concluido', 'data' => array_column($compradoresSituacao, 'Concluido')],
-                            ['name' => 'Deserto', 'data' => array_column($compradoresSituacao, 'Deserto')],
-                            ['name' => 'Em Andamento', 'data' => array_column($compradoresSituacao, 'Em Andamento')],
-                            ['name' => 'Em Homologação', 'data' => array_column($compradoresSituacao, 'Em Homologação')],
-                            ['name' => 'Cancelado', 'data' => array_column($compradoresSituacao, 'Cancelado')],
+                        'plotOptions' => [
+                            'column' => [
+                                'stacking' => 'normal',
+                                'cursor' => 'pointer',
+                                'point' => [
+                                    'events' => [
+                                        'click' => new JsExpression("function () { abrirModalDetalhes(this.options.url); }")
+                                    ]
+                                ]
+                            ]
                         ],
+                        'series' => $series,
                         'credits' => ['enabled' => false],
                     ]
                 ]) ?>

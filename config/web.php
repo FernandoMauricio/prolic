@@ -73,10 +73,6 @@ $config = [
         ]
     ],
     'components' => [
-        'apiClient' => [
-            'class' => 'app\components\ApiClient',
-            'baseUrl' => $params['mxm.baseUrl'],
-        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '0smwNj3ceWAok2joKhRdCRFHqQEGMplT',

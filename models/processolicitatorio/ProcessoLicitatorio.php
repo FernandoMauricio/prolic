@@ -21,12 +21,12 @@ use yii\db\Expression;
  * @property int $ano_id
  * @property string $prolic_objeto
  * @property int $prolic_codmxm
- * @property string $prolic_destino
+ * @property string|null $prolic_destino
  * @property int $modalidade_valorlimite_id
  * @property int $prolic_sequenciamodal
  * @property int $artigo_id
  * @property int $prolic_cotacoes
- * @property string $prolic_centrocusto
+ * @property string|null $prolic_centrocusto
  * @property string $prolic_elementodespesa
  * @property double $prolic_valorestimado
  * @property double $prolic_valoraditivo
@@ -38,7 +38,7 @@ use yii\db\Expression;
  * @property int $situacao_id
  * @property string $prolic_datahomologacao
  * @property string $prolic_motivo
- * @property int $empresa_id
+ * @property int|null $empresa_id
  * @property string $prolic_usuariocriacao
  * @property string $prolic_datacriacao
  * @property string $prolic_usuarioatualizacao
@@ -183,7 +183,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     }
 
     //Localiza a somatório dos Limites e o Saldo
-    public function getSumLimite($cat_id, $processo)
+    public static function getSumLimite($cat_id, $processo)
     {
         $data = ProcessoLicitatorio::find()
             ->joinWith('modalidadeValorlimite', false, 'LEFT JOIN')

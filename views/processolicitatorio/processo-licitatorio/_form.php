@@ -388,6 +388,7 @@ use faryshta\widgets\JqueryTagsInput;
                 <div class="col-md-12">
                     <?php
                     echo $form->field($model, 'prolic_empresa')->widget(Select2::classname(), [
+                        'data' => $empresasFormatadas, // importante para mostrar os já selecionados
                         'options' => ['multiple' => true],
                         'pluginOptions' => [
                             'placeholder' => 'Digite o CPF/CNPJ da empresa...',
@@ -398,18 +399,18 @@ use faryshta\widgets\JqueryTagsInput;
                                 'delay' => 250,
                                 'data' => new \yii\web\JsExpression('function(params) { return { q: params.term }; }'),
                                 'processResults' => new \yii\web\JsExpression('function(data) {
-                                return {
-                                    results: data.map(function(item) {
-                                        return { id: item.id, text: item.text };
-                                    })
-                                };
-                            }'),
+                return {
+                    results: data.map(function(item) {
+                        return { id: item.id, text: item.text };
+                    })
+                };
+            }'),
                             ],
                             'escapeMarkup' => new \yii\web\JsExpression('function (markup) { return markup; }'),
                         ],
                     ]);
-                    ?>
 
+                    ?>
                 </div>
             </div>
 

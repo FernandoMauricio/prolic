@@ -317,10 +317,9 @@ class ProcessoLicitatorioController extends Controller
 
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        $documento = $dados['documento'] ?? $q;
-        $razao = $dados['razaoSocial'] ?? 'Fornecedor não encontrado';
+        $documento = trim($dados['documento'] ?? $q);
+        $razao = trim($dados['razaoSocial'] ?? 'Fornecedor não encontrado');
 
-        // Formata CPF ou CNPJ
         if (strlen($documento) === 11) {
             $documentoFormatado = preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "$1.$2.$3-$4", $documento);
         } elseif (strlen($documento) === 14) {
@@ -335,7 +334,6 @@ class ProcessoLicitatorioController extends Controller
         ]];
     }
 
-
     /**
      * Updates an existing ProcessoLicitatorio model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -343,9 +341,9 @@ class ProcessoLicitatorioController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
+
     public function actionUpdate($id)
     {
-        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
         if ($session['sess_codunidade'] != 6) {
             return $this->AccessoAdministrador();
@@ -353,54 +351,22 @@ class ProcessoLicitatorioController extends Controller
 
         $model = $this->findModel($id);
 
-        $ano         = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
-        $ramo        = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
-        $destinos    = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
-        $valorlimite = ModalidadeValorlimite::find()->innerJoinWith('modalidade')->where(['mod_status' => 1])->andWhere(['!=', 'homologacao_usuario', ''])->all();
-        $artigo      = Artigo::find()->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])->andWhere(['!=', 'art_homologacaousuario', ''])->orderBy('art_descricao')->all();
-        $centrocusto = Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all();
-        $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
-        $comprador   = Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all();
-        $situacao    = Situacao::find()->where(['sit_status' => 1])->orderBy('sit_descricao')->all();
+        // Carregamento dos dados auxiliares da view
+        $dadosAuxiliares = $this->carregarDadosAuxiliares();
 
-        $model->prolic_dataatualizacao    = date('Y-m-d');
+        // Pré-processamento dos campos múltiplos
+        $model->prolic_dataatualizacao = date('Y-m-d');
         $model->prolic_usuarioatualizacao = $session['sess_nomeusuario'];
-        $model->prolic_destino     = explode(', ', $model->prolic_destino);
-        $model->prolic_centrocusto = explode(', ', $model->prolic_centrocusto);
-        $model->prolic_empresa     = explode(', ', $model->prolic_empresa);
+        $model->prolic_destino = array_map('trim', explode(',', $model->prolic_destino));
+        $model->prolic_centrocusto = array_map('trim', explode(',', $model->prolic_centrocusto));
+        $model->prolic_empresa = array_map('trim', explode(',', $model->prolic_empresa));
 
         if ($model->load(Yii::$app->request->post())) {
+            $this->ajustarSequenciaModalidade($model);
 
-            $empresas = [];
-
-            foreach ($model->prolic_empresa as $documento) {
-                $response = Yii::$app->apiClient->post('/webmanager/api/InterfacedoFornecedor/ConsultaporCPFouCNPJ', [
-                    'AutheticationToken' => [
-                        'Username' => getenv('MXM_USERNAME'),
-                        'Password' => getenv('MXM_PASSWORD'),
-                        'EnvironmentName' => getenv('MXM_ENV'),
-                    ],
-                    'CpfOuCnpj' => preg_replace('/\D/', '', $documento),
-                ]);
-
-                if (!empty($response['NomeFantasia'])) {
-                    $empresas[$documento] = $response['NomeFantasia'];
-                } else {
-                    $empresas[$documento] = $documento . ' (não encontrado)';
-                }
-            }
-
-            //Somatória dos valores
-            // $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
-
-            $incremento = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->innerJoinWith('ano')->where(['modalidade.id' => $model->modalidadeValorlimite->modalidade_id, 'ano.an_ano' => date('Y')])->count();
-            if ($model->modalidade !=  $_POST['ProcessoLicitatorio']['modalidade']) {
-                $model->prolic_sequenciamodal = $incremento + 1;
-            }
-            //Junta todos destinos, centros de custos e empresas em uma linha
-            is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;
-            is_array($model->prolic_centrocusto) ? $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto) : null;
-            is_array($model->prolic_empresa) ? $model->prolic_empresa = implode(', ', $model->prolic_empresa) : null;
+            $model->prolic_destino = implode(',', $model->prolic_destino);
+            $model->prolic_centrocusto = implode(',', $model->prolic_centrocusto);
+            $model->prolic_empresa = implode(',', $model->prolic_empresa);
 
             if ($model->validate()) {
                 $model->save();
@@ -408,18 +374,69 @@ class ProcessoLicitatorioController extends Controller
             }
         }
 
-        return $this->render('update', [
-            'model' => $model,
-            'ano' => $ano,
-            'ramo' => $ramo,
-            'destinos' => $destinos,
-            'valorlimite' => $valorlimite,
-            'artigo' => $artigo,
-            'centrocusto' => $centrocusto,
-            'recurso' => $recurso,
-            'comprador' => $comprador,
-            'situacao' => $situacao,
-        ]);
+        $empresasFormatadas = $this->formatarEmpresas($model->prolic_empresa);
+
+        return $this->render('update', array_merge(
+            [
+                'model' => $model,
+                'empresasFormatadas' => $empresasFormatadas,
+            ],
+            $dadosAuxiliares
+        ));
+    }
+
+    private function carregarDadosAuxiliares()
+    {
+        return [
+            'ano' => Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all(),
+            'ramo' => Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all(),
+            'destinos' => Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all(),
+            'valorlimite' => ModalidadeValorlimite::find()->innerJoinWith('modalidade')->where(['mod_status' => 1])->andWhere(['!=', 'homologacao_usuario', ''])->all(),
+            'artigo' => Artigo::find()->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])->andWhere(['!=', 'art_homologacaousuario', ''])->orderBy('art_descricao')->all(),
+            'centrocusto' => Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all(),
+            'recurso' => Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all(),
+            'comprador' => Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all(),
+            'situacao' => Situacao::find()->where(['sit_status' => 1])->orderBy('sit_descricao')->all(),
+        ];
+    }
+
+    private function ajustarSequenciaModalidade($model)
+    {
+        $incremento = ProcessoLicitatorio::find()
+            ->innerJoinWith('modalidadeValorlimite')
+            ->innerJoinWith('modalidadeValorlimite.modalidade')
+            ->innerJoinWith('ano')
+            ->where([
+                'modalidade.id' => $model->modalidadeValorlimite->modalidade_id,
+                'ano.an_ano' => date('Y')
+            ])->count();
+
+        if ($model->modalidade != $_POST['ProcessoLicitatorio']['modalidade']) {
+            $model->prolic_sequenciamodal = $incremento + 1;
+        }
+    }
+
+    private function formatarEmpresas(array $documentos)
+    {
+        $resultado = [];
+        foreach ($documentos as $doc) {
+            $dados = WebManagerService::consultarFornecedor($doc);
+            $docLimpo = preg_replace('/\D/', '', $doc);
+
+            if (strlen($docLimpo) === 14) {
+                $docFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $docLimpo);
+            } elseif (strlen($docLimpo) === 11) {
+                $docFormatado = preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "$1.$2.$3-$4", $docLimpo);
+            } else {
+                continue;
+            }
+
+            $razao = trim($dados['razaoSocial'] ?? '');
+            if ($razao) {
+                $resultado[$docLimpo] = $docFormatado . ' - ' . $razao;
+            }
+        }
+        return $resultado;
     }
 
     /**

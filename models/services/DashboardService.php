@@ -120,7 +120,7 @@ class DashboardService
     {
         $query = ProcessoLicitatorio::find()
             ->where(['situacao_id' => [1, 2, 5, 6]]) // Situações -> Elaboração, Licitação, Andamento, Homologação
-            ->andWhere(['<', 'prolic_datacertame', new Expression('DATE_SUB(NOW(), INTERVAL 90 DAY)')])
+            ->andWhere(['<', 'prolic_dataprocesso', new Expression('DATE_SUB(NOW(), INTERVAL 90 DAY)')])
             ->andWhere(['prolic_datahomologacao' => null]);
 
         if ($filtro->ano) {
@@ -137,14 +137,14 @@ class DashboardService
     public static function getDistribuicaoMensal(FiltroDashboardForm $filtro): array
     {
         $queryProcessos = ProcessoLicitatorio::find()
-            ->select(['mes' => new Expression('MONTH(prolic_datacertame)'), 'y' => new Expression('COUNT(*)')])
+            ->select(['mes' => new Expression('MONTH(prolic_dataprocesso)'), 'y' => new Expression('COUNT(*)')])
             ->groupBy(['mes'])
             ->orderBy(['mes' => SORT_ASC]);
 
         $queryAlertas = ProcessoLicitatorio::find()
-            ->select(['mes' => new Expression('MONTH(prolic_datacertame)'), 'y' => new Expression('COUNT(*)')])
+            ->select(['mes' => new Expression('MONTH(prolic_dataprocesso)'), 'y' => new Expression('COUNT(*)')])
             ->where(['situacao_id' => [1, 2, 5, 6]]) // Situações -> Elaboração, Licitação, Andamento, Homologação
-            ->andWhere(['<', 'prolic_datacertame', new Expression('DATE_SUB(NOW(), INTERVAL 90 DAY)')])
+            ->andWhere(['<', 'prolic_dataprocesso', new Expression('DATE_SUB(NOW(), INTERVAL 90 DAY)')])
             ->andWhere(['prolic_datahomologacao' => null])
             ->groupBy(['mes'])
             ->orderBy(['mes' => SORT_ASC]);

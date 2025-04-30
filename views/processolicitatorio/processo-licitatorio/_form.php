@@ -398,12 +398,12 @@ use faryshta\widgets\JqueryTagsInput;
                                 'delay' => 250,
                                 'data' => new \yii\web\JsExpression('function(params) { return { q: params.term }; }'),
                                 'processResults' => new \yii\web\JsExpression('function(data) {
-                return {
-                    results: data.map(function(item) {
-                        return { id: item.id, text: item.text };
-                    })
-                };
-            }'),
+                                return {
+                                    results: data.map(function(item) {
+                                        return { id: item.id, text: item.text };
+                                    })
+                                };
+                            }'),
                             ],
                             'escapeMarkup' => new \yii\web\JsExpression('function (markup) { return markup; }'),
                         ],

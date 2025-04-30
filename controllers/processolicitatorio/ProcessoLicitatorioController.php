@@ -313,15 +313,28 @@ class ProcessoLicitatorioController extends Controller
 
     public function actionBuscar($q)
     {
-        $empresa = WebManagerService::consultarEmpresaPorCnpj($q);
+        $dados = WebManagerService::consultarFornecedor($q);
 
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $documento = $dados['documento'] ?? $q;
+        $razao = $dados['razaoSocial'] ?? 'Fornecedor não encontrado';
+
+        // Formata CPF ou CNPJ
+        if (strlen($documento) === 11) {
+            $documentoFormatado = preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "$1.$2.$3-$4", $documento);
+        } elseif (strlen($documento) === 14) {
+            $documentoFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $documento);
+        } else {
+            $documentoFormatado = $documento;
+        }
 
         return [[
-            'id' => $empresa['cnpj'] ?? $q,
-            'text' => $empresa['nomeFantasia'] ?? 'Empresa não encontrada'
+            'id' => $documento,
+            'text' => $documentoFormatado . ' - ' . $razao,
         ]];
     }
+
 
     /**
      * Updates an existing ProcessoLicitatorio model.

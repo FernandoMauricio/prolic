@@ -16,16 +16,22 @@ class WebManagerService
         ];
     }
 
-    public static function consultarEmpresaPorCnpj(string $cnpj): array
+    public static function consultarFornecedor(string $cpfOuCnpj): array
     {
-        $documento = preg_replace('/\D/', '', $cnpj);
-        $client = new Client([
-            'transport' => 'yii\httpclient\CurlTransport',
-        ]);
+        $documento = preg_replace('/\D/', '', $cpfOuCnpj);
+
+        if (strlen($documento) !== 11 && strlen($documento) !== 14) {
+            Yii::warning("CPF ou CNPJ inválido informado: $cpfOuCnpj", __METHOD__);
+            return [];
+        }
 
         $url = rtrim($_ENV['MXM_BASE_URL'], '/') . '/webmanager/api/InterfacedoFornecedor/ConsultaporCPFouCNPJ';
 
         try {
+            $client = new Client([
+                'transport' => 'yii\httpclient\CurlTransport',
+            ]);
+
             $response = $client->createRequest()
                 ->setMethod('POST')
                 ->setUrl($url)
@@ -45,23 +51,24 @@ class WebManagerService
                 ->send();
 
             if (!$response->isOk || empty($response->data['Data']['InterfacedoFornecedor'][0])) {
-                Yii::error("Erro ao consultar empresa CNPJ: {$cnpj}", __METHOD__);
+                Yii::error("Falha ao consultar fornecedor: $documento", __METHOD__);
                 return [];
             }
 
-            return self::formatEmpresa($response->data['Data']['InterfacedoFornecedor'][0]);
+            return self::formatFornecedor($response->data['Data']['InterfacedoFornecedor'][0]);
         } catch (\Throwable $e) {
-            Yii::error("Erro na requisição de CNPJ: {$e->getMessage()}", __METHOD__);
+            Yii::error("Erro na requisição do fornecedor ($documento): " . $e->getMessage(), __METHOD__);
             return [];
         }
     }
 
-    private static function formatEmpresa(array $dados): array
+    private static function formatFornecedor(array $dados): array
     {
         return [
-            'cnpj' => $dados['CPFouCNPJ'] ?? null,
+            'documento' => $dados['CPFouCNPJ'] ?? null,
             'razaoSocial' => $dados['Nome'] ?? null,
             'nomeFantasia' => $dados['NomeFantasia'] ?? null,
+            'status' => $dados['Status'] ?? null,
             'endereco' => [
                 'logradouro' => $dados['Endereco'] ?? null,
                 'bairro' => $dados['Bairro'] ?? null,
@@ -69,7 +76,9 @@ class WebManagerService
                 'uf' => $dados['UF'] ?? null,
                 'cep' => $dados['CEP'] ?? null,
             ],
-            'status' => $dados['Status'] ?? null,
+            'banco' => $dados['ContaCorrenteFornecedor'][0]['Banco'] ?? null,
+            'agencia' => $dados['ContaCorrenteFornecedor'][0]['CodigoAgencia'] ?? null,
+            'conta' => $dados['ContaCorrenteFornecedor'][0]['CodigoContaNoBanco'] ?? null,
         ];
     }
 }

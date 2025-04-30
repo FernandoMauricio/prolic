@@ -11,6 +11,7 @@ $(function () {
         const numero = e.params.data.id;
 
         if (requisicoesExibidas.has(numero)) {
+            mostrarFeedback(`Requisição ${numero} já adicionada.`, 'warning');
             return;
         }
 
@@ -20,15 +21,21 @@ $(function () {
         }, function (response) {
             if (response.success && response.html) {
                 const htmlComRemocao = `
-                    <div class="requisicao-preview-item" data-id="${numero}" style="position: relative; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px;">
-                        <button class="btn btn-xs btn-danger requisicao-remover" style="position: absolute; top: 5px; right: 5px;">Remover</button>
-                        ${response.html}
-                    </div>`;
+                <div class="requisicao-preview-item" data-id="${numero}">
+                    <button class="btn btn-xs btn-danger requisicao-remover" style="position: absolute; top: 5px; right: 5px;">Remover</button>
+                    ${response.html}
+                </div>`;
                 $(containerPreview).append(htmlComRemocao);
                 requisicoesExibidas.add(numero);
+                mostrarFeedback(`Requisição ${numero} carregada com sucesso.`, 'success');
+            } else {
+                mostrarFeedback(`Falha ao carregar a requisição ${numero}.`, 'danger');
             }
+        }).fail(function () {
+            mostrarFeedback(`Erro ao consultar a requisição ${numero}.`, 'danger');
         });
     });
+
 
     $(document).on('click', '.requisicao-remover', function () {
         const $item = $(this).closest('.requisicao-preview-item');
@@ -50,3 +57,14 @@ $(function () {
         requisicoesExibidas.clear();
     });
 });
+
+function mostrarFeedback(mensagem, tipo) {
+    const $alerta = $('#requisicao-feedback');
+    $alerta
+        .removeClass()
+        .addClass('alert alert-' + tipo)
+        .html('<strong>' + mensagem + '</strong>')
+        .fadeIn(200)
+        .delay(3000)
+        .fadeOut(400);
+}

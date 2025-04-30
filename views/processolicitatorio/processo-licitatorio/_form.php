@@ -95,7 +95,8 @@ use yii\web\JsExpression;
                     </div>
                 </div>
 
-                <div id="requisicao-preview" style="margin-top:20px;"></div>
+                <div id="requisicao-feedback" class="requisicao-feedback" style="display: none;"></div>
+                <div id="requisicao-preview"></div>
 
                 <div class="col-md-5">
                     <?php

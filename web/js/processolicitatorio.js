@@ -1,29 +1,52 @@
-// $(function() {
+// public/js/processolicitatorio.js
 
-//     $('#processolicitatorio-prolic_valorestimado-disp').ready(function() {
-//        updateTotal();
-//       $('#processolicitatorio-prolic_valorestimado-disp').keyup(function() {
-//        updateTotal();
-//     })});
+$(function () {
+    const campoRequisicao = '#processolicitatorio-prolic_codmxm';
+    const containerPreview = '#requisicao-preview';
 
-//     $('#processolicitatorio-prolic_valoraditivo-disp').ready(function() {
-//        updateTotal();
-//       $('#processolicitatorio-prolic_valoraditivo-disp').keyup(function() {
-//        updateTotal();
-//     })});
+    // Armazena números de requisições já carregadas
+    const requisicoesExibidas = new Set();
 
-//     var updateTotal = function () {
+    $(campoRequisicao).on('select2:select', function (e) {
+        const numero = e.params.data.id;
 
-//       var prolic_valorestimado = parseFloat($('#processolicitatorio-prolic_valorestimado-disp').val());
-//       var prolic_valoraditivo  = parseFloat($('#processolicitatorio-prolic_valoraditivo-disp').val());
+        if (requisicoesExibidas.has(numero)) {
+            return;
+        }
 
-//       var prolic_valorefetivo = prolic_valorestimado + prolic_valoraditivo;
+        $.getJSON("/prolic/web/index.php?r=processolicitatorio/processo-licitatorio/buscar-requisicao", {
+            codigoEmpresa: '02',
+            numeroRequisicao: numero
+        }, function (response) {
+            if (response.success && response.html) {
+                const htmlComRemocao = `
+                    <div class="requisicao-preview-item" data-id="${numero}" style="position: relative; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px;">
+                        <button class="btn btn-xs btn-danger requisicao-remover" style="position: absolute; top: 5px; right: 5px;">Remover</button>
+                        ${response.html}
+                    </div>`;
+                $(containerPreview).append(htmlComRemocao);
+                requisicoesExibidas.add(numero);
+            }
+        });
+    });
 
-//       if (isNaN(prolic_valorefetivo) || prolic_valorefetivo < 0) {
-//           prolic_valorefetivo = 0;
-//       }
+    $(document).on('click', '.requisicao-remover', function () {
+        const $item = $(this).closest('.requisicao-preview-item');
+        const id = $item.data('id');
+        $item.remove();
+        requisicoesExibidas.delete(id);
 
-//       $('#processolicitatorio-prolic_valorefetivo-disp').val(prolic_valorefetivo);
-//       $('#processolicitatorio-prolic_valorefetivo_hidden').val(prolic_valorefetivo);
-//     };
-//  });
+        // Remover do select2 visualmente também
+        const option = $(campoRequisicao + ' option[value="' + id + '"]');
+        if (option.length) {
+            option.prop('selected', false);
+            $(campoRequisicao).trigger('change');
+        }
+    });
+
+    // Limpar previews ao limpar o select2
+    $(campoRequisicao).on('select2:clear', function () {
+        $(containerPreview).empty();
+        requisicoesExibidas.clear();
+    });
+});

@@ -81,4 +81,56 @@ class WebManagerService
             'conta' => $dados['ContaCorrenteFornecedor'][0]['CodigoContaNoBanco'] ?? null,
         ];
     }
+
+    public static function consultarPedidoRequisicao(string $codigoEmpresa, string $numeroRequisicao): array
+    {
+        $client = new Client([
+            'transport' => 'yii\httpclient\CurlTransport',
+        ]);
+
+        $url = rtrim($_ENV['MXM_BASE_URL'], '/') . '/webmanager/api/InterfaceDaRequisicaoDeCompra/ConsultarPedidoDeRequisicaoCompras';
+
+        try {
+            $response = $client->createRequest()
+                ->setMethod('POST')
+                ->setUrl($url)
+                ->setFormat(Client::FORMAT_JSON)
+                ->setData([
+                    'AutheticationToken' => self::buildAuthPayload(),
+                    'Data' => [
+                        'CodigoEmpresa' => $codigoEmpresa,
+                        'NumeroRequisicao' => $numeroRequisicao,
+                    ]
+                ])
+                ->addHeaders([
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ])
+                ->send();
+
+            if (!$response->isOk || empty($response->data['Data'][0])) {
+                Yii::error("Erro ao consultar requisição {$numeroRequisicao} da empresa {$codigoEmpresa}", __METHOD__);
+                return [];
+            }
+
+            return self::formatarPedidoRequisicao($response->data['Data'][0]);
+        } catch (\Throwable $e) {
+            Yii::error("Erro na requisição de pedido: " . $e->getMessage(), __METHOD__);
+            return [];
+        }
+    }
+
+    private static function formatarPedidoRequisicao(array $dados): array
+    {
+        return [
+            'empresa' => $dados['CodigoEmpresa'] ?? '',
+            'numero' => $dados['NumeroPedidoCompras'] ?? '',
+            'data' => $dados['DataPedido'] ?? '',
+            'requisitante' => $dados['CodigoRequisitante'] ?? '',
+            'condicaoPagamento' => $dados['CodigoCondicaoPagamento'] ?? '',
+            'valorTotal' => $dados['ValorTotalPedido'] ?? '',
+            'status' => $dados['DescricaoStatusPedido'] ?? '',
+            'itens' => $dados['ItensPedido'] ?? [],
+        ];
+    }
 }

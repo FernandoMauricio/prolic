@@ -11,11 +11,14 @@ use kartik\depdrop\DepDrop;
 use kartik\number\NumberControl;
 use kartik\datecontrol\DateControl;
 use faryshta\widgets\JqueryTagsInput;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+
+<?php $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::class]]); ?>
 
 <div class="processo-licitatorio-form">
 
@@ -62,7 +65,38 @@ use faryshta\widgets\JqueryTagsInput;
                     ]);
                     ?>
                 </div>
-                <div class="col-md-2"><?= $form->field($model, 'prolic_codmxm')->textInput() ?></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'prolic_codmxm')->widget(Select2::class, [
+                            'options' => [
+                                'id' => 'processolicitatorio-prolic_codmxm',
+                                'multiple' => true,
+                                'placeholder' => 'Digite o número da requisição...'
+                            ],
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                                'minimumInputLength' => 5,
+                                'ajax' => [
+                                    'url' => Url::to(['processolicitatorio/processo-licitatorio/buscar-requisicao-opcao']),
+                                    'dataType' => 'json',
+                                    'delay' => 300,
+                                    'data' => new JsExpression('function(params) {
+                return { term: params.term };
+            }'),
+                                    'processResults' => new JsExpression('function(data) {
+                return data;
+            }'),
+                                ],
+                                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                            ],
+                        ]) ?>
+
+                    </div>
+                </div>
+
+                <div id="requisicao-preview" style="margin-top:20px;"></div>
+
                 <div class="col-md-5">
                     <?php
                     $options = ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado');
@@ -394,7 +428,7 @@ use faryshta\widgets\JqueryTagsInput;
                             'placeholder' => 'Digite o CPF/CNPJ da empresa...',
                             'minimumInputLength' => 8,
                             'ajax' => [
-                                'url' => Url::to(['processolicitatorio/processo-licitatorio/buscar']),
+                                'url' => Url::to(['processolicitatorio/processo-licitatorio/buscar-fornecedor']),
                                 'dataType' => 'json',
                                 'delay' => 250,
                                 'data' => new \yii\web\JsExpression('function(params) { return { q: params.term }; }'),

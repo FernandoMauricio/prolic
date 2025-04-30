@@ -311,7 +311,7 @@ class ProcessoLicitatorioController extends Controller
         ]);
     }
 
-    public function actionBuscar($q)
+    public function actionBuscarFornecedor($q)
     {
         $dados = WebManagerService::consultarFornecedor($q);
 
@@ -332,6 +332,42 @@ class ProcessoLicitatorioController extends Controller
             'id' => $documento,
             'text' => $documentoFormatado . ' - ' . $razao,
         ]];
+    }
+
+    public function actionBuscarRequisicao($codigoEmpresa, $numeroRequisicao)
+    {
+        $dados = WebManagerService::consultarPedidoRequisicao($codigoEmpresa, $numeroRequisicao);
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        if (!empty($dados)) {
+            $html = $this->renderPartial('_requisicao-preview', ['dados' => $dados]);
+            return ['success' => true, 'html' => $html, 'numeroRequisicao' => $numeroRequisicao];
+        }
+
+        return ['success' => false];
+    }
+
+    public function actionBuscarRequisicaoOpcao($term = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        if (strlen($term) < 5) {
+            return ['results' => []];
+        }
+
+        $dados = WebManagerService::consultarPedidoRequisicao('02', $term);
+
+        if (!empty($dados)) {
+            return [
+                'results' => [[
+                    'id' => $term,
+                    'text' => $term . ' - ' . ($dados['requisitante'] ?? 'Desconhecido')
+                ]]
+            ];
+        }
+
+        return ['results' => []];
     }
 
     /**
@@ -360,13 +396,14 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_destino = array_map('trim', explode(',', $model->prolic_destino));
         $model->prolic_centrocusto = array_map('trim', explode(',', $model->prolic_centrocusto));
         $model->prolic_empresa = array_map('trim', explode(',', $model->prolic_empresa));
+        $model->prolic_codmxm = array_map('trim', explode(',', $model->prolic_codmxm));
 
         if ($model->load(Yii::$app->request->post())) {
             $this->ajustarSequenciaModalidade($model);
 
             $model->prolic_destino = implode(',', $model->prolic_destino);
             $model->prolic_centrocusto = implode(',', $model->prolic_centrocusto);
-            $model->prolic_empresa = implode(',', $model->prolic_empresa);
+            $model->prolic_empresa = $this->formatarEmpresasParaSalvar($model->prolic_empresa);
 
             if ($model->validate()) {
                 $model->save();
@@ -414,6 +451,33 @@ class ProcessoLicitatorioController extends Controller
         if ($model->modalidade != $_POST['ProcessoLicitatorio']['modalidade']) {
             $model->prolic_sequenciamodal = $incremento + 1;
         }
+    }
+
+    private function formatarEmpresasParaSalvar(array $documentos): string
+    {
+        $formatados = [];
+
+        foreach ($documentos as $documento) {
+            $dados = WebManagerService::consultarFornecedor($documento);
+            $docLimpo = preg_replace('/\D/', '', $documento);
+
+            if (strlen($docLimpo) === 14) {
+                $docFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $docLimpo);
+            } elseif (strlen($docLimpo) === 11) {
+                $docFormatado = preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "$1.$2.$3-$4", $docLimpo);
+            } else {
+                continue;
+            }
+
+            $razao = trim($dados['razaoSocial'] ?? '');
+            if (!$razao) {
+                continue;
+            }
+
+            $formatados[] = "$docFormatado - $razao";
+        }
+
+        return implode(', ', $formatados);
     }
 
     private function formatarEmpresas(array $documentos)

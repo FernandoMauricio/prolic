@@ -3,7 +3,6 @@
 namespace app\controllers\processolicitatorio;
 
 use Yii;
-use app\models\base\Modalidade;
 use app\models\base\Ano;
 use app\models\base\Ramo;
 use app\models\base\ModalidadeValorlimite;
@@ -22,6 +21,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Json;
+use app\models\api\WebManagerService;
+use yii\web\Response;
 
 /**
  * ProcessoLicitatorioController implements the CRUD actions for ProcessoLicitatorio model.
@@ -310,6 +311,18 @@ class ProcessoLicitatorioController extends Controller
         ]);
     }
 
+    public function actionBuscar($q)
+    {
+        $empresa = WebManagerService::consultarEmpresaPorCnpj($q);
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        return [[
+            'id' => $empresa['cnpj'] ?? $q,
+            'text' => $empresa['nomeFantasia'] ?? 'Empresa não encontrada'
+        ]];
+    }
+
     /**
      * Updates an existing ProcessoLicitatorio model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -336,7 +349,6 @@ class ProcessoLicitatorioController extends Controller
         $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
         $comprador   = Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all();
         $situacao    = Situacao::find()->where(['sit_status' => 1])->orderBy('sit_descricao')->all();
-        $empresa     = Empresa::find()->where(['emp_status' => 1])->orderBy('emp_descricao')->all();
 
         $model->prolic_dataatualizacao    = date('Y-m-d');
         $model->prolic_usuarioatualizacao = $session['sess_nomeusuario'];
@@ -345,6 +357,25 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_empresa     = explode(', ', $model->prolic_empresa);
 
         if ($model->load(Yii::$app->request->post())) {
+
+            $empresas = [];
+
+            foreach ($model->prolic_empresa as $documento) {
+                $response = Yii::$app->apiClient->post('/webmanager/api/InterfacedoFornecedor/ConsultaporCPFouCNPJ', [
+                    'AutheticationToken' => [
+                        'Username' => getenv('MXM_USERNAME'),
+                        'Password' => getenv('MXM_PASSWORD'),
+                        'EnvironmentName' => getenv('MXM_ENV'),
+                    ],
+                    'CpfOuCnpj' => preg_replace('/\D/', '', $documento),
+                ]);
+
+                if (!empty($response['NomeFantasia'])) {
+                    $empresas[$documento] = $response['NomeFantasia'];
+                } else {
+                    $empresas[$documento] = $documento . ' (não encontrado)';
+                }
+            }
 
             //Somatória dos valores
             // $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
@@ -375,7 +406,6 @@ class ProcessoLicitatorioController extends Controller
             'recurso' => $recurso,
             'comprador' => $comprador,
             'situacao' => $situacao,
-            'empresa' => $empresa,
         ]);
     }
 

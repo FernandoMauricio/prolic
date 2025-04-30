@@ -387,15 +387,29 @@ use faryshta\widgets\JqueryTagsInput;
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                    $options = ArrayHelper::map($empresa, 'emp_descricao', 'emp_descricao');
                     echo $form->field($model, 'prolic_empresa')->widget(Select2::classname(), [
-                        'data' => $options,
-                        'options' => ['placeholder' => 'Informe a Empresa...', 'multiple' => true],
+                        'options' => ['multiple' => true],
                         'pluginOptions' => [
-                            'allowClear' => true
+                            'placeholder' => 'Digite o CPF/CNPJ da empresa...',
+                            'minimumInputLength' => 8,
+                            'ajax' => [
+                                'url' => Url::to(['processolicitatorio/processo-licitatorio/buscar']),
+                                'dataType' => 'json',
+                                'delay' => 250,
+                                'data' => new \yii\web\JsExpression('function(params) { return { q: params.term }; }'),
+                                'processResults' => new \yii\web\JsExpression('function(data) {
+                return {
+                    results: data.map(function(item) {
+                        return { id: item.id, text: item.text };
+                    })
+                };
+            }'),
+                            ],
+                            'escapeMarkup' => new \yii\web\JsExpression('function (markup) { return markup; }'),
                         ],
                     ]);
                     ?>
+
                 </div>
             </div>
 

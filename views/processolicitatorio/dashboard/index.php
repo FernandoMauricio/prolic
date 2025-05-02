@@ -108,13 +108,13 @@ JS);
             ['label' => 'Ciclo Médio', 'value' => $kpi['ciclo_medio'] . ' dias', 'class' => 'warning'],
         ] as $kpiCard
     ): ?>
-        <div class="col-md-3">
-            <div class="card border-<?= $kpiCard['class'] ?> h-100">
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+            <div class="card border-<?= $kpiCard['class'] ?> h-100" style="min-height: 120px;">
                 <div class="card-header bg-<?= $kpiCard['class'] ?> text-white fw-bold">
                     <?= $kpiCard['label'] ?>
                 </div>
-                <div class="card-body">
-                    <h4><?= $kpiCard['value'] ?></h4>
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <h4 class="mb-0"><?= $kpiCard['value'] ?></h4>
                 </div>
             </div>
         </div>
@@ -124,152 +124,159 @@ JS);
 <!-- Bloco Top 5 Unidades, Requisições, Compradores por Situação -->
 <div class="row mb-4">
     <!-- Top 5 Unidades Atendidas -->
-    <div class="col-md-4">
-        <div class="card h-100">
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+        <div class="card h-100" role="region" aria-label="Gráfico Top 5 Unidades Atendidas">
             <div class="card-header bg-light text-dark fw-bold">
                 Top 5 Unidades Atendidas
             </div>
-            <div class="card-body">
-                <?= Highcharts::widget([
-                    'options' => [
-                        'chart' => ['type' => 'column'],
-                        'title' => false,
-                        'xAxis' => ['categories' => array_column($topUnidadesAtendidas, 'unidade')],
-                        'yAxis' => ['title' => ['text' => 'Processos']],
-                        'series' => [[
-                            'name' => 'Processos',
-                            'data' => array_map(function ($item) use ($filtroModel) {
-                                return [
-                                    'name' => $item['unidade'],
-                                    'y' => $item['count'],
-                                    'url' => Url::to([
-                                        'detalhes-unidade',
-                                        'codigo' => $item['codigo'],
-                                        'ano' => $filtroModel->ano,
-                                        'mes' => $filtroModel->mes
-                                    ])
-                                ];
-                            }, $topUnidadesAtendidas),
-                        ]],
-                        'plotOptions' => [
-                            'column' => [
-                                'cursor' => 'pointer',
-                                'point' => [
-                                    'events' => [
-                                        'click' => new JsExpression("function () { abrirModalDetalhes(this.options.url); }")
+            <div class="card-body" style="overflow-x: auto;">
+                <div style="min-width: 300px">
+                    <?= Highcharts::widget([
+                        'options' => [
+                            'chart' => ['type' => 'column'],
+                            'title' => false,
+                            'xAxis' => ['categories' => array_column($topUnidadesAtendidas, 'unidade')],
+                            'yAxis' => ['title' => ['text' => 'Processos']],
+                            'series' => [[
+                                'name' => 'Processos',
+                                'data' => array_map(function ($item) use ($filtroModel) {
+                                    return [
+                                        'name' => $item['unidade'],
+                                        'y' => $item['count'],
+                                        'url' => Url::to([
+                                            'detalhes-unidade',
+                                            'codigo' => $item['codigo'],
+                                            'ano' => $filtroModel->ano,
+                                            'mes' => $filtroModel->mes
+                                        ])
+                                    ];
+                                }, $topUnidadesAtendidas),
+                            ]],
+                            'plotOptions' => [
+                                'column' => [
+                                    'cursor' => 'pointer',
+                                    'point' => [
+                                        'events' => [
+                                            'click' => new JsExpression("function () { abrirModalDetalhes(this.options.url); }")
+                                        ]
                                     ]
                                 ]
-                            ]
-                        ],
-                        'credits' => ['enabled' => false],
-                    ]
-                ]) ?>
+                            ],
+                            'credits' => ['enabled' => false],
+                        ]
+                    ]) ?>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Top 10 Maiores Requisições -->
-    <div class="col-md-4">
-        <div class="card h-100">
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+        <div class="card h-100" role="region" aria-label="Gráfico Top 10 Maiores Requisições">
             <div class="card-header bg-light text-dark fw-bold">
                 Top 10 Maiores Requisições
             </div>
-            <div class="card-body">
-                <?= Highcharts::widget([
-                    'options' => [
-                        'chart' => ['type' => 'bar'],
-                        'title' => false,
-                        'xAxis' => ['categories' => array_column($maioresRequisicoes, 'numero_processo')],
-                        'yAxis' => ['title' => ['text' => 'R$']],
-                        'series' => [[
-                            'name' => 'Valor Estimado',
-                            'data' => array_map(function ($item) {
-                                return [
-                                    'name' => $item['numero_processo'],
-                                    'y' => (float)$item['valor_estimado'],
-                                    'url' => Url::to(['detalhes-requisicao', 'codigo' => $item['codigo']])
-                                ];
-                            }, $maioresRequisicoes),
-                        ]],
-                        'plotOptions' => [
-                            'bar' => [
-                                'cursor' => 'pointer',
-                                'point' => [
-                                    'events' => [
-                                        'click' => new JsExpression("function () { abrirModalDetalhes(this.options.url); }")
+            <div class="card-body" style="overflow-x: auto;">
+                <div style="min-width: 300px">
+                    <?= Highcharts::widget([
+                        'options' => [
+                            'chart' => ['type' => 'bar'],
+                            'title' => false,
+                            'xAxis' => ['categories' => array_column($maioresRequisicoes, 'numero_processo')],
+                            'yAxis' => ['title' => ['text' => 'R$']],
+                            'series' => [[
+                                'name' => 'Valor Estimado',
+                                'data' => array_map(function ($item) {
+                                    return [
+                                        'name' => $item['numero_processo'],
+                                        'y' => (float)$item['valor_estimado'],
+                                        'url' => Url::to(['detalhes-requisicao', 'codigo' => $item['codigo']])
+                                    ];
+                                }, $maioresRequisicoes),
+                            ]],
+                            'plotOptions' => [
+                                'bar' => [
+                                    'cursor' => 'pointer',
+                                    'point' => [
+                                        'events' => [
+                                            'click' => new JsExpression("function () { abrirModalDetalhes(this.options.url); }")
+                                        ]
                                     ]
                                 ]
-                            ]
+                            ],
+                            'credits' => ['enabled' => false],
                         ],
-                        'credits' => ['enabled' => false],
-                    ],
-                ]) ?>
+                    ]) ?>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Top 5 Compradores por Situação -->
-    <div class="col-md-4">
-        <div class="card h-100">
+    <div class="col-lg-4 col-md-12 mb-4">
+        <div class="card h-100" role="region" aria-label="Gráfico Top 5 Compradores por Situação">
             <div class="card-header bg-light text-dark fw-bold">
                 Top 5 Compradores por Situação
             </div>
-            <div class="card-body">
-                <?php
-                $series = [];
-                if (!empty($compradoresSituacao)) {
-                    $keys = array_keys($compradoresSituacao[0]);
-                    foreach ($keys as $key) {
-                        if ($key === 'comprador' || $key === 'comprador_id') continue;
-                        $series[] = [
-                            'name' => $key,
-                            'data' => array_map(function ($item) use ($key, $filtroModel) {
-                                return [
-                                    'name' => $item['comprador'],
-                                    'y' => (int)($item[$key] ?? 0),
-                                    'url' => Url::to([
-                                        'detalhes-comprador',
-                                        'id' => $item['comprador_id'],
-                                        'situacao' => $key,
-                                        'ano' => $filtroModel->ano,
-                                        'mes' => $filtroModel->mes,
-                                    ])
-                                ];
-                            }, $compradoresSituacao),
-                        ];
+            <div class="card-body" style="overflow-x: auto;">
+                <div style="min-width: 300px">
+                    <?php
+                    $series = [];
+                    if (!empty($compradoresSituacao)) {
+                        $keys = array_keys($compradoresSituacao[0]);
+                        foreach ($keys as $key) {
+                            if ($key === 'comprador' || $key === 'comprador_id') continue;
+                            $series[] = [
+                                'name' => $key,
+                                'data' => array_map(function ($item) use ($key, $filtroModel) {
+                                    return [
+                                        'name' => $item['comprador'],
+                                        'y' => (int)($item[$key] ?? 0),
+                                        'url' => Url::to([
+                                            'detalhes-comprador',
+                                            'id' => $item['comprador_id'],
+                                            'situacao' => $key,
+                                            'ano' => $filtroModel->ano,
+                                            'mes' => $filtroModel->mes,
+                                        ])
+                                    ];
+                                }, $compradoresSituacao),
+                            ];
+                        }
                     }
-                }
-                ?>
-                <?= Highcharts::widget([
-                    'options' => [
-                        'chart' => ['type' => 'column'],
-                        'title' => false,
-                        'xAxis' => [
-                            'categories' => array_column($compradoresSituacao, 'comprador'),
-                            'labels' => ['style' => ['fontSize' => '13px']]
-                        ],
-                        'yAxis' => [
-                            'title' => ['text' => 'Processos', 'style' => ['fontSize' => '13px']]
-                        ],
-                        'plotOptions' => [
-                            'column' => [
-                                'stacking' => 'normal',
-                                'cursor' => 'pointer',
-                                'point' => [
-                                    'events' => [
-                                        'click' => new JsExpression("function () { abrirModalDetalhes(this.options.url); }")
+                    ?>
+                    <?= Highcharts::widget([
+                        'options' => [
+                            'chart' => ['type' => 'column'],
+                            'title' => false,
+                            'xAxis' => [
+                                'categories' => array_column($compradoresSituacao, 'comprador'),
+                                'labels' => ['style' => ['fontSize' => '13px']]
+                            ],
+                            'yAxis' => [
+                                'title' => ['text' => 'Processos', 'style' => ['fontSize' => '13px']]
+                            ],
+                            'plotOptions' => [
+                                'column' => [
+                                    'stacking' => 'normal',
+                                    'cursor' => 'pointer',
+                                    'point' => [
+                                        'events' => [
+                                            'click' => new JsExpression("function () { abrirModalDetalhes(this.options.url); }")
+                                        ]
                                     ]
                                 ]
-                            ]
-                        ],
-                        'series' => $series,
-                        'credits' => ['enabled' => false],
-                    ]
-                ]) ?>
+                            ],
+                            'series' => $series,
+                            'credits' => ['enabled' => false],
+                        ]
+                    ]) ?>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Distribuição Mensal de Processos e Alertas -->
 <div class="row">

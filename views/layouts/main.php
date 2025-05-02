@@ -35,13 +35,14 @@ AppAsset::register($this);
 
         <main class="flex-grow-1 py-4">
             <div class="container">
-                <?= Breadcrumbs::widget([
-                    'itemTemplate' => "<li class=\"breadcrumb-item\">{link}</li>\n",
-                    'activeItemTemplate' => "<li class=\"breadcrumb-item active\" aria-current=\"page\">{link}</li>\n",
-                    'links' => $this->params['breadcrumbs'] ?? [],
-                    'options' => ['class' => 'breadcrumb bg-light px-3 py-2 rounded mb-3']
-                ]) ?>
-
+                <div class="wrap" style="padding-top: 80px;">
+                    <?= Breadcrumbs::widget([
+                        'itemTemplate' => "<li class=\"breadcrumb-item\">{link}</li>\n",
+                        'activeItemTemplate' => "<li class=\"breadcrumb-item active\" aria-current=\"page\">{link}</li>\n",
+                        'links' => $this->params['breadcrumbs'] ?? [],
+                        'options' => ['class' => 'breadcrumb bg-light px-3 py-2 rounded mb-3']
+                    ]) ?>
+                </div>
                 <?= Alert::widget() ?>
                 <?= $content ?>
             </div>

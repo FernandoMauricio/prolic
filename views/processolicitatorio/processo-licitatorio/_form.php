@@ -16,414 +16,357 @@ use yii\web\JsExpression;
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
 /* @var $form yii\widgets\ActiveForm */
+
+$this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ?>
 
-<?php $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::class]]); ?>
-
 <div class="processo-licitatorio-form">
-
     <?php $form = ActiveForm::begin(); ?>
 
-    <?php echo $form->errorSummary($model); ?>
+    <?= $form->errorSummary($model, ['class' => 'alert alert-danger']); ?>
 
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> Novo Processo Licitatório</h3>
+    <!-- Card Primário -->
+    <div class="card shadow-sm mb-5 border-primary">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-clipboard-check me-2"></i> Atualização do Processo Licitatório
+            </h5>
         </div>
-        <table class="table table-condensed table-hover">
-            <thead>
-                <tr class="info">
-                    <th colspan="12">SEÇÃO 1: Informações</th>
-                </tr>
-            </thead>
-        </table>
+        <div class="card-body">
 
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-2">
-                    <?php
-                    $data_ano = ArrayHelper::map($ano, 'id', 'an_ano');
-                    echo $form->field($model, 'ano_id')->widget(Select2::classname(), [
-                        'data' =>  $data_ano,
-                        'options' => ['placeholder' => 'Selecione o Ano...'],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]);
-                    ?>
+            <!-- Informações Iniciais -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light border-bottom">
+                    <strong><i class="bi bi-info-circle me-2"></i>Informações Iniciais</strong>
                 </div>
-                <div class="col-md-3">
-                    <?php
-                    echo $form->field($model, 'prolic_dataprocesso')->widget(DateControl::classname(), [
-                        'type' => DateControl::FORMAT_DATE,
-                        'ajaxConversion' => false,
-                        'widgetOptions' => [
-                            'pluginOptions' => [
-                                'autoclose' => true
-                            ]
-                        ]
-                    ]);
-                    ?>
-                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-lg-2">
+                            <?php
+                            $data_ano = ArrayHelper::map($ano, 'id', 'an_ano');
+                            echo $form->field($model, 'ano_id')->widget(Select2::class, [
+                                'data' => $data_ano,
+                                'options' => ['placeholder' => 'Ano...'],
+                                'pluginOptions' => ['allowClear' => true],
+                            ]);
+                            ?>
+                        </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <?= $form->field($model, 'prolic_codmxm')->widget(Select2::class, [
-                            'options' => [
-                                'id' => 'processolicitatorio-prolic_codmxm',
-                                'multiple' => true,
-                                'placeholder' => 'Digite o número da requisição...'
-                            ],
-                            'pluginOptions' => [
-                                'allowClear' => true,
-                                'minimumInputLength' => 5,
-                                'ajax' => [
-                                    'url' => Url::to(['processolicitatorio/processo-licitatorio/buscar-requisicao-opcao']),
-                                    'dataType' => 'json',
-                                    'delay' => 300,
-                                    'data' => new JsExpression('function(params) {
-                return { term: params.term };
-            }'),
-                                    'processResults' => new JsExpression('function(data) {
-                return data;
-            }'),
+                        <div class="col-lg-3">
+                            <?= $form->field($model, 'prolic_dataprocesso')->widget(DateControl::class, [
+                                'type' => DateControl::FORMAT_DATE,
+                                'ajaxConversion' => false,
+                                'widgetOptions' => [
+                                    'pluginOptions' => ['autoclose' => true]
+                                ]
+                            ]); ?>
+                        </div>
+
+                        <div class="col-lg-7">
+                            <?= $form->field($model, 'prolic_codmxm')->widget(Select2::class, [
+                                'options' => [
+                                    'id' => 'processolicitatorio-prolic_codmxm',
+                                    'multiple' => true,
+                                    'placeholder' => 'Digite o número da requisição...'
                                 ],
-                                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            ],
-                        ]) ?>
+                                'pluginOptions' => [
+                                    'allowClear' => true,
+                                    'minimumInputLength' => 5,
+                                    'ajax' => [
+                                        'url' => Url::to(['processolicitatorio/processo-licitatorio/buscar-requisicao-opcao']),
+                                        'dataType' => 'json',
+                                        'delay' => 300,
+                                        'data' => new JsExpression('function(params) { return { term: params.term }; }'),
+                                        'processResults' => new JsExpression('function(data) { return data; }'),
+                                    ],
+                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                ],
+                            ]) ?>
+                        </div>
+                    </div>
 
+                    <div class="col-lg-12">
+                        <?= $form->field($model, 'prolic_objeto')->textarea(['rows' => 3]) ?>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <?php
+                        $options = ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado');
+                        echo $form->field($model, 'prolic_destino')->widget(Select2::class, [
+                            'data' => $options,
+                            'options' => ['placeholder' => 'Informe os Destinos...', 'multiple' => true],
+                            'pluginOptions' => ['allowClear' => true],
+                        ]);
+                        ?>
+                    </div>
+
+                    <div id="requisicao-feedback" class="requisicao-feedback mt-3 d-none"></div>
+                    <div id="requisicao-preview" class="mt-2"></div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light border-bottom">
+                    <strong><i class="bi bi-list-ul me-2"></i>Modalidade, Ramo, Artigo e Recurso</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-lg-4">
+                            <?php
+                            $data_modalidade = ArrayHelper::map($valorlimite, 'modalidade.id', 'modalidade.mod_descricao');
+                            $modalidadeData = $model->isNewRecord ? $data_modalidade : ArrayHelper::map(
+                                ModalidadeValorlimite::find()
+                                    ->innerJoinWith('modalidade')
+                                    ->where(['mod_status' => 1])
+                                    ->andWhere(['!=', 'homologacao_usuario', ''])
+                                    ->andWhere(['modalidade_id' => $model->modalidadeValorlimite->modalidade->id])
+                                    ->all(),
+                                'modalidade.id',
+                                'modalidade.mod_descricao'
+                            );
+                            echo $form->field($model, 'modalidade')->widget(Select2::class, [
+                                'data' => $modalidadeData,
+                                'options' => ['id' => 'modalidade-id', 'placeholder' => 'Selecione a Modalidade...'],
+                                'pluginOptions' => ['allowClear' => true],
+                            ]);
+                            ?>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <?= $form->field($model, 'modalidade_valorlimite_id')->widget(DepDrop::class, [
+                                'type' => DepDrop::TYPE_SELECT2,
+                                'select2Options' => ['pluginOptions' => ['allowClear' => true]],
+                                'options' => ['id' => 'valorlimite-id'],
+                                'pluginOptions' => [
+                                    'depends' => ['modalidade-id'],
+                                    'placeholder' => 'Selecione o Ramo...',
+                                    'initialize' => true,
+                                    'url' => Url::to(['/processolicitatorio/processo-licitatorio/limite'])
+                                ],
+                            ]) ?>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <?php
+                            echo $form->field($model, 'recursos_id')->widget(Select2::class, [
+                                'data' => ArrayHelper::map($recurso, 'id', 'rec_descricao'),
+                                'options' => ['placeholder' => 'Informe o Recurso...'],
+                                'pluginOptions' => ['allowClear' => true],
+                            ]);
+                            ?>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <?php
+                        echo $form->field($model, 'artigo_id')->widget(Select2::class, [
+                            'data' => ArrayHelper::map($artigo, 'id', 'art_descricao'),
+                            'options' => ['placeholder' => 'Informe o Artigo...'],
+                            'pluginOptions' => ['allowClear' => true],
+                        ]);
+                        ?>
                     </div>
                 </div>
+            </div>
 
-                <div id="requisicao-feedback" class="requisicao-feedback" style="display: none;"></div>
-                <div id="requisicao-preview"></div>
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light border-bottom">
+                    <strong><i class="bi bi-currency-dollar me-2"></i>Valores Financeiros</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-lg-2">
+                            <?= $form->field($model, 'valor_limite')->widget(NumberControl::class, [
+                                'disabled' => true,
+                                'maskedInputOptions' => [
+                                    'prefix' => 'R$ ',
+                                    'digits' => 2,
+                                    'groupSeparator' => '.',
+                                    'radixPoint' => ',',
+                                    'autoGroup' => true,
+                                    'unmaskAsNumber' => true,
+                                ],
+                            ]) ?>
+                            <?= $form->field($model, 'valor_limite_hidden')->hiddenInput()->label(false); ?>
+                        </div>
 
-                <div class="col-md-5">
-                    <?php
-                    $options = ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado');
-                    echo $form->field($model, 'prolic_destino')->widget(Select2::classname(), [
-                        'data' => $options,
-                        'options' => ['placeholder' => 'Informe os Destinos...', 'multiple' => true],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]);
-                    ?>
+                        <div class="col-lg-2">
+                            <?= $form->field($model, 'valor_limite_apurado')->widget(NumberControl::class, [
+                                'disabled' => true,
+                                'maskedInputOptions' => [
+                                    'prefix' => 'R$ ',
+                                    'digits' => 2,
+                                    'groupSeparator' => '.',
+                                    'radixPoint' => ',',
+                                    'autoGroup' => true,
+                                    'unmaskAsNumber' => true,
+                                ],
+                            ]) ?>
+                            <?= $form->field($model, 'valor_limite_apurado_hidden')->hiddenInput()->label(false); ?>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <?= $form->field($model, 'valor_saldo')->widget(NumberControl::class, [
+                                'disabled' => true,
+                                'maskedInputOptions' => [
+                                    'prefix' => 'R$ ',
+                                    'digits' => 2,
+                                    'groupSeparator' => '.',
+                                    'radixPoint' => ',',
+                                    'autoGroup' => true,
+                                    'unmaskAsNumber' => true,
+                                ],
+                            ]) ?>
+                            <?= $form->field($model, 'valor_saldo_hidden')->hiddenInput()->label(false); ?>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <?= $form->field($model, 'prolic_valorestimado')->widget(NumberControl::class, [
+                                'maskedInputOptions' => [
+                                    'prefix' => 'R$ ',
+                                    'digits' => 2,
+                                    'groupSeparator' => '.',
+                                    'radixPoint' => ',',
+                                    'autoUnmask' => true,
+                                    'unmaskAsNumber' => true,
+                                ],
+                            ]) ?>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <?= $form->field($model, 'prolic_valoraditivo')->widget(NumberControl::class, [
+                                'maskedInputOptions' => [
+                                    'prefix' => 'R$ ',
+                                    'digits' => 2,
+                                    'groupSeparator' => '.',
+                                    'radixPoint' => ',',
+                                    'autoUnmask' => true,
+                                    'unmaskAsNumber' => true,
+                                ],
+                            ]) ?>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <?= $form->field($model, 'prolic_valorefetivo')->widget(NumberControl::class, [
+                                'maskedInputOptions' => [
+                                    'prefix' => 'R$ ',
+                                    'digits' => 2,
+                                    'groupSeparator' => '.',
+                                    'radixPoint' => ',',
+                                    'autoUnmask' => true,
+                                    'unmaskAsNumber' => true,
+                                ],
+                            ]) ?>
+                            <?= $form->field($model, 'prolic_valorefetivo_hidden')->hiddenInput()->label(false); ?>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12"><?= $form->field($model, 'prolic_objeto')->textarea(['rows' => 3]) ?></div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <?php
-                    $data_modalidade = ArrayHelper::map($valorlimite, 'modalidade.id', 'modalidade.mod_descricao');
-                    if ($model->isNewRecord) {
-                        echo  $form->field($model, 'modalidade')->widget(Select2::class, [
-                            'data' =>  $data_modalidade,
-                            'options' => ['placeholder' => 'Selecione a Modalidade...'],
-                            'pluginOptions' => [
-                                'allowClear' => true
-                            ],
-                        ]);
-                    } else {
-                        $valorlimiteUpdate = ModalidadeValorlimite::find()
-                            ->innerJoinWith('modalidade')
-                            ->where(['mod_status' => 1])
-                            ->andWhere(['!=', 'homologacao_usuario', ''])
-                            ->andWhere(['modalidade_id' => $model->modalidadeValorlimite->modalidade->id])
-                            ->all();
 
-                        $data_modalidadeUpdate = ArrayHelper::map($valorlimiteUpdate, 'modalidade.id', 'modalidade.mod_descricao');
-                        echo $form->field($model, 'modalidade')->widget(Select2::classname(), [
-                            'data' => $data_modalidadeUpdate,
-                            'options' => ['id' => 'modalidade-id', 'placeholder' => 'Selecione a Modalidade...'],
-                            'pluginOptions' => [
-                                'allowClear' => true
-                            ],
-                        ]);
-                    }
-
-                    ?>
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light border-bottom">
+                    <strong><i class="bi bi-diagram-3 me-2"></i>Informações Complementares</strong>
                 </div>
-                <div class="col-md-3">
-                    <?php
-                    echo $form->field($model, 'modalidade_valorlimite_id')->widget(DepDrop::classname(), [
-                        'type' => DepDrop::TYPE_SELECT2,
-                        'select2Options' => ['pluginOptions' => ['allowClear' => true]],
-                        'options' => ['id' => 'valorlimite-id'],
-                        'pluginOptions' => [
-                            'depends' => ['modalidade-id'],
-                            'placeholder' => 'Selecione o Ramo...',
-                            'initialize' => true,
-                            'url' => Url::to(['/processolicitatorio/processo-licitatorio/limite'])
-                        ],
-                        'options' => [
-                            'onchange' => '
-                                    var select = this;
-                                    $.getJSON( "' . Url::toRoute('/processolicitatorio/processo-licitatorio/get-limite') . '", { limiteId: $(this).val() } )
-                                    .done(function( data ) {
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-lg-2">
+                            <?= $form->field($model, 'prolic_cotacoes')->textInput(['type' => 'number']) ?>
+                        </div>
 
-                                           var $divPanelBody = $(select).parent().parent().parent().parent();
+                        <div class="col-lg-4">
+                            <?= $form->field($model, 'prolic_centrocusto')->widget(Select2::class, [
+                                'data' => ArrayHelper::map($centrocusto, 'cen_centrocustoreduzido', 'cen_centrocustoreduzido'),
+                                'options' => [
+                                    'placeholder' => 'Informe os Centros de Custos...',
+                                    'multiple' => true
+                                ],
+                                'pluginOptions' => ['allowClear' => true],
+                            ]) ?>
+                        </div>
 
-                                           $divPanelBody.find("input").eq(5).val(data.valor_limite);
-                                           $divPanelBody.find("input").eq(7).val(data.valor_limite);
-                                        });
+                        <div class="col-lg-3">
+                            <?= $form->field($model, 'prolic_elementodespesa')->widget(JqueryTagsInput::class, [
+                                'clientOptions' => [
+                                    'defaultText' => '',
+                                    'width' => '100%',
+                                    'height' => 'auto',
+                                    'delimiter' => ' / ',
+                                    'interactive' => true,
+                                ],
+                            ]) ?>
+                        </div>
 
-                                    $.getJSON( "' . Url::toRoute('/processolicitatorio/processo-licitatorio/get-sum-limite') . '", { limiteId: $(this).val(), processo: ' . $model->id . ' } )
-                                    .done(function( data ) {
-
-                                           var $divPanelBody = $(select).parent().parent().parent().parent().parent();
-
-                                           $divPanelBody.find("input").eq(8).val(data.valor_limite_apurado);
-                                           $divPanelBody.find("input").eq(10).val(data.valor_limite_apurado);
-                                           $divPanelBody.find("input").eq(11).val(data.valor_saldo);
-                                           $divPanelBody.find("input").eq(13).val(data.valor_saldo);
-                                        });
-                                    '
-                        ]
-                    ]);
-
-                    ?>
-                </div>
-                <div class="col-md-3">
-                    <?php
-                    $options = ArrayHelper::map($artigo, 'id', 'art_descricao');
-                    echo $form->field($model, 'artigo_id')->widget(Select2::classname(), [
-                        'data' => $options,
-                        'options' => ['placeholder' => 'Informe o Artigo...'],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]);
-                    ?>
-                </div>
-                <div class="col-md-3">
-                    <?php
-                    $options = ArrayHelper::map($recurso, 'id', 'rec_descricao');
-                    echo $form->field($model, 'recursos_id')->widget(Select2::classname(), [
-                        'data' => $options,
-                        'options' => ['placeholder' => 'Informe o Recurso...'],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]);
-                    ?>
+                        <div class="col-lg-3">
+                            <?= $form->field($model, 'comprador_id')->widget(Select2::class, [
+                                'data' => ArrayHelper::map($comprador, 'id', 'comp_descricao'),
+                                'options' => ['placeholder' => 'Informe o Comprador...'],
+                                'pluginOptions' => ['allowClear' => true],
+                            ]) ?>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-2">
-                    <?php
-                    echo $form->field($model, 'valor_limite')->widget(NumberControl::classname(), [
-                        'maskedInputOptions' => [
-                            'prefix' => 'R$ ',
-                            //'alias' => 'numeric',
-                            'digits' => 2,
-                            'digitsOptional' => false,
-                            'groupSeparator' => '.',
-                            'radixPoint' => ',',
-                            'autoGroup' => true,
-                            'autoUnmask' => true,
-                            'unmaskAsNumber' => true,
-                        ],
-                        'disabled' => true,
-                    ])
-                    ?>
-                    <?= $form->field($model, 'valor_limite_hidden')->hiddenInput()->label(false); ?>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light border-bottom">
+                    <strong><i class="bi bi-calendar-check me-2"></i>Datas e Situação</strong>
                 </div>
-                <div class="col-md-2">
-                    <?php
-                    echo $form->field($model, 'valor_limite_apurado')->widget(NumberControl::classname(), [
-                        'maskedInputOptions' => [
-                            'prefix' => 'R$ ',
-                            //'alias' => 'numeric',
-                            'digits' => 2,
-                            'digitsOptional' => false,
-                            'groupSeparator' => '.',
-                            'radixPoint' => ',',
-                            'autoGroup' => true,
-                            'autoUnmask' => true,
-                            'unmaskAsNumber' => true,
-                        ],
-                        'disabled' => true,
-                    ])
-                    ?>
-                    <?= $form->field($model, 'valor_limite_apurado_hidden')->hiddenInput()->label(false); ?>
-                </div>
-                <div class="col-md-2">
-                    <?php
-                    echo $form->field($model, 'valor_saldo')->widget(NumberControl::classname(), [
-                        'maskedInputOptions' => [
-                            'prefix' => 'R$ ',
-                            //'alias' => 'numeric',
-                            'digits' => 2,
-                            'digitsOptional' => false,
-                            'groupSeparator' => '.',
-                            'radixPoint' => ',',
-                            'autoGroup' => true,
-                            'autoUnmask' => true,
-                            'unmaskAsNumber' => true,
-                        ],
-                        'disabled' => true,
-                    ])
-                    ?>
-                    <?= $form->field($model, 'valor_saldo_hidden')->hiddenInput()->label(false); ?>
-                </div>
-                <div class="col-md-2">
-                    <?= $form->field($model, 'prolic_valorestimado')->widget(NumberControl::classname(), [
-                        'maskedInputOptions' => [
-                            'prefix' => 'R$ ',
-                            //'alias' => 'numeric',
-                            'digits' => 2,
-                            'digitsOptional' => false,
-                            'groupSeparator' => '.',
-                            'radixPoint' => ',',
-                            //'autoGroup' => true,
-                            'autoUnmask' => true,
-                            'unmaskAsNumber' => true,
-                        ],
-                    ])
-                    ?>
-                </div>
-                <div class="col-md-2">
-                    <?= $form->field($model, 'prolic_valoraditivo')->widget(NumberControl::classname(), [
-                        'maskedInputOptions' => [
-                            'prefix' => 'R$ ',
-                            //'alias' => 'numeric',
-                            'digits' => 2,
-                            'digitsOptional' => false,
-                            'groupSeparator' => '.',
-                            'radixPoint' => ',',
-                            //'autoGroup' => true,
-                            'autoUnmask' => true,
-                            'unmaskAsNumber' => true,
-                        ],
-                    ])
-                    ?></div>
-                <div class="col-md-2">
-                    <?php
-                    echo $form->field($model, 'prolic_valorefetivo')->widget(NumberControl::classname(), [
-                        'maskedInputOptions' => [
-                            'prefix' => 'R$ ',
-                            //'alias' => 'numeric',
-                            'digits' => 2,
-                            'digitsOptional' => false,
-                            'groupSeparator' => '.',
-                            'radixPoint' => ',',
-                            //'autoGroup' => true,
-                            'autoUnmask' => true,
-                            'unmaskAsNumber' => true,
-                        ],
-                    ])
-                    ?>
-                    <?= $form->field($model, 'prolic_valorefetivo_hidden')->hiddenInput()->label(false); ?>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-lg-3">
+                            <?= $form->field($model, 'prolic_datacertame')->widget(DateControl::class, [
+                                'type' => DateControl::FORMAT_DATE,
+                                'ajaxConversion' => false,
+                                'widgetOptions' => ['pluginOptions' => ['autoclose' => true]],
+                            ]) ?>
+                        </div>
+                        <div class="col-lg-3">
+                            <?= $form->field($model, 'prolic_datadevolucao')->widget(DateControl::class, [
+                                'type' => DateControl::FORMAT_DATE,
+                                'ajaxConversion' => false,
+                                'widgetOptions' => ['pluginOptions' => ['autoclose' => true]],
+                            ]) ?>
+                        </div>
+                        <div class="col-lg-3">
+                            <?= $form->field($model, 'prolic_datahomologacao')->widget(DateControl::class, [
+                                'type' => DateControl::FORMAT_DATE,
+                                'ajaxConversion' => false,
+                                'widgetOptions' => ['pluginOptions' => ['autoclose' => true]],
+                            ]) ?>
+                        </div>
+                        <div class="col-lg-3">
+                            <?= $form->field($model, 'situacao_id')->widget(Select2::class, [
+                                'data' => ArrayHelper::map($situacao, 'id', 'sit_descricao'),
+                                'options' => ['placeholder' => 'Informe a Situação...'],
+                                'pluginOptions' => ['allowClear' => true],
+                            ]) ?>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-2"><?= $form->field($model, 'prolic_cotacoes')->textInput() ?></div>
-                <div class="col-md-4">
-                    <?php
-                    $options = ArrayHelper::map($centrocusto, 'cen_centrocustoreduzido', 'cen_centrocustoreduzido');
-                    echo $form->field($model, 'prolic_centrocusto')->widget(Select2::classname(), [
-                        'data' => $options,
-                        'options' => ['placeholder' => 'Informe os Centros de Custos...', 'multiple' => true],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]);
-                    ?>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light border-bottom">
+                    <strong><i class="bi bi-card-text me-2"></i>Motivo do Processo</strong>
                 </div>
-                <div class="col-md-3">
-                    <?php
-                    echo $form->field($model, 'prolic_elementodespesa')->widget(JqueryTagsInput::className(), [
-                        'clientOptions' => [
-                            'defaultText' => '',
-                            'width' => '100%',
-                            'height' => '100%',
-                            'delimiter' => ' / ',
-                            'interactive' => true,
-                        ]
-                    ]);
-                    ?>
-                </div>
-                <div class="col-md-3">
-                    <?php
-                    $options = ArrayHelper::map($comprador, 'id', 'comp_descricao');
-                    echo $form->field($model, 'comprador_id')->widget(Select2::classname(), [
-                        'data' => $options,
-                        'options' => ['placeholder' => 'Informe o Comprador...'],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]);
-                    ?>
+                <div class="card-body">
+                    <?= $form->field($model, 'prolic_motivo')->textarea([
+                        'rows' => 3,
+                        'placeholder' => 'Descreva aqui o motivo ou justificativa do processo...'
+                    ]) ?>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-3">
-                    <?php
-                    echo $form->field($model, 'prolic_datacertame')->widget(DateControl::classname(), [
-                        'type' => DateControl::FORMAT_DATE,
-                        'ajaxConversion' => false,
-                        'widgetOptions' => [
-                            'pluginOptions' => [
-                                'autoclose' => true
-                            ]
-                        ]
-                    ]);
-                    ?>
-                </div>
-                <div class="col-md-3">
-                    <?php
-                    echo $form->field($model, 'prolic_datadevolucao')->widget(DateControl::classname(), [
-                        'type' => DateControl::FORMAT_DATE,
-                        'ajaxConversion' => false,
-                        'widgetOptions' => [
-                            'pluginOptions' => [
-                                'autoclose' => true
-                            ]
-                        ]
-                    ]);
-                    ?>
-                </div>
-                <div class="col-md-3">
-                    <?php
-                    echo $form->field($model, 'prolic_datahomologacao')->widget(DateControl::classname(), [
-                        'type' => DateControl::FORMAT_DATE,
-                        'ajaxConversion' => false,
-                        'widgetOptions' => [
-                            'pluginOptions' => [
-                                'autoclose' => true
-                            ]
-                        ]
-                    ]);
-                    ?>
-                </div>
-                <div class="col-md-3">
-                    <?php
-                    $options = ArrayHelper::map($situacao, 'id', 'sit_descricao');
-                    echo $form->field($model, 'situacao_id')->widget(Select2::classname(), [
-                        'data' => $options,
-                        'options' => ['placeholder' => 'Informe a Situação...'],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]);
-                    ?>
-                </div>
-            </div>
 
-            <?= $form->field($model, 'prolic_motivo')->textarea(['rows' => 3]) ?>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <?php
-                    echo $form->field($model, 'prolic_empresa')->widget(Select2::classname(), [
-                        'data' => $empresasFormatadas, // importante para mostrar os já selecionados
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light border-bottom">
+                    <strong><i class="bi bi-buildings me-2"></i>Empresas Participantes</strong>
+                </div>
+                <div class="card-body">
+                    <?= $form->field($model, 'prolic_empresa')->widget(Select2::class, [
+                        'data' => $empresasFormatadas, // já selecionadas
                         'options' => ['multiple' => true],
                         'pluginOptions' => [
                             'placeholder' => 'Digite o CPF/CNPJ da empresa...',
@@ -432,32 +375,30 @@ use yii\web\JsExpression;
                                 'url' => Url::to(['processolicitatorio/processo-licitatorio/buscar-fornecedor']),
                                 'dataType' => 'json',
                                 'delay' => 250,
-                                'data' => new \yii\web\JsExpression('function(params) { return { q: params.term }; }'),
-                                'processResults' => new \yii\web\JsExpression('function(data) {
-                return {
-                    results: data.map(function(item) {
-                        return { id: item.id, text: item.text };
-                    })
-                };
-            }'),
+                                'data' => new JsExpression('function(params) { return { q: params.term }; }'),
+                                'processResults' => new JsExpression('function(data) {
+                        return {
+                            results: data.map(function(item) {
+                                return { id: item.id, text: item.text };
+                            })
+                        };
+                    }'),
                             ],
-                            'escapeMarkup' => new \yii\web\JsExpression('function (markup) { return markup; }'),
+                            'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                         ],
-                    ]);
-
-                    ?>
+                    ]) ?>
                 </div>
             </div>
-
-
-            <div class="form-group">
-                <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
-            </div>
-
         </div>
     </div>
-    <?php ActiveForm::end(); ?>
 
+    <div class="text-end mt-4">
+        <?= Html::submitButton('<i class="bi bi-check-circle me-1"></i> Salvar Processo', [
+            'class' => 'btn btn-success btn-lg shadow-sm px-4'
+        ]) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
 </div>
 
 <?php $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::className()]]); ?>

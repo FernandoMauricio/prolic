@@ -12,6 +12,7 @@ use app\models\base\Artigo;
 use app\models\base\Comprador;
 use app\models\base\Situacao;
 use yii\helpers\StringHelper;
+use kartik\grid\ActionColumn;
 
 return [
 
@@ -84,7 +85,8 @@ return [
     ['attribute' => 'prolic_sequenciamodal'],
     [
         'attribute' => 'prolic_codmxm',
-        'label' => 'Req. MXM',
+        'label' => 'Requisição <br>MXM',
+        'encodeLabel' => false,
         'format' => 'raw',
         'value' => function ($model) {
             $itens = array_filter(array_map('trim', explode(';', $model->prolic_codmxm)));
@@ -98,24 +100,25 @@ return [
         'contentOptions' => ['style' => 'white-space: normal; word-break: break-word;'],
     ],
 
-    ['attribute' => 'prolic_valorestimado', 'label' => 'V. Estimado', 'format' => 'currency'],
-    ['attribute' => 'prolic_valorefetivo', 'label' => 'V. Efetivo', 'format' => 'currency'],
+    [
+        'attribute' => 'prolic_valorestimado',
+        'label' => 'Valor <br>Estimado',
+        'encodeLabel' => false,
+        'format' => 'currency'
+    ],
+
+    [
+        'attribute' => 'prolic_valorefetivo',
+        'label' => 'Valor <br>Efetivo',
+        'encodeLabel' => false,
+        'format' => 'currency'
+    ],
 
     [
         'attribute' => 'prolic_objeto',
         'format' => 'ntext',
         'value' => fn($model) => StringHelper::truncate($model->prolic_objeto, 50),
         'width' => '280px'
-    ],
-
-    [
-        'attribute' => 'artigo_id',
-        'value' => fn($model) => '(' . $model->artigo->art_tipo . ') - ' . $model->artigo->art_descricao,
-        'filterType' => GridView::FILTER_SELECT2,
-        'filter' => ArrayHelper::map(Artigo::find()->where(['art_status' => 1])->orderBy('id')->asArray()->all(), 'id', 'art_descricao'),
-        'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-        'filterInputOptions' => ['placeholder' => 'Artigo...'],
-        'width' => '250px'
     ],
 
     [
@@ -163,37 +166,28 @@ return [
         'headerOptions' => ['style' => 'text-align: center;']
     ],
 
-
     [
-        'attribute' => 'prolic_datahomologacao',
-        'label' => 'Homologação',
-        'format' => ['date', 'php:d/m/Y'],
-        'filterType' => GridView::FILTER_DATE,
-        'width' => '120px',
-        'hAlign' => 'center',
-    ],
-
-    [
-        'class' => 'yii\grid\ActionColumn',
+        'class' => ActionColumn::class,
         'template' => '{view} {update}',
-        'header' => 'Ações',
-        'headerOptions' => ['style' => 'text-align: center; width: 80px;'],
-        'contentOptions' => ['style' => 'text-align: center; white-space: nowrap;'],
         'buttons' => [
-            'view' => fn($url, $model) => Html::a(
-                '<i class="glyphicon glyphicon-eye-open"></i>',
-                $url,
-                ['class' => 'btn btn-default btn-xs', 'title' => 'Visualizar', 'data-toggle' => 'tooltip']
-            ),
-            'update' => fn($url, $model) =>
-            $model->situacao_id !== 7
-                ? Html::a(
-                    '<i class="glyphicon glyphicon-pencil"></i>',
-                    $url,
-                    ['class' => 'btn btn-primary btn-xs', 'title' => 'Atualizar', 'data-toggle' => 'tooltip']
-                )
-                : '',
+            'view' => function ($url) {
+                return Html::a('<i class="bi bi-eye"></i>', $url, [
+                    'title' => 'Visualizar',
+                    'class' => 'btn btn-sm btn-outline-primary me-1',
+                    'data-pjax' => '0'
+                ]);
+            },
+            'update' => function ($url) {
+                return Html::a('<i class="bi bi-pencil"></i>', $url, [
+                    'title' => 'Editar',
+                    'class' => 'btn btn-sm btn-outline-secondary me-1',
+                    'data-pjax' => '0'
+                ]);
+            },
         ],
+        'header' => 'Ações',
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
     ],
 
 ];

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7ee47e52d3a97441475d37a7cab9b190",
+    "content-hash": "b026280e86186e9a371b23b8d64b9a84",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -1123,16 +1123,16 @@
         },
         {
             "name": "kartik-v/yii2-export",
-            "version": "v1.4.3",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-export.git",
-                "reference": "5c033d407631f8f4aa1f47e4a53e0204d45bb29c"
+                "reference": "5f0223ad175d0f85bdbaa44aff1ac93009f2cc1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-export/zipball/5c033d407631f8f4aa1f47e4a53e0204d45bb29c",
-                "reference": "5c033d407631f8f4aa1f47e4a53e0204d45bb29c",
+                "url": "https://api.github.com/repos/kartik-v/yii2-export/zipball/5f0223ad175d0f85bdbaa44aff1ac93009f2cc1d",
+                "reference": "5f0223ad175d0f85bdbaa44aff1ac93009f2cc1d",
                 "shasum": ""
             },
             "require": {
@@ -1140,6 +1140,7 @@
                 "kartik-v/yii2-mpdf": ">=1.0",
                 "phpoffice/phpspreadsheet": ">=1.0"
             },
+            "default-branch": true,
             "type": "yii2-extension",
             "extra": {
                 "branch-alias": {
@@ -1181,7 +1182,7 @@
             ],
             "support": {
                 "issues": "https://github.com/kartik-v/yii2-export/issues",
-                "source": "https://github.com/kartik-v/yii2-export/tree/v1.4.3"
+                "source": "https://github.com/kartik-v/yii2-export/tree/master"
             },
             "funding": [
                 {
@@ -1189,7 +1190,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2023-07-25T11:05:33+00:00"
+            "time": "2024-11-09T19:38:54+00:00"
         },
         {
             "name": "kartik-v/yii2-grid",
@@ -8720,6 +8721,7 @@
     "stability-flags": {
         "kartik-v/yii2-bootstrap5-dropdown": 20,
         "kartik-v/yii2-datecontrol": 20,
+        "kartik-v/yii2-export": 20,
         "kartik-v/yii2-grid": 20,
         "kartik-v/yii2-money": 20
     },

@@ -49,12 +49,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
     <?php
     echo Accordion::widget([
+        'options' => ['class' => 'mb-3 w-75 small mx-auto'],
         'items' => [
             [
                 'label' => '🔍 Pesquisa Avançada',
                 'content' => $this->render('_search', ['model' => $searchModel]),
                 'contentOptions' => ['class' => 'bg-light p-3'],
                 'options' => ['class' => 'mb-3'],
+                'expand' => false,
             ],
         ],
     ]);

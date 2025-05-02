@@ -1,4 +1,4 @@
-$(function () {
+$(document).ready(function () {
     const campoRequisicao = '#processolicitatorio-prolic_codmxm';
     const containerPreview = '#requisicao-preview';
     const accordionContainer = '#accordionPreview';
@@ -22,6 +22,14 @@ $(function () {
         $('body').find('.spinner-overlay').remove();
     }
 
+    // Caso existam valores salvos, carregue-os automaticamente
+    if (requisicoesSalvas.length > 0) {
+        adicionarSpinner(); // Adiciona o spinner antes de carregar as requisições
+        requisicoesSalvas.forEach(function (numero) {
+            carregarRequisicao(numero);  // Carregar os dados da requisição
+        });
+    }
+
     // Usando o evento de seleção no select2
     $(campoRequisicao).on('select2:select', function (e) {
         const numero = e.params.data.id;
@@ -34,11 +42,16 @@ $(function () {
         adicionarSpinner();
         mostrarFeedback(`Carregando requisição ${numero}...`, 'info');
 
+        carregarRequisicao(numero);
+    });
+
+    // Função para carregar a requisição
+    function carregarRequisicao(numero) {
         $.getJSON("/prolic/web/index.php?r=processolicitatorio/processo-licitatorio/buscar-requisicao", {
             codigoEmpresa: '02',
             numeroRequisicao: numero
         }, function (response) {
-            removerSpinner();
+            removerSpinner(); // Remove o spinner após o carregamento
 
             if (response.success && response.html) {
                 const htmlComRemocao = `
@@ -73,7 +86,7 @@ $(function () {
             removerSpinner();
             mostrarFeedback(`Erro ao consultar a requisição ${numero}.`, 'danger');
         });
-    });
+    }
 
     // Evento de remoção de requisição
     $(document).on('click', '.requisicao-remover', function () {
@@ -83,6 +96,7 @@ $(function () {
         requisicoesExibidas.delete(id);
     });
 
+    // Limpeza dos dados ao limpar o select2
     $(campoRequisicao).on('select2:clear', function () {
         $(containerPreview).empty();
         requisicoesExibidas.clear();

@@ -35,9 +35,10 @@ use yii\web\JsExpression;
         <?= $form->field($model, 'prolic_codmxm')->widget(Select2::class, [
             'options' => [
                 'id' => 'processolicitatorio-prolic_codmxm',
-                'multiple' => true,
+                'multiple' => true,  // Permite selecionar múltiplos itens
                 'placeholder' => 'Digite o número da requisição...',
             ],
+            'value' => is_array($model->prolic_codmxm) ? $model->prolic_codmxm : explode(';', $model->prolic_codmxm), // Garantindo que seja um array
             'pluginOptions' => [
                 'allowClear' => true,
                 'minimumInputLength' => 5,
@@ -49,12 +50,12 @@ use yii\web\JsExpression;
                     'processResults' => new JsExpression('function(data) { return data; }'),
                 ],
                 'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                // Configurando para separar os itens com ponto e vírgula
-                'templateResult' => new JsExpression('function (data) { return data.text; }'),
-                'templateSelection' => new JsExpression('function (data) { return data.text; }'),
             ],
         ]) ?>
     </div>
+
+
+
 </div>
 <div class="col-lg-12">
     <?= $form->field($model, 'prolic_objeto')->textarea(['rows' => 3]) ?>
@@ -69,4 +70,9 @@ use yii\web\JsExpression;
             $('#processolicitatorio-prolic_codmxm').val(selectedValues.join('; '));
         }
     });
+</script>
+
+<script>
+    // Verifique se o valor de $model->prolic_codmxm é uma string e aplique explode() ou use o valor diretamente
+    var requisicoesSalvas = <?php echo json_encode(is_string($model->prolic_codmxm) ? explode(';', $model->prolic_codmxm) : ($model->prolic_codmxm ?: [])); ?>;
 </script>

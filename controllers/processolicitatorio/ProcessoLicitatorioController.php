@@ -387,6 +387,11 @@ class ProcessoLicitatorioController extends Controller
 
         $model = $this->findModel($id);
 
+        // Se prolic_codmxm for uma string, converta para array
+        if (is_string($model->prolic_codmxm)) {
+            $model->prolic_codmxm = explode(';', $model->prolic_codmxm); // Use o delimitador correto
+        }
+
         // Carregamento dos dados auxiliares da view
         $dadosAuxiliares = $this->carregarDadosAuxiliares();
 
@@ -396,15 +401,16 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_destino = array_map('trim', explode(',', $model->prolic_destino));
         $model->prolic_centrocusto = array_map('trim', explode(',', $model->prolic_centrocusto));
         $model->prolic_empresa = array_map('trim', explode(',', $model->prolic_empresa));
-        $model->prolic_codmxm = array_map('trim', explode(',', $model->prolic_codmxm));
+        $model->prolic_codmxm = array_map('trim', $model->prolic_codmxm);
 
         if ($model->load(Yii::$app->request->post())) {
             $this->ajustarSequenciaModalidade($model);
 
+            // Ao salvar, converte os arrays de volta para strings
             $model->prolic_destino = implode(',', $model->prolic_destino);
             $model->prolic_centrocusto = implode(',', $model->prolic_centrocusto);
             $model->prolic_empresa = $this->formatarEmpresasParaSalvar($model->prolic_empresa);
-            $model->prolic_codmxm = implode(';', $model->prolic_codmxm);
+            $model->prolic_codmxm = implode(';', $model->prolic_codmxm); // Converte o array de volta para string separada por ponto e vírgula
 
             if ($model->validate()) {
                 $model->save();
@@ -418,10 +424,12 @@ class ProcessoLicitatorioController extends Controller
             [
                 'model' => $model,
                 'empresasFormatadas' => $empresasFormatadas,
+                'dadosRequisicao' => isset($dadosRequisicao) ? $dadosRequisicao : null,
             ],
             $dadosAuxiliares
         ));
     }
+
 
     private function carregarDadosAuxiliares()
     {

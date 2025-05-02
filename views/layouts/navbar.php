@@ -7,7 +7,7 @@ use yii\bootstrap5\Html;
 $session = Yii::$app->session;
 
 NavBar::begin([
-    'brandLabel' => Html::img('@web/css/img/logo_senac_topo.png', ['alt' => 'Senac', 'height' => 40]),
+    'brandLabel' => Html::img('@web/css/img/logo_senac_topo.png', ['alt' => 'Senac']),
     'brandUrl' => Yii::$app->homeUrl,
     'options' => [
         'class' => 'navbar navbar-expand-lg navbar-dark navbar-custom fixed-top',

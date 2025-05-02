@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap5\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var app\models\processolicitatorio\ProcessoLicitatorio $model */
@@ -9,7 +9,7 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="processo-licitatorio-form">
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['id' => 'processo-licitatorio-form']); ?>
 
     <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
 

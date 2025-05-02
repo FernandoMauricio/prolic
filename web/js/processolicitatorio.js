@@ -79,7 +79,6 @@ $(function () {
     $(document).on('click', '.requisicao-remover', function () {
         const $item = $(this).closest('.requisicao-preview-item');
         const id = $item.data('id');
-        console.log(`Removendo requisição: ${id}`);
         $item.remove();
         requisicoesExibidas.delete(id);
     });

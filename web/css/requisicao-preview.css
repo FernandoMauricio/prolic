@@ -1,0 +1,29 @@
+.requisicao-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.requisicao-card h4,
+.requisicao-card h5 {
+    margin-top: 0;
+    font-weight: 600;
+}
+
+.requisicao-card table {
+    margin-top: 10px;
+    background-color: white;
+}
+
+.requisicao-feedback {
+    padding: 8px 12px;
+    margin-bottom: 15px;
+    border-left: 4px solid #4caf50;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 4px;
+    font-size: 14px;
+}

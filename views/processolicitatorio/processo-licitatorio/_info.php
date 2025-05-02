@@ -49,6 +49,9 @@ use yii\web\JsExpression;
                     'processResults' => new JsExpression('function(data) { return data; }'),
                 ],
                 'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                // Configurando para separar os itens com ponto e vírgula
+                'templateResult' => new JsExpression('function (data) { return data.text; }'),
+                'templateSelection' => new JsExpression('function (data) { return data.text; }'),
             ],
         ]) ?>
     </div>
@@ -56,3 +59,14 @@ use yii\web\JsExpression;
 <div class="col-lg-12">
     <?= $form->field($model, 'prolic_objeto')->textarea(['rows' => 3]) ?>
 </div>
+
+<script>
+    // Transformar a seleção do Select2 em texto separado por ponto e vírgula
+    $('#processolicitatorio-prolic_codmxm').on('change', function() {
+        var selectedValues = $(this).val(); // Pega as opções selecionadas
+        if (selectedValues) {
+            // Junta os valores com ponto e vírgula
+            $('#processolicitatorio-prolic_codmxm').val(selectedValues.join('; '));
+        }
+    });
+</script>

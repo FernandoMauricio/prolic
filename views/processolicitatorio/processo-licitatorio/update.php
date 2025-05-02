@@ -12,8 +12,6 @@ $this->params['breadcrumbs'][] = 'Atualizar';
 ?>
 <div class="processo-licitatorio-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_form', [
         'model' => $model,
         'ano' => $ano,
@@ -27,6 +25,5 @@ $this->params['breadcrumbs'][] = 'Atualizar';
         'situacao' => $situacao,
         'empresasFormatadas' => $empresasFormatadas,
     ]) ?>
-
 
 </div>

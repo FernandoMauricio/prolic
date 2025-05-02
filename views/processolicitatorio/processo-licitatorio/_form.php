@@ -6,11 +6,18 @@ use yii\bootstrap5\ActiveForm;
 /** @var yii\web\View $this */
 /** @var app\models\processolicitatorio\ProcessoLicitatorio $model */
 /** @var yii\bootstrap5\ActiveForm $form */
+
+$this->registerCssFile('@web/css/requisicao-preview.css', [
+    'depends' => [yii\bootstrap5\BootstrapAsset::class], // Isso garante que o CSS seja carregado após o Bootstrap, se necessário
+]);
 ?>
+
 
 <div class="processo-licitatorio-form">
     <h1 class="mb-4"><i class="bi bi-file-earmark-check me-2"></i> Cadastro de Processo Licitatório</h1>
-    <?php $form = ActiveForm::begin(['id' => 'processo-licitatorio-form']); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'processo-licitatorio-form',
+    ]); ?>
 
     <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
 
@@ -114,4 +121,8 @@ use yii\bootstrap5\ActiveForm;
 
     </div>
 
+    <?php ActiveForm::end(); ?>
+
     <?php $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::className()]]); ?>
+
+</div>

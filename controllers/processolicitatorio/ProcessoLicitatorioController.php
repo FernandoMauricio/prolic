@@ -404,6 +404,7 @@ class ProcessoLicitatorioController extends Controller
             $model->prolic_destino = implode(',', $model->prolic_destino);
             $model->prolic_centrocusto = implode(',', $model->prolic_centrocusto);
             $model->prolic_empresa = $this->formatarEmpresasParaSalvar($model->prolic_empresa);
+            $model->prolic_codmxm = implode(';', $model->prolic_codmxm);
 
             if ($model->validate()) {
                 $model->save();

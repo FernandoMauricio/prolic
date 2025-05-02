@@ -62,9 +62,32 @@ $(function () {
         });
     });
 
+    // Evento para remover o item da visualização e do Select2
+    $(campoRequisicao).on('select2:unselect', function (e) {
+        const numero = e.params.data.id;
+        console.log(`Removendo requisição: ${numero}`);
+
+        // Remover o item do container de visualização
+        const itemPreview = $(`#requisicao-preview .requisicao-preview-item[data-id="${numero}"]`);
+        itemPreview.remove();
+
+        // Remover da lista de requisições exibidas
+        requisicoesExibidas.delete(numero);
+
+        // Remover o item do select2 visualmente também
+        const option = $(campoRequisicao + ' option[value="' + numero + '"]');
+        if (option.length) {
+            option.prop('selected', false);
+            $(campoRequisicao).trigger('change');
+        }
+
+        mostrarFeedback(`Requisição ${numero} removida.`, 'warning');
+    });
+
     $(document).on('click', '.requisicao-remover', function () {
         const $item = $(this).closest('.requisicao-preview-item');
         const id = $item.data('id');
+        console.log(`Removendo requisição: ${id}`);
         $item.remove();
         requisicoesExibidas.delete(id);
 

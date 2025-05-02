@@ -104,6 +104,10 @@ margin-top: 70px;
 
 }
 
+.bg-soft-custom {
+    background-color: rgb(130, 148, 163) !important;
+}
+
 /* FIM - Alterações Fernando - Layout Senac AM */
 
 .wrap > .container {

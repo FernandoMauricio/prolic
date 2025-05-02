@@ -19,7 +19,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="processo-licitatorio-index">
     <?php $gridColumns = require(__DIR__ . '/_gridColumns.php'); ?>
 
-    <h1 class="display-6 text-primary fw-bold mb-4"><?= Html::encode($this->title) ?></h1>
+    <h1 class="fs-3 fw-bold text-primary d-flex align-items-center gap-2 mb-4">
+        <i class="bi bi-journal-text text-primary fs-2"></i>
+        Acompanhamento de <span class="text-dark">Processos Licitatórios</span>
+    </h1>
 
     <?php
     echo Accordion::widget([
@@ -80,6 +83,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php Pjax::begin(['id' => 'w0-pjax']); ?>
 
+    <style>
+        .kv-panel-before {
+            display: none !important;
+        }
+    </style>
     <?php
     echo GridView::widget([
         'dataProvider' => $dataProvider,
@@ -99,7 +107,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'panel' => [
             'type' => GridView::TYPE_PRIMARY,
             'heading' => '<h5 class="mb-0"><i class="bi bi-clipboard-data-fill me-2"></i>Listagem - Processos Licitatórios</h5>',
-            'footer' => false,
         ],
     ]);
 

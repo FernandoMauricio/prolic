@@ -4,8 +4,8 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\Url;
-use yii\bootstrap\Modal;
-use yii\bootstrap\Collapse;
+use yii\bootstrap5\Modal;
+use yii\bootstrap5\Accordion;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\processolicitatorio\ProcessoLicitatorioSearch */
@@ -48,13 +48,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php
-    echo Collapse::widget([
+    echo Accordion::widget([
         'items' => [
             [
-                'label' => 'Pesquisa Avançada',
+                'label' => '🔍 Pesquisa Avançada',
                 'content' => $this->render('_search', ['model' => $searchModel]),
+                'contentOptions' => ['class' => 'bg-light p-3'],
+                'options' => ['class' => 'mb-3'],
             ],
-        ]
+        ],
     ]);
     ?>
 
@@ -65,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
     Modal::begin([
         'options' => ['tabindex' => false], // important for Select2 to work properly
-        'header' => '<h3>Novo Processo Licitatório</h3>',
+        'title' => '<h3>Novo Processo Licitatório</h3>',
         'clientOptions' => ['backdrop' => 'static', 'keyboard' => true],
         'id' => 'modal',
         'size' => 'modal-lg',

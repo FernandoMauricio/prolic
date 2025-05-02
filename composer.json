@@ -30,7 +30,8 @@
         "miloschuman/yii2-highcharts-widget": "^11.0",
         "kartik-v/yii2-export": "^1.4",
         "vlucas/phpdotenv": "^5.6",
-        "yiisoft/yii2-httpclient": "*"
+        "yiisoft/yii2-httpclient": "*",
+        "kartik-v/yii2-bootstrap5-dropdown": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

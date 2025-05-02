@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use kartik\editable\Editable;
-use yii\bootstrap\Modal;
+use yii\bootstrap5\Modal;
 
 use app\models\base\Ano;
 use app\models\base\ModalidadeValorlimite;

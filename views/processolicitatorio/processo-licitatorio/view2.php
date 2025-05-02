@@ -51,7 +51,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\bootstrap\Modal;
+use yii\bootstrap5\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model \app\models\processolicitatorio\ProcessoLicitatorio */
@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php
     Modal::begin([
-        'header' => '<h3>Incluir Observação</h3>',
+        'title' => '<h3>Incluir Observação</h3>',
         'id' => 'modal',
         'size' => 'modal-lg',
     ]);
@@ -91,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
     Modal::end();
 
     Modal::begin([
-        'header' => '<h3>Imprimir Capa</h3>',
+        'title' => '<h3>Imprimir Capa</h3>',
         'id' => 'modal2',
         'size' => 'modal-lg',
     ]);

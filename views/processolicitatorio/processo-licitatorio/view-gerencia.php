@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\detail\DetailView;
-use yii\bootstrap\Modal;
+use yii\bootstrap5\Modal;
 use yii\helpers\Url;
 
 use app\models\processolicitatorio\ProcessoLicitatorio;

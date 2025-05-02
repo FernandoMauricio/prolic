@@ -11,4 +11,5 @@ return [
     'mxm.username' => getenv('MXM_USERNAME'),
     'mxm.password' => getenv('MXM_PASSWORD'),
     'mxm.env'      => getenv('MXM_ENV'),
+    'bsVersion' => '5.x',
 ];

@@ -7,7 +7,7 @@ use yii\widgets\ActiveForm;
 use kartik\export\ExportMenu;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Url;
-use yii\bootstrap\Modal;
+use yii\bootstrap5\Modal;
 use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
@@ -29,7 +29,7 @@ $dataProvider = new ArrayDataProvider([
 
 Modal::begin([
     'id' => 'detalheModal',
-    'header' => '<h4>Detalhes do Processo</h4>',
+    'title' => '<h4>Detalhes do Processo</h4>',
     'size' => Modal::SIZE_LARGE,
 ]);
 
@@ -46,22 +46,23 @@ function abrirModalDetalhes(url) {
 JS);
 ?>
 
-<h1 class="page-header"><?= Html::encode($this->title) ?></h1>
+<h1 class="mb-4"><?= Html::encode($this->title) ?></h1>
 
-<div class="row" style="margin-bottom: 20px;">
+<!-- Filtros e Exportação -->
+<div class="row mb-4">
     <div class="col-md-6">
         <?php $form = ActiveForm::begin([
             'method' => 'get',
             'action' => ['index'],
-            'options' => ['class' => 'form-inline']
+            'options' => ['class' => 'row g-2 align-items-end']
         ]); ?>
 
-        <?= $form->field($filtroModel, 'ano')->dropDownList(
+        <?= $form->field($filtroModel, 'ano', ['options' => ['class' => 'col-auto']])->dropDownList(
             array_combine($anosDisponiveis, $anosDisponiveis),
-            ['prompt' => 'Ano']
+            ['prompt' => 'Ano', 'class' => 'form-select']
         )->label(false) ?>
 
-        <?= $form->field($filtroModel, 'mes')->dropDownList([
+        <?= $form->field($filtroModel, 'mes', ['options' => ['class' => 'col-auto']])->dropDownList([
             '1' => 'Janeiro',
             '2' => 'Fevereiro',
             '3' => 'Março',
@@ -74,16 +75,16 @@ JS);
             '10' => 'Outubro',
             '11' => 'Novembro',
             '12' => 'Dezembro'
-        ], ['prompt' => 'Mês'])->label(false) ?>
+        ], ['prompt' => 'Mês', 'class' => 'form-select'])->label(false) ?>
 
-        <div class="form-group" style="margin-top: -10px;">
+        <div class="col-auto">
             <?= Html::submitButton('Filtrar', ['class' => 'btn btn-primary']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
     </div>
 
-    <div class="col-md-6 text-right">
+    <div class="col-md-6 text-end">
         <?= ExportMenu::widget([
             'dataProvider' => $dataProvider,
             'columns' => [
@@ -92,13 +93,13 @@ JS);
                 ['attribute' => 'prolic_datacertame', 'label' => 'Data Certame'],
                 ['attribute' => 'prolic_datahomologacao', 'label' => 'Data Homologação'],
             ],
-            'dropdownOptions' => ['label' => 'Exportar', 'class' => 'btn btn-default']
+            'dropdownOptions' => ['label' => 'Exportar', 'class' => 'btn btn-secondary']
         ]); ?>
     </div>
 </div>
 
 <!-- KPIs -->
-<div class="row text-center">
+<div class="row text-center mb-4">
     <?php foreach (
         [
             ['label' => 'Total de Processos', 'value' => $kpi['total'], 'class' => 'primary'],
@@ -108,9 +109,11 @@ JS);
         ] as $kpiCard
     ): ?>
         <div class="col-md-3">
-            <div class="panel panel-<?= $kpiCard['class'] ?>">
-                <div class="panel-heading"><?= $kpiCard['label'] ?></div>
-                <div class="panel-body">
+            <div class="card border-<?= $kpiCard['class'] ?> h-100">
+                <div class="card-header bg-<?= $kpiCard['class'] ?> text-white fw-bold">
+                    <?= $kpiCard['label'] ?>
+                </div>
+                <div class="card-body">
                     <h4><?= $kpiCard['value'] ?></h4>
                 </div>
             </div>
@@ -118,12 +121,15 @@ JS);
     <?php endforeach; ?>
 </div>
 
-<div class="row" style="margin-bottom:30px;">
+<!-- Bloco Top 5 Unidades, Requisições, Compradores por Situação -->
+<div class="row mb-4">
     <!-- Top 5 Unidades Atendidas -->
     <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>Top 5 Unidades Atendidas</strong></div>
-            <div class="panel-body">
+        <div class="card h-100">
+            <div class="card-header bg-light text-dark fw-bold">
+                Top 5 Unidades Atendidas
+            </div>
+            <div class="card-body">
                 <?= Highcharts::widget([
                     'options' => [
                         'chart' => ['type' => 'column'],
@@ -164,9 +170,11 @@ JS);
 
     <!-- Top 10 Maiores Requisições -->
     <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>Top 10 Maiores Requisições</strong></div>
-            <div class="panel-body">
+        <div class="card h-100">
+            <div class="card-header bg-light text-dark fw-bold">
+                Top 10 Maiores Requisições
+            </div>
+            <div class="card-body">
                 <?= Highcharts::widget([
                     'options' => [
                         'chart' => ['type' => 'bar'],
@@ -202,9 +210,11 @@ JS);
 
     <!-- Top 5 Compradores por Situação -->
     <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>Top 5 Compradores por Situação</strong></div>
-            <div class="panel-body">
+        <div class="card h-100">
+            <div class="card-header bg-light text-dark fw-bold">
+                Top 5 Compradores por Situação
+            </div>
+            <div class="card-body">
                 <?php
                 $series = [];
                 if (!empty($compradoresSituacao)) {
@@ -259,15 +269,16 @@ JS);
             </div>
         </div>
     </div>
-
 </div>
 
 <!-- Distribuição Mensal de Processos e Alertas -->
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>Distribuição Mensal de Processos e Alertas</strong></div>
-            <div class="panel-body">
+        <div class="card mb-4">
+            <div class="card-header bg-light text-dark fw-bold">
+                Distribuição Mensal de Processos e Alertas
+            </div>
+            <div class="card-body">
                 <?php
                 $meses = [
                     1 => 'Jan',
@@ -305,24 +316,15 @@ JS);
                         'xAxis' => [
                             'categories' => array_values($meses),
                             'labels' => ['style' => ['fontSize' => '13px']],
-                            'title' => [
-                                'text' => 'Mês',
-                                'style' => ['fontSize' => '13px']
-                            ]
+                            'title' => ['text' => 'Mês', 'style' => ['fontSize' => '13px']]
                         ],
                         'yAxis' => [
-                            'title' => [
-                                'text' => 'Quantidade de Processos',
-                                'style' => ['fontSize' => '13px']
-                            ],
+                            'title' => ['text' => 'Quantidade de Processos', 'style' => ['fontSize' => '13px']],
                             'labels' => ['style' => ['fontSize' => '13px']],
                         ],
                         'tooltip' => [
                             'pointFormat' => '<span style="color:{series.color}"> {series.name}: <b>{point.y}</b></span><br>',
-                            'style' => [
-                                'fontSize' => '13px',
-                                'fontFamily' => 'Arial',
-                            ],
+                            'style' => ['fontSize' => '13px', 'fontFamily' => 'Arial'],
                         ],
                         'plotOptions' => [
                             'column' => [
@@ -337,16 +339,8 @@ JS);
                             ]
                         ],
                         'series' => [
-                            [
-                                'name' => 'Processos',
-                                'data' => array_values($dadosProcessos),
-                                'color' => '#007bff'
-                            ],
-                            [
-                                'name' => 'Alertas',
-                                'data' => array_values($dadosAlertas),
-                                'color' => '#dc3545'
-                            ]
+                            ['name' => 'Processos', 'data' => array_values($dadosProcessos), 'color' => '#007bff'],
+                            ['name' => 'Alertas', 'data' => array_values($dadosAlertas), 'color' => '#dc3545']
                         ]
                     ]
                 ]);
@@ -358,9 +352,11 @@ JS);
 
 <!-- Alertas -->
 <?php if (!empty($alertas)): ?>
-    <div class="panel panel-danger">
-        <div class="panel-heading"><strong>⚠️ Processos com Possível Atraso</strong></div>
-        <div class="panel-body">
+    <div class="card border-danger mb-4">
+        <div class="card-header bg-danger text-white fw-bold">
+            ⚠️ Processos com Possível Atraso
+        </div>
+        <div class="card-body">
             <ul class="list-group">
                 <?php foreach ($alertas as $processo): ?>
                     <?php
@@ -378,13 +374,14 @@ JS);
                             $class = 'list-group-item-info';
                             break;
                         default:
-                            $class = 'list-group-item-default';
+                            $class = 'border-secondary';
                     }
                     ?>
                     <li class="list-group-item <?= $class ?>">
-                        <strong><?= Html::encode($processo->prolic_codprocesso) . '</strong> (' . Html::encode($processo->situacao->sit_descricao) . ')' ?> —
-                            <?= Html::encode(StringHelper::truncate($processo->prolic_objeto, 80)) ?> —
-                            Certame: <?= Yii::$app->formatter->asDate($processo->prolic_datacertame) ?>
+                        <strong><?= Html::encode($processo->prolic_codprocesso) ?></strong>
+                        (<?= Html::encode($processo->situacao->sit_descricao) ?>) —
+                        <?= Html::encode(StringHelper::truncate($processo->prolic_objeto, 80)) ?> —
+                        Certame: <?= Yii::$app->formatter->asDate($processo->prolic_datacertame) ?>
                     </li>
                 <?php endforeach; ?>
             </ul>
@@ -392,107 +389,47 @@ JS);
     </div>
 <?php endif; ?>
 
-<!-- Gráficos Modalidade e Situação -->
+
+<!-- Gráfico Modalidades e Situações -->
 <div class="row">
     <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>Distribuição por Modalidade</strong></div>
-            <div class="panel-body">
-                <?= Highcharts::widget([
-                    'options' => [
-                        'chart' => ['type' => 'column'],
-                        'title' => false,
-                        'xAxis' => [
-                            'categories' => array_column($modalidades, 'name'),
-                            'labels' => ['style' => ['fontSize' => '13px']],
-                        ],
-                        'yAxis' => [
-                            'title' => [
-                                'text' => 'Quantidade',
-                                'style' => [
-                                    'fontSize' => '13px',
-                                    'fontWeight' => 'bold',
-                                    'color' => '#333'
-                                ]
-                            ],
-                            'labels' => [
-                                'style' => ['fontSize' => '13px']
-                            ]
-                        ],
-                        'legend' => [
-                            'itemStyle' => [
-                                'fontSize' => '13px',
-                                'fontWeight' => 'bold',
-                            ],
-                        ],
-                        'tooltip' => [
-                            'headerFormat' => '<b>{point.key}</b><br>',
-                            'pointFormat' => '<span style="color:{series.color}">Total: <b>{point.y}</b></span><br>',
-                            'style' => ['fontSize' => '13px'],
-                        ],
-                        'plotOptions' => [
-                            'column' => [
-                                'dataLabels' => [
-                                    'enabled' => true,
-                                    'style' => [
-                                        'fontSize' => '13px',
-                                        'fontWeight' => 'bold',
-                                        'color' => '#000000',
-                                    ],
-                                ],
-                            ]
-                        ],
-                        'series' => [[
-                            'name' => 'Processos',
-                            'data' => array_map('intval', array_column($modalidades, 'y')),
-                        ]]
-                    ]
-                ]) ?>
+        <div class="card mb-4">
+            <div class="card-header bg-light text-dark fw-bold">
+                Distribuição por Modalidade
+            </div>
+            <div class="card-body">
+                <?= Highcharts::widget(['options' => [
+                    'chart' => ['type' => 'column'],
+                    'title' => false,
+                    'xAxis' => ['categories' => array_column($modalidades, 'name')],
+                    'yAxis' => ['title' => ['text' => 'Quantidade']],
+                    'series' => [[
+                        'name' => 'Processos',
+                        'data' => array_map('intval', array_column($modalidades, 'y')),
+                    ]],
+                    'credits' => ['enabled' => false],
+                ]]) ?>
             </div>
         </div>
     </div>
-
     <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>Distribuição por Situação</strong></div>
-            <div class="panel-body">
-                <?= Highcharts::widget([
-                    'options' => [
-                        'chart' => ['type' => 'pie'],
-                        'title' => false,
-                        'tooltip' => [
-                            'headerFormat' => '<span style="font-size:14px"><b>{point.key}</b></span><br>',
-                            'pointFormat' => 'Total: <b>{point.y}</b> ({point.percentage:.1f}%)',
-                            'style' => ['fontSize' => '13px'],
-                        ],
-                        'plotOptions' => [
-                            'pie' => [
-                                'allowPointSelect' => true,
-                                'cursor' => 'pointer',
-                                'dataLabels' => [
-                                    'enabled' => true,
-                                    'format' => '{point.name}: {point.percentage:.1f}%',
-                                    'style' => [
-                                        'fontSize' => '16px',
-                                        'fontWeight' => 'bold',
-                                        'color' => '#000000',
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'series' => [[
-                            'name' => 'Total',
-                            'colorByPoint' => true,
-                            'data' => array_map(function ($item) {
-                                return [
-                                    'name' => $item['name'],
-                                    'y' => (int)$item['y']
-                                ];
-                            }, array_filter($situacoes, fn($s) => $s['y'] > 0)),
-
-                        ]]
-                    ]
-                ]) ?>
+        <div class="card mb-4">
+            <div class="card-header bg-light text-dark fw-bold">
+                Distribuição por Situação
+            </div>
+            <div class="card-body">
+                <?= Highcharts::widget(['options' => [
+                    'chart' => ['type' => 'pie'],
+                    'title' => false,
+                    'series' => [[
+                        'name' => 'Total',
+                        'colorByPoint' => true,
+                        'data' => array_map(function ($item) {
+                            return ['name' => $item['name'], 'y' => (int) $item['y']];
+                        }, array_filter($situacoes, fn($s) => $s['y'] > 0))
+                    ]],
+                    'credits' => ['enabled' => false],
+                ]]) ?>
             </div>
         </div>
     </div>
@@ -501,52 +438,22 @@ JS);
 <!-- Top 5 Compradores -->
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>Top 5 Compradores</strong></div>
-            <div class="panel-body">
-                <?= Highcharts::widget([
-                    'options' => [
-                        'chart' => ['type' => 'bar'],
-                        'title' => false,
-                        'xAxis' => [
-                            'categories' => array_column($topCompradores, 'name'),
-                            'labels' => ['style' => ['fontSize' => '13px']]
-                        ],
-                        'yAxis' => [
-                            'title' => [
-                                'text' => 'Total de Processos',
-                                'style' => ['fontSize' => '16px', 'fontWeight' => 'bold']
-                            ],
-                            'labels' => [
-                                'style' => ['fontSize' => '13px']
-                            ]
-                        ],
-                        'tooltip' => [
-                            'pointFormat' => '<span style="color:{series.color}"><b>{point.y} processos</b><br>',
-                            'style' => [
-                                'fontSize' => '13px',
-                                'fontFamily' => 'Arial',
-                            ],
-                        ],
-                        'plotOptions' => [
-                            'bar' => [
-                                'dataLabels' => [
-                                    'enabled' => true,
-                                    'style' => [
-                                        'fontSize' => '16px',
-                                        'fontWeight' => 'bold',
-                                        'color' => '#000000',
-                                    ]
-                                ],
-                            ]
-                        ],
-                        'legend' => ['enabled' => false],
-                        'series' => [[
-                            'name' => 'Processos',
-                            'data' => array_map('intval', array_column($topCompradores, 'y'))
-                        ]]
-                    ]
-                ]) ?>
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white fw-bold">
+                Top 5 Compradores
+            </div>
+            <div class="card-body">
+                <?= Highcharts::widget(['options' => [
+                    'chart' => ['type' => 'bar'],
+                    'title' => false,
+                    'xAxis' => ['categories' => array_column($topCompradores, 'name')],
+                    'yAxis' => ['title' => ['text' => 'Total de Processos']],
+                    'series' => [[
+                        'name' => 'Processos',
+                        'data' => array_map('intval', array_column($topCompradores, 'y'))
+                    ]],
+                    'credits' => ['enabled' => false],
+                ]]) ?>
             </div>
         </div>
     </div>

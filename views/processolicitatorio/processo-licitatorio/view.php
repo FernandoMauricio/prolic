@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\detail\DetailView;
-use yii\bootstrap\Modal;
+use yii\bootstrap5\Modal;
 use yii\helpers\Url;
 
 use app\models\processolicitatorio\ProcessoLicitatorio;
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php
     Modal::begin([
-        'header' => '<h3>Incluir Observação ' . '<small> Processo Licitatório ' . $model->id . '</small></h3>',
+        'title' => '<h3>Incluir Observação ' . '<small> Processo Licitatório ' . $model->id . '</small></h3>',
         'id' => 'modal',
         'size' => 'modal-lg',
     ]);
@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php
     Modal::begin([
-        'header' => '<h3>Imprimir Capa ' . '<small> Processo Licitatório ' . $model->id . '</small></h3>',
+        'title' => '<h3>Imprimir Capa ' . '<small> Processo Licitatório ' . $model->id . '</small></h3>',
         'id' => 'modal2',
         'size' => 'modal-lg',
     ]);

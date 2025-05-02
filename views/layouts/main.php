@@ -5,7 +5,6 @@
 
 use app\widgets\Alert;
 use yii\helpers\Html;
-use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
@@ -15,6 +14,7 @@ AppAsset::register($this);
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
+
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,31 +23,39 @@ AppAsset::register($this);
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
+
 <body>
-<?php $this->beginBody() ?>
+    <?php $this->beginBody() ?>
 
-<div class="wrap">
+    <div class="wrap min-vh-100 d-flex flex-column">
 
-    <?php include('navbar.php');  ?>
+        <?php include('navbar.php'); ?>
 
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+        <main class="flex-grow-1 py-4">
+            <div class="container">
+                <?= Breadcrumbs::widget([
+                    'itemTemplate' => "<li class=\"breadcrumb-item\">{link}</li>\n",
+                    'activeItemTemplate' => "<li class=\"breadcrumb-item active\" aria-current=\"page\">{link}</li>\n",
+                    'links' => $this->params['breadcrumbs'] ?? [],
+                    'options' => ['class' => 'breadcrumb bg-light px-3 py-2 rounded mb-3']
+                ]) ?>
+
+                <?= Alert::widget() ?>
+                <?= $content ?>
+            </div>
+        </main>
+
+        <footer class="footer mt-auto py-3 bg-light border-top">
+            <div class="container d-flex justify-content-between small text-muted">
+                <span>&copy; Gerência de Tecnologia da Informação - GTI <?= date('Y') ?></span>
+                <span>PROLIC (v. 1.1)</span>
+            </div>
+        </footer>
+
     </div>
-</div>
 
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; Gerência de Tecnologia da Informação - GTI <?= date('Y') ?></p>
-
-        <p class="pull-right">PROLIC (v. 1.1)</p>
-    </div>
-</footer>
-
-<?php $this->endBody() ?>
+    <?php $this->endBody() ?>
 </body>
+
 </html>
 <?php $this->endPage() ?>

@@ -11,6 +11,51 @@ body {
 }
 
 /* Alterações Fernando - Layout Senac AM */
+.navbar-custom {
+    background-color: #337AB7 !important;
+}
+
+/* Títulos principais da navbar */
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link {
+    color: #fff !important;
+}
+
+/* Ícone + texto branco nos títulos de dropdown */
+.navbar-custom .dropdown-toggle {
+    color: #fff !important;
+}
+
+/* Menu dropdown com fundo branco */
+.navbar-custom .dropdown-menu {
+    background-color: #fff !important;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Itens do dropdown (submenus) com texto escuro */
+.navbar-custom .dropdown-menu .dropdown-item {
+    color: #212529 !important;
+}
+
+/* Hover nos itens de submenu */
+.navbar-custom .dropdown-menu .dropdown-item:hover {
+    background-color: #f0f0f0 !important;
+    color: #000 !important;
+}
+
+/* Cor de fundo mais suave para itens selecionados (ativos) */
+.navbar-custom .dropdown-menu .dropdown-item.active,
+.navbar-custom .dropdown-menu .dropdown-item:active {
+    background-color: #337AB7 !important;
+    color: #fff !important;
+}
+
+/* Para evitar que fique azul escuro padrão do Bootstrap */
+.navbar-custom .dropdown-menu .dropdown-item:focus {
+    background-color: #337AB7 !important;
+    color: #fff !important;
+}
 
 .navbar-brand > img {
     display: block;

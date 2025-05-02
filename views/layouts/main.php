@@ -35,7 +35,7 @@ AppAsset::register($this);
 
         <main class="flex-grow-1 py-4">
             <div class="container">
-                <div class="wrap" style="padding-top: 80px;">
+                <div class="wrap">
                     <?= Breadcrumbs::widget([
                         'itemTemplate' => "<li class=\"breadcrumb-item\">{link}</li>\n",
                         'activeItemTemplate' => "<li class=\"breadcrumb-item active\" aria-current=\"page\">{link}</li>\n",

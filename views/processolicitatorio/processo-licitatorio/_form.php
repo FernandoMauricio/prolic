@@ -9,6 +9,7 @@ use yii\bootstrap5\ActiveForm;
 ?>
 
 <div class="processo-licitatorio-form">
+    <h1 class="mb-4"><i class="bi bi-file-earmark-check me-2"></i> Cadastro de Processo Licitatório</h1>
     <?php $form = ActiveForm::begin(['id' => 'processo-licitatorio-form']); ?>
 
     <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
@@ -22,7 +23,6 @@ use yii\bootstrap5\ActiveForm;
                     <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i> Processo Licitatório</h5>
                 </div>
                 <div class="card-body">
-
                     <!-- Seção 'Informações' -->
                     <div class="mb-4 border">
                         <div class="card-header bg-soft-custom text-white border-bottom">
@@ -102,14 +102,16 @@ use yii\bootstrap5\ActiveForm;
             </div>
         </div>
 
+        <!-- Container para preview à direita -->
         <div class="col-lg-4">
             <div id="requisicao-preview" class="mt-2">
                 <div id="requisicao-feedback" class="requisicao-feedback mt-3 d-none"></div>
+
+                <div class="accordion" id="accordionPreview">
+                </div>
             </div>
         </div>
+
     </div>
 
-    <?php ActiveForm::end(); ?>
-</div>
-
-<?php $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::className()]]); ?>
+    <?php $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::className()]]); ?>

@@ -1,15 +1,15 @@
 $(function () {
     const campoRequisicao = '#processolicitatorio-prolic_codmxm';
     const containerPreview = '#requisicao-preview';
+    const accordionContainer = '#accordionPreview';
 
-    // Armazena números de requisições já carregadas
     const requisicoesExibidas = new Set();
 
     // Função para adicionar o spinner
     function adicionarSpinner() {
         const spinnerHTML = `
-            <div class="spinner-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 9999;">
-                <div class="spinner-border text-light" role="status" style="width: 4rem; height: 4rem; border-width: 0.4em;">
+            <div class="spinner-overlay">
+                <div class="spinner-border text-light" role="status">
                     <span class="visually-hidden">Carregando...</span>
                 </div>
             </div>
@@ -26,21 +26,18 @@ $(function () {
     $(campoRequisicao).on('select2:select', function (e) {
         const numero = e.params.data.id;
 
-        // Se a requisição já foi carregada, não faz nada
         if (requisicoesExibidas.has(numero)) {
             mostrarFeedback(`Requisição ${numero} já adicionada.`, 'warning');
             return;
         }
 
-        // Adiciona o spinner logo antes de começar a requisição
-        adicionarSpinner();  // Spinner no body
+        adicionarSpinner();
         mostrarFeedback(`Carregando requisição ${numero}...`, 'info');
 
         $.getJSON("/prolic/web/index.php?r=processolicitatorio/processo-licitatorio/buscar-requisicao", {
             codigoEmpresa: '02',
             numeroRequisicao: numero
         }, function (response) {
-            // Remover o spinner após os dados serem carregados
             removerSpinner();
 
             if (response.success && response.html) {
@@ -49,57 +46,44 @@ $(function () {
                     <button class="btn btn-xs btn-danger requisicao-remover" style="position: absolute; top: 5px; right: 5px;">Remover</button>
                     ${response.html}
                 </div>`;
-                $(containerPreview).append(htmlComRemocao);
+
+                // Adiciona a requisição no accordion
+                const accordionItem = `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading${numero}">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${numero}" aria-expanded="true" aria-controls="collapse${numero}">
+                                Requisição: ${numero}
+                            </button>
+                        </h2>
+                        <div id="collapse${numero}" class="accordion-collapse collapse show" aria-labelledby="heading${numero}" data-bs-parent="#accordionPreview">
+                            <div class="accordion-body">
+                                ${htmlComRemocao}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                $(accordionContainer).append(accordionItem);
                 requisicoesExibidas.add(numero);
+
                 mostrarFeedback(`Requisição ${numero} carregada com sucesso.`, 'success');
             } else {
                 mostrarFeedback(`Falha ao carregar a requisição ${numero}.`, 'danger');
             }
         }).fail(function () {
-            // Remover o spinner em caso de erro
             removerSpinner();
             mostrarFeedback(`Erro ao consultar a requisição ${numero}.`, 'danger');
         });
     });
 
-    // Evento para remover o item da visualização e do Select2
-    $(campoRequisicao).on('select2:unselect', function (e) {
-        const numero = e.params.data.id;
-        console.log(`Removendo requisição: ${numero}`);
-
-        // Remover o item do container de visualização
-        const itemPreview = $(`#requisicao-preview .requisicao-preview-item[data-id="${numero}"]`);
-        itemPreview.remove();
-
-        // Remover da lista de requisições exibidas
-        requisicoesExibidas.delete(numero);
-
-        // Remover o item do select2 visualmente também
-        const option = $(campoRequisicao + ' option[value="' + numero + '"]');
-        if (option.length) {
-            option.prop('selected', false);
-            $(campoRequisicao).trigger('change');
-        }
-
-        mostrarFeedback(`Requisição ${numero} removida.`, 'warning');
-    });
-
+    // Evento de remoção de requisição
     $(document).on('click', '.requisicao-remover', function () {
         const $item = $(this).closest('.requisicao-preview-item');
         const id = $item.data('id');
         console.log(`Removendo requisição: ${id}`);
         $item.remove();
         requisicoesExibidas.delete(id);
-
-        // Remover do select2 visualmente também
-        const option = $(campoRequisicao + ' option[value="' + id + '"]');
-        if (option.length) {
-            option.prop('selected', false);
-            $(campoRequisicao).trigger('change');
-        }
     });
 
-    // Limpar previews ao limpar o select2
     $(campoRequisicao).on('select2:clear', function () {
         $(containerPreview).empty();
         requisicoesExibidas.clear();

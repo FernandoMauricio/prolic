@@ -441,12 +441,10 @@ class ProcessoLicitatorioController extends Controller
             }
         }
 
-        $empresasFormatadas = $this->formatarEmpresas($model->prolic_empresa);
 
         return $this->render('update', array_merge(
             [
                 'model' => $model,
-                'empresasFormatadas' => $empresasFormatadas,
                 'dadosRequisicao' => isset($dadosRequisicao) ? $dadosRequisicao : null,
             ],
             $dadosAuxiliares

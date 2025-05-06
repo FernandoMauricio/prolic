@@ -59,10 +59,6 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     public $valor_limite;
     public $valor_limite_apurado;
     public $valor_saldo;
-    public $valor_limite_hidden;
-    public $valor_limite_apurado_hidden;
-    public $valor_saldo_hidden;
-    public $prolic_valorefetivo_hidden;
     public $ciclototal;
     public $ciclocertame;
 
@@ -83,7 +79,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [['ano_id', 'prolic_objeto', 'prolic_codmxm', 'prolic_destino', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_centrocusto'], 'required'],
             [['ano_id', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_codprocesso'], 'integer'],
             [['prolic_objeto', 'prolic_elementodespesa', 'prolic_motivo'], 'string'],
-            [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo', 'valor_limite', 'valor_limite_apurado', 'valor_saldo', 'valor_limite_hidden', 'valor_limite_apurado_hidden', 'valor_saldo_hidden', 'prolic_valorefetivo_hidden'], 'number'],
+            [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo', 'valor_limite', 'valor_limite_apurado', 'valor_saldo'], 'number'],
             [['prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_datacriacao', 'prolic_dataatualizacao', 'prolic_destino', 'prolic_centrocusto', 'modalidade', 'ramo', 'ciclototal', 'ciclocertame', 'prolic_empresa', 'prolic_codmxm '], 'safe'],
             [['prolic_usuariocriacao', 'prolic_usuarioatualizacao'], 'string', 'max' => 255],
             [['ano_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ano::className(), 'targetAttribute' => ['ano_id' => 'id']],
@@ -93,33 +89,10 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [['recursos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Recursos::className(), 'targetAttribute' => ['recursos_id' => 'id']],
             [['situacao_id'], 'exist', 'skipOnError' => true, 'targetClass' => Situacao::className(), 'targetAttribute' => ['situacao_id' => 'id']],
             ['prolic_codmxm', 'unique', 'on' => 'insert'],
-            // ['prolic_valorestimado', 'compare', 'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
-            //             return $model->artigo->art_tipo == 'Valor';                 
-            //         }, 'whenClient' => "function (attribute, value) {
-            //     return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            // }", 'message' => 'Ultrapassa valor limite!'
-            // ],
-            // ['prolic_valorestimado', 'compare', 'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
-            //             return $model->artigo->art_tipo == 'Valor';                 
-            //         }, 'whenClient' => "function (attribute, value) {
-            //     return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            // }", 'message' => 'Modalidade sem saldo!'
-            // ],
-            // ['prolic_valoraditivo', 'compare', 'compareAttribute' => 'valor_limite_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
-            //             return $model->artigo->art_tipo == 'Valor';                 
-            //         }, 'whenClient' => "function (attribute, value) {
-            //     return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            // }", 'message' => 'Ultrapassa valor limite!'],
-            // ['prolic_valoraditivo', 'compare', 'compareAttribute' => 'valor_saldo_hidden', 'operator' => '<=', 'type' => 'number', 'when' => function($model) {               
-            //             return $model->artigo->art_tipo == 'Valor';                 
-            //         }, 'whenClient' => "function (attribute, value) {
-            //     return $('#processolicitatorio-artigo_id').val() == 'Valor';
-            // }", 'message' => 'Modalidade sem saldo!'
-            // ],
             [
                 'prolic_valorefetivo',
                 'compare',
-                'compareAttribute' => 'valor_limite_hidden',
+                'compareAttribute' => 'valor_limite',
                 'operator' => '<=',
                 'type' => 'number',
                 'when' => function ($model) {
@@ -133,7 +106,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [
                 'prolic_valorefetivo',
                 'compare',
-                'compareAttribute' => 'valor_saldo_hidden',
+                'compareAttribute' => 'valor_saldo',
                 'operator' => '<=',
                 'type' => 'number',
                 'when' => function ($model) {
@@ -339,11 +312,6 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'prolic_empresa' => 'Empresa',
             'modalidade' => 'Modalidade',
             'ramo' => 'Ramo',
-            'valor_limite_hidden' => 'Valor Limite',
-            'valor_limite_apurado' => 'Valor Apurado',
-            'valor_limite_apurado_hidden' => 'Valor Apurado',
-            'prolic_valorefetivo_hidden' => 'Valor Estimado',
-            'valor_saldo_hidden' => 'Saldo',
             'ciclototal' => 'Ciclo Total',
             'ciclocertame' => 'Ciclo Certame',
         ];

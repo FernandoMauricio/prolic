@@ -96,7 +96,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                             <h6 class="mb-0"><i class="bi bi-buildings me-2"></i> Empresas Participantes</h6>
                         </div>
                         <div class="card-body">
-                            <?= $this->render('_empresas', compact('form', 'model', 'empresasFormatadas')) ?>
+                            <?= $this->render('_empresas', compact('form', 'model')) ?>
                         </div>
                     </div>
                 </div>

@@ -51,18 +51,18 @@ use yii\helpers\Url;
                                 console.log(data); // Verifique os dados no console
                                 if (data) {
                                     // Verificar se os campos de input existem antes de preencher
-                                    if($("#processolicitatorio-valor_limite_hidden").length) {
-                                        $("#processolicitatorio-valor_limite_hidden").val(data.valor_limite);
+                                    if($("#processolicitatorio-valor_limite").length) {
+                                        $("#processolicitatorio-valor_limite").val(data.valor_limite);
                                         // Garantir a formatação no campo NumberControl
                                         $("#processolicitatorio-valor_limite").val(data.valor_limite).trigger("input");
                                     }
-                                    if($("#processolicitatorio-valor_limite_apurado_hidden").length) {
-                                        $("#processolicitatorio-valor_limite_apurado_hidden").val(data.valor_limite_apurado);
+                                    if($("#processolicitatorio-valor_limite_apurado").length) {
+                                        $("#processolicitatorio-valor_limite_apurado").val(data.valor_limite_apurado);
                                         // Garantir a formatação no campo NumberControl
                                         $("#processolicitatorio-valor_limite_apurado").val(data.valor_limite_apurado).trigger("input");
                                     }
-                                    if($("#processolicitatorio-valor_saldo_hidden").length) {
-                                        $("#processolicitatorio-valor_saldo_hidden").val(data.valor_saldo);
+                                    if($("#processolicitatorio-valor_saldo").length) {
+                                        $("#processolicitatorio-valor_saldo").val(data.valor_saldo);
                                         // Garantir a formatação no campo NumberControl
                                         $("#processolicitatorio-valor_saldo").val(data.valor_saldo).trigger("input");
                                     }

@@ -24,7 +24,6 @@
     </div>
 </div>
 
-
 <script>
     // Função para formatar o valor com a moeda brasileira (R$)
     function formatarMoeda(valor) {
@@ -45,6 +44,6 @@
         var valorSaldo = valorLimite - valorLimiteApurado - (valorEstimado + valorAdicional);
 
         // Atualizando o campo valor saldo com a formatação de moeda
-        document.getElementById('processolicitatorio-valor_saldo').value = formatarMoeda(valorSaldo.toFixed(2));
+        document.getElementById('processolicitatorio-valor_saldo').value = formatarMoeda(valorSaldo);
     }
 </script>

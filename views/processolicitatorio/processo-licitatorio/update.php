@@ -10,7 +10,6 @@ $this->params['breadcrumbs'][] = ['label' => 'Listagem de Processo Licitatórios
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Atualizar';
 ?>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <div class="processo-licitatorio-update">
 

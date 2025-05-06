@@ -38,7 +38,7 @@ use yii\web\JsExpression;
                 'multiple' => true,  // Permite selecionar múltiplos itens
                 'placeholder' => 'Digite o número da requisição...',
             ],
-            'value' => is_array($model->prolic_codmxm) ? $model->prolic_codmxm : explode(';', $model->prolic_codmxm), // Garantindo que seja um array
+            'value' => is_array($model->prolic_codmxm) ? $model->prolic_codmxm : explode(';', $model->prolic_codmxm),
             'pluginOptions' => [
                 'allowClear' => true,
                 'minimumInputLength' => 5,

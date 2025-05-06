@@ -8,8 +8,10 @@ use yii\helpers\Url;
 <div class="card shadow-sm mb-4">
     <div class="card-body">
         <?= $form->field($model, 'prolic_empresa')->widget(Select2::class, [
-            'data' => $empresasFormatadas,
-            'options' => ['multiple' => true],
+            'options' => [
+                'multiple' => true,
+                'value' => is_array($model->prolic_empresa) ? $model->prolic_empresa : explode(';', $model->prolic_empresa),
+            ],
             'pluginOptions' => [
                 'placeholder' => 'Digite o CPF/CNPJ da empresa...',
                 'minimumInputLength' => 8,

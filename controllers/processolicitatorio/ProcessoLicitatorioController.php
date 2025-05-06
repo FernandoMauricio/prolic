@@ -408,7 +408,11 @@ class ProcessoLicitatorioController extends Controller
 
         // Se prolic_codmxm for uma string, converta para array
         if (is_string($model->prolic_codmxm)) {
-            $model->prolic_codmxm = explode(';', $model->prolic_codmxm); // Use o delimitador correto
+            $model->prolic_codmxm = explode(';', $model->prolic_codmxm);
+        }
+
+        if (is_string($model->prolic_empresa)) {
+            $model->prolic_empresa = explode(';', $model->prolic_empresa);
         }
 
         // Carregamento dos dados auxiliares da view
@@ -419,7 +423,7 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_usuarioatualizacao = $session['sess_nomeusuario'];
         $model->prolic_destino = array_map('trim', explode(',', $model->prolic_destino));
         $model->prolic_centrocusto = array_map('trim', explode(',', $model->prolic_centrocusto));
-        $model->prolic_empresa = array_map('trim', explode(',', $model->prolic_empresa));
+        $model->prolic_empresa = is_array($model->prolic_empresa) ? array_map('trim', $model->prolic_empresa) : (is_string($model->prolic_empresa) ? array_map('trim', explode(';', $model->prolic_empresa)) : []);
         $model->prolic_codmxm = is_array($model->prolic_codmxm) ? array_map('trim', $model->prolic_codmxm) : (is_string($model->prolic_codmxm) ? array_map('trim', explode(';', $model->prolic_codmxm)) : []);
 
         if ($model->load(Yii::$app->request->post())) {
@@ -448,7 +452,6 @@ class ProcessoLicitatorioController extends Controller
             $dadosAuxiliares
         ));
     }
-
 
     private function carregarDadosAuxiliares()
     {
@@ -505,16 +508,17 @@ class ProcessoLicitatorioController extends Controller
             $formatados[] = "$docFormatado - $razao";
         }
 
-        return implode(', ', $formatados);
+        return implode(';', $formatados);
     }
 
-    private function formatarEmpresas(array $documentos)
+    public function formatarEmpresas(array $documentos)
     {
         $resultado = [];
         foreach ($documentos as $doc) {
             $dados = WebManagerService::consultarFornecedor($doc);
             $docLimpo = preg_replace('/\D/', '', $doc);
 
+            // Formatar CPF/CNPJ para o formato correto
             if (strlen($docLimpo) === 14) {
                 $docFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $docLimpo);
             } elseif (strlen($docLimpo) === 11) {
@@ -525,7 +529,10 @@ class ProcessoLicitatorioController extends Controller
 
             $razao = trim($dados['razaoSocial'] ?? '');
             if ($razao) {
-                $resultado[$docLimpo] = $docFormatado . ' - ' . $razao;
+                $resultado[$docLimpo] = [
+                    'id' => $docLimpo,   // O CPF/CNPJ como id
+                    'text' => "$docFormatado - $razao" // O texto completo com o CPF/CNPJ e a razão social
+                ];
             }
         }
         return $resultado;

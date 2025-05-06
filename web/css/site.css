@@ -274,3 +274,14 @@ a.desc:after {
 }
 
 /* FIM BADGES COLORS*/
+
+/* Ajustes no Select2 */
+.select2-selection__rendered {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    max-width: 100% !important;
+}
+
+.select2-container .select2-selection--multiple {
+    width: 100% !important;
+}

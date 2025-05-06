@@ -8,14 +8,14 @@ use yii\web\JsExpression;
 
 ?>
 <div class="row g-3">
-    <div class="col-lg-2">
+    <div class="col-lg-4">
         <?= $form->field($model, 'ano_id')->widget(Select2::class, [
             'data' => ArrayHelper::map($ano, 'id', 'an_ano'),
             'options' => ['placeholder' => 'Ano...'],
             'pluginOptions' => ['allowClear' => true],
         ]) ?>
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-4">
         <?= $form->field($model, 'prolic_dataprocesso')->widget(DateControl::class, [
             'type' => DateControl::FORMAT_DATE,
             'ajaxConversion' => false,
@@ -24,14 +24,21 @@ use yii\web\JsExpression;
             ]
         ]) ?>
     </div>
-    <div class="col-lg-7">
+    <div class="col-lg-4">
+        <?= $form->field($model, 'situacao_id')->widget(Select2::class, [
+            'data' => ArrayHelper::map($situacao, 'id', 'sit_descricao'),
+            'options' => ['placeholder' => 'Informe a Situação...'],
+            'pluginOptions' => ['allowClear' => true],
+        ]) ?>
+    </div>
+    <div class="col-lg-8">
         <?= $form->field($model, 'prolic_destino')->widget(Select2::class, [
             'data' => ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado'),
             'options' => ['placeholder' => 'Informe os Destinos...', 'multiple' => true],
             'pluginOptions' => ['allowClear' => true],
         ]) ?>
     </div>
-    <div class="col-lg-12">
+    <div class="col-lg-4">
         <?= $form->field($model, 'prolic_codmxm')->widget(Select2::class, [
             'options' => [
                 'id' => 'processolicitatorio-prolic_codmxm',
@@ -53,9 +60,6 @@ use yii\web\JsExpression;
             ],
         ]) ?>
     </div>
-
-
-
 </div>
 <div class="col-lg-12">
     <?= $form->field($model, 'prolic_objeto')->textarea(['rows' => 3]) ?>

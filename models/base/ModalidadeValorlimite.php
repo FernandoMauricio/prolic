@@ -23,6 +23,8 @@ use Yii;
  */
 class ModalidadeValorlimite extends \yii\db\ActiveRecord
 {
+    public $valor_limite_apurado;
+    public $valor_saldo;
     /**
      * @inheritdoc
      */
@@ -49,14 +51,15 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
     }
 
     //Replace de ',' por '.' nos valores
-    public function beforeSave($insert) {
-            if (parent::beforeSave($insert)) {
-                $this->valor_limite = str_replace(",", ".", $this->valor_limite);
-                return true;
-            } else {
-                return false;
-            }
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            $this->valor_limite = str_replace(",", ".", $this->valor_limite);
+            return true;
+        } else {
+            return false;
         }
+    }
 
     /**
      * @inheritdoc
@@ -97,13 +100,5 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
     public function getRamo()
     {
         return $this->hasOne(Ramo::className(), ['id' => 'ramo_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProcessoLicitatorios()
-    {
-        return $this->hasMany(ProcessoLicitatorio::className(), ['modalidade_valorlimite_id' => 'id']);
     }
 }

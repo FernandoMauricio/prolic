@@ -171,44 +171,56 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     }
 
     //Busca dados dos valores limites de cada modalidade
-    public static function getLimiteSubCat($cat_id)
+    public static function getLimiteSubCat($cat_id, $ramo_id = null)
     {
-        $data = ModalidadeValorlimite::find()
+        $query = ModalidadeValorlimite::find()
             ->joinWith('ramo', false, 'INNER JOIN')
             ->where(['modalidade_id' => $cat_id])
-            ->andWhere(['IS NOT', 'homologacao_usuario', null]) //Localiza apenas Modalidades homologadas
-            ->andWhere(['=', 'ano_id', 8]) //ano corrente 2025
-            ->select(['modalidade_valorlimite.id AS id', 'ram_descricao AS name'])->asArray()->all();
+            ->andWhere(['IS NOT', 'homologacao_usuario', null])
+            ->andWhere(['=', 'ano_id', 8]);
+
+        if ($ramo_id) {
+            $query->andWhere(['ramo_id' => $ramo_id]);
+        }
+
+        $data = $query->select(['modalidade_valorlimite.id AS id', 'ramo.ram_descricao AS name'])
+            ->asArray()
+            ->all();
+
         return $data;
     }
 
     //Localiza a somatório dos Limites e o Saldo
     public static function getSumLimite($cat_id, $processo)
     {
+        // Buscar o limite associado à modalidade
         $data = ProcessoLicitatorio::find()
             ->joinWith('modalidadeValorlimite', false, 'LEFT JOIN')
             ->where(['modalidade_valorlimite.id' => $cat_id])
-            ->andWhere(['NOT IN', 'processo_licitatorio.id', [$processo]])
-            ->andWhere(['!=', 'situacao_id', 7]) //Exclui processos licitatórios que foram cancelados
+            ->andWhere(['NOT IN', 'processo_licitatorio.id', [$processo]])  // Excluir o processo atual
+            ->andWhere(['!=', 'situacao_id', 7])  // Excluir processos cancelados
             ->select([
-                'modalidade_valorlimite.valor_limite', // Inclua a coluna valor_limite explicitamente
-                'sum(prolic_valorestimado + prolic_valoraditivo) AS valor_limite_apurado',
-                'modalidade_valorlimite.valor_limite - sum(prolic_valorestimado + prolic_valoraditivo) AS valor_saldo'
-            ])->asArray()->one();
+                'ROUND(modalidade_valorlimite.valor_limite, 2) AS valor_limite',
+                'ROUND(sum(prolic_valorestimado + IFNULL(prolic_valoraditivo, 0)), 2) AS valor_limite_apurado',
+                'ROUND(modalidade_valorlimite.valor_limite - sum(prolic_valorestimado + IFNULL(prolic_valoraditivo, 0)), 2) AS valor_saldo'
 
-        // Verifique se o valor está sendo retornado corretamente
+            ])
+            ->asArray()
+            ->one();
+
+        // Se o valor do limite não for encontrado, define o valor limite e saldo como zero
         $valorLimite = ModalidadeValorlimite::findOne($cat_id);
         if ($valorLimite) {
             $data['valor_limite'] = $valorLimite->valor_limite;
         }
 
-        if ($data['valor_limite_apurado'] != NULL) {
-            return $data;
-        } else {
+        // Se não houver valor apurado, define como 0
+        if ($data['valor_limite_apurado'] === NULL) {
             $data['valor_limite_apurado'] = 0;
-            $data['valor_saldo'] = $data['valor_limite'];
-            return $data;
+            $data['valor_saldo'] = $data['valor_limite'];  // Considera o saldo como o valor do limite
         }
+
+        return $data;
     }
 
     public function getUnidades($prolic_destino)

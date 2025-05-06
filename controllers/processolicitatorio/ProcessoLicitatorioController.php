@@ -75,18 +75,37 @@ class ProcessoLicitatorioController extends Controller
         echo Json::encode(['output' => '', 'selected' => '']);
     }
 
-    //Localiza os dados dos Limites
+    // Localiza os dados dos Limites
     public function actionGetLimite($limiteId)
     {
         $getLimite = ModalidadeValorlimite::findOne($limiteId);
-        echo Json::encode($getLimite);
+
+        if ($getLimite) {
+            // Recalcula o valor_saldo baseado em outros valores
+            $valorSaldo = $getLimite->valor_limite - $getLimite->valor_limite_apurado;
+
+            // Se você tiver outros valores que afetam o saldo, ajuste aqui.
+            // Por exemplo, adicionar o valor de um valor estimado:
+            // $valorSaldo -= $getLimite->valor_estimado;
+
+            // Converte o modelo em um array e depois em JSON
+            return Json::encode([
+                'valor_limite' => $getLimite->valor_limite,
+                'valor_limite_apurado' => $getLimite->valor_limite_apurado,
+                'valor_saldo' => $valorSaldo,  // Retorna o valor recalculado
+            ]);
+        } else {
+            // Retorna um erro caso não encontre o limite
+            return Json::encode(['error' => 'Limite não encontrado']);
+        }
     }
 
     //Localiza a somatório dos Limites
     public function actionGetSumLimite($limiteId, $processo)
     {
         $getSumLimite = ProcessoLicitatorio::getSumLimite($limiteId, $processo);
-        echo Json::encode($getSumLimite);
+
+        return \yii\helpers\Json::encode($getSumLimite);
     }
 
     public function actionObservacoes($id)
@@ -401,7 +420,7 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_destino = array_map('trim', explode(',', $model->prolic_destino));
         $model->prolic_centrocusto = array_map('trim', explode(',', $model->prolic_centrocusto));
         $model->prolic_empresa = array_map('trim', explode(',', $model->prolic_empresa));
-        $model->prolic_codmxm = array_map('trim', $model->prolic_codmxm);
+        $model->prolic_codmxm = is_array($model->prolic_codmxm) ? array_map('trim', $model->prolic_codmxm) : (is_string($model->prolic_codmxm) ? array_map('trim', explode(';', $model->prolic_codmxm)) : []);
 
         if ($model->load(Yii::$app->request->post())) {
             $this->ajustarSequenciaModalidade($model);
@@ -410,7 +429,7 @@ class ProcessoLicitatorioController extends Controller
             $model->prolic_destino = implode(',', $model->prolic_destino);
             $model->prolic_centrocusto = implode(',', $model->prolic_centrocusto);
             $model->prolic_empresa = $this->formatarEmpresasParaSalvar($model->prolic_empresa);
-            $model->prolic_codmxm = implode(';', $model->prolic_codmxm); // Converte o array de volta para string separada por ponto e vírgula
+            $model->prolic_codmxm = implode(';', $model->prolic_codmxm);
 
             if ($model->validate()) {
                 $model->save();

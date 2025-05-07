@@ -51,10 +51,10 @@ $this->params['breadcrumbs'][] = $this->title;
         ) ?>
         <?php
         Modal::begin([
-            'id'           => 'modal',
+            'id' => 'modal',
             'size'         => Modal::SIZE_LARGE,
             'options'      => ['tabindex' => false],
-            'clientOptions' => ['backdrop' => 'static', 'keyboard' => false],
+            'clientOptions' => ['backdrop' => 'static'],
             'title'        => '<h5>Gerar Processo Licitatório</h5>',
         ]);
         echo "<div id='modalContent'></div>";

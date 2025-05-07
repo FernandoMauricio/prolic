@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 use yii\helpers\Url;
 use kartik\depdrop\DepDrop;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
@@ -16,7 +17,7 @@ use kartik\depdrop\DepDrop;
 
 <?php $form = ActiveForm::begin([
     'id' => 'form-gerar-processo',
-    'options' => ['class' => 'h-100'],
+    'options' => ['class' => 'h-100', 'enctype' => 'multipart/form-data'],
 ]); ?>
 
 <div class="card shadow-sm">
@@ -30,48 +31,99 @@ use kartik\depdrop\DepDrop;
         </div>
         <div class="row g-3">
             <!-- Modalidade e Ramo -->
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <?php
                 echo $form->field($model, 'modalidade')->widget(Select2::classname(), [
                     'data' => ArrayHelper::map($valorlimite, 'modalidade.id', 'modalidade.mod_descricao'),
-                    'options' => ['id' => 'modalidade-id', 'placeholder' => 'Selecione a Modalidade...'],
-                    'pluginOptions' => ['allowClear' => true],
-                ])->label('Modalidade <span class="text-danger">*</span>');
+                    'options' => [
+                        'id' => 'modalidade-id',
+                        'placeholder' => 'Selecione a Modalidade…',
+                    ],
+                    'pluginOptions' => [
+                        'allowClear'               => true,
+                        'minimumResultsForSearch'  => 0,
+                        'dropdownParent'           => new JsExpression('$("#modal")'),
+                    ],
+                ]);
                 ?>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <?php
                 echo $form->field($model, 'modalidade_valorlimite_id')->widget(DepDrop::classname(), [
-                    'type'          => DepDrop::TYPE_SELECT2,
-                    'select2Options' => ['pluginOptions' => ['allowClear' => true]],
-                    'options'       => ['id' => 'valorlimite-id'],
-                    'pluginOptions' => [
-                        'depends'    => ['modalidade-id'],
-                        'placeholder' => 'Selecione o Ramo...',
-                        'initialize' => true,
-                        'url'        => Url::to(['/processolicitatorio/processo-licitatorio/limite']),
+                    'type'            => DepDrop::TYPE_SELECT2,
+                    'select2Options'  => [
+                        'options'       => ['id' => 'valorlimite-id'],
+                        'pluginOptions' => [
+                            'allowClear'              => true,
+                            'minimumResultsForSearch' => 0,
+                            'dropdownParent'          => new JsExpression('$("#modal")'),
+                        ],
+                    ],
+                    'pluginOptions'   => [
+                        'depends'      => ['modalidade-id'],
+                        'placeholder'  => 'Selecione o Ramo...',
+                        'initialize'   => true,
+                        'url'          => Url::to(['/processolicitatorio/processo-licitatorio/limite']),
                     ],
                 ])->label('Ramo <span class="text-danger">*</span>');
                 ?>
             </div>
-
+            <div class="col-md-6">
+                <?php
+                echo $form->field($model, 'recursos_id')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($recurso, 'id', 'rec_descricao'),
+                    'options' => [
+                        'placeholder' => 'Selecione o Recurso...',
+                    ],
+                    'pluginOptions' => [
+                        'allowClear'               => true,
+                        'minimumResultsForSearch'  => 0,
+                        'dropdownParent'           => new JsExpression('$("#modal")'),
+                    ],
+                ]);
+                ?>
+            </div>
+            <div class="col-md-6">
+                <?php
+                echo $form->field($model, 'comprador_id')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($comprador, 'id', 'comp_descricao'),
+                    'options' => [
+                        'placeholder' => 'Selecione o Comprador...',
+                    ],
+                    'pluginOptions' => [
+                        'allowClear'               => true,
+                        'minimumResultsForSearch'  => 0,
+                        'dropdownParent'           => new JsExpression('$("#modal")'),
+                    ],
+                ]);
+                ?>
+            </div>
             <!-- Artigo -->
             <div class="col-md-12">
-                <?= $form->field($model, 'artigo_id')->widget(Select2::classname(), [
+                <?php
+                echo $form->field($model, 'artigo_id')->widget(Select2::classname(), [
                     'data' => ArrayHelper::map($artigo, 'id', 'art_descricao'),
-                    'options' => ['placeholder' => 'Escolha o Artigo...'],
-                    'pluginOptions' => ['allowClear' => true],
-                ])->label('Artigo <span class="text-danger">*</span>'); ?>
+                    'options' => ['placeholder' => 'Informe o Artigo…'],
+                    'pluginOptions' => [
+                        'allowClear'               => true,
+                        'minimumResultsForSearch'  => 0,
+                        'dropdownParent'           => new JsExpression('$("#modal")'),
+                    ],
+                ]);
+                ?>
             </div>
 
         </div>
     </div>
 
-    <div class="card-footer text-end">
-        <?= Html::submitButton('<i class="bi bi-save2 me-1"></i> Salvar e Continuar', [
-            'class' => 'btn btn-success'
+    <div class="card-footer bg-light d-flex justify-content-end">
+        <?= Html::a('<i class="bi bi-x-circle me-1"></i> Cancelar', ['index'], [
+            'class' => 'btn btn-outline-secondary me-2',
+        ]) ?>
+        <?= Html::submitButton('<i class="bi bi-check-circle me-1"></i> Salvar e Continuar', [
+            'class' => 'btn btn-primary',
+            'name' => 'submit-button',
         ]) ?>
     </div>
-</div>
 
-<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>

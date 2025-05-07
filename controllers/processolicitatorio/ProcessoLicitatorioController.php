@@ -336,6 +336,8 @@ class ProcessoLicitatorioController extends Controller
         // seta data/usuário de criação
         $model->prolic_datacriacao    = date('Y-m-d');
         $model->prolic_usuariocriacao = $session['sess_nomeusuario'];
+        $model->situacao_id = 1; // Em elaboração
+        $model->ano_id = 8; // ano corrente
 
         if ($model->load(Yii::$app->request->post())) {
             // número do processo: próximo dentro do ano corrente

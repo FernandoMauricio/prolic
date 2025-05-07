@@ -12,5 +12,7 @@ use yii\helpers\Html;
         'model'       => $model,
         'valorlimite' => $valorlimite,
         'artigo'      => $artigo,
+        'recurso'     => $recurso,
+        'comprador'   => $comprador,
     ]) ?>
 </div>

@@ -8,7 +8,7 @@ use yii\bootstrap5\ActiveForm;
 /** @var yii\bootstrap5\ActiveForm $form */
 
 $this->registerCssFile('@web/css/requisicao-preview.css', [
-    'depends' => [yii\bootstrap5\BootstrapAsset::class], // Isso garante que o CSS seja carregado após o Bootstrap, se necessário
+    'depends' => [yii\bootstrap5\BootstrapAsset::class],
 ]);
 ?>
 
@@ -16,7 +16,11 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
 <div class="processo-licitatorio-form">
     <h1 class="mb-4"><i class="bi bi-file-earmark-check me-2"></i> Cadastro de Processo Licitatório</h1>
     <?php $form = ActiveForm::begin([
-        'id' => 'processo-licitatorio-form',
+        'id'                 => 'processolicitatorio-form',
+        'enableClientValidation' => true,
+        'validateOnChange'   => true,
+        'validateOnBlur'     => true,
+        'validateOnType'     => true,
     ]); ?>
 
     <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>

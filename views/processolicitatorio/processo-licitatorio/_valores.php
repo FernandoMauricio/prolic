@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\Html;
 use yii\web\View;
 
 ?>
@@ -34,6 +35,18 @@ use yii\web\View;
         padding: 1.25rem;
     }
 </style>
+
+<?= $form->field($model, 'valor_limite')
+    ->hiddenInput(['id' => 'processolicitatorio-valor_limite'])
+    ->label(false) ?>
+
+<?= $form->field($model, 'valor_limite_apurado')
+    ->hiddenInput(['id' => 'processolicitatorio-valor_limite_apurado'])
+    ->label(false) ?>
+
+<?= $form->field($model, 'valor_saldo')
+    ->hiddenInput(['id' => 'processolicitatorio-valor_saldo'])
+    ->label(false) ?>
 
 <div class="row g-3 mb-4">
     <!-- Valor Limite -->
@@ -86,23 +99,17 @@ use yii\web\View;
 <!-- Campos que serão salvos no banco (inalterados) -->
 <div class="row g-3">
     <div class="col-lg-4">
-        <?= $form->field($model, 'prolic_valorestimado')
-            ->textInput(['id' => 'processolicitatorio-valorestimado']) ?>
+        <?= $form->field($model, 'prolic_valorestimado')->textInput(['id' => 'processolicitatorio-valorestimado']) ?>
     </div>
     <div class="col-lg-4">
-        <?= $form->field($model, 'prolic_valoraditivo')
-            ->textInput(['id' => 'processolicitatorio-valoraditivo']) ?>
+        <?= $form->field($model, 'prolic_valoraditivo')->textInput(['id' => 'processolicitatorio-valoraditivo']) ?>
     </div>
     <div class="col-lg-4">
-        <?= $form->field($model, 'prolic_valorefetivo')
-            ->textInput(['id' => 'processolicitatorio-valorEfetivo']) ?>
+        <?= $form->field($model, 'prolic_valorefetivo')->textInput() ?>
     </div>
 </div>
 
-
 <?php
-
-
 $js = <<<'JS'
 (function(){
   // 1) Funções no escopo global
@@ -131,12 +138,24 @@ $js = <<<'JS'
                      - valorLimiteApurado 
                      - (valorEstimado + valorAdicional);
 
-    // atualiza o mini-card
-    $('#card-saldo-valor').text( formatarMoeda(valorSaldo) );
-    $('#card-saldo')
-      .removeClass('text-bg-success text-bg-danger')
-      .addClass(valorSaldo > 0 ? 'text-bg-success' : 'text-bg-danger');
-  };
+  // 1) atualiza mini-card
+  $('#card-saldo-valor').text(formatarMoeda(valorSaldo));
+  $('#card-saldo').toggleClass('text-bg-success', valorSaldo > 0)
+                  .toggleClass('text-bg-danger', valorSaldo <= 0);
+
+  // atualiza hidden inputs
+  $('#processolicitatorio-valor_limite').val(valorLimite);
+  $('#processolicitatorio-valor_limite_apurado').val(valorLimiteApurado);
+  $('#processolicitatorio-valor_saldo').val(valorSaldo);
+
+  // dispara client-validation de prolic_valorefetivo
+  $('#processolicitatorio-form').yiiActiveForm('validateAttribute', 'processolicitatorio-prolic_valorefetivo');
+};
+
+// 2) além disso, sempre que o usuário digitar em prolic_valorefetivo:
+$('#processolicitatorio-prolic_valorefetivo').on('input', function(){
+  $('#processolicitatorio-form').yiiActiveForm('validateAttribute', 'processolicitatorio-prolic_valorefetivo');
+});
 
   // 2) Dispara no carregamento inicial
   $(function(){
@@ -153,5 +172,5 @@ $js = <<<'JS'
 })();
 JS;
 
-$this->registerJs($js, View::POS_END);
+$this->registerJs($js, View::POS_READY);
 ?>

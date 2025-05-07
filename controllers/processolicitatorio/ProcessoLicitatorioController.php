@@ -429,11 +429,9 @@ class ProcessoLicitatorioController extends Controller
             }
         }
 
-
         return $this->render('update', array_merge(
             [
                 'model' => $model,
-                'dadosRequisicao' => isset($dadosRequisicao) ? $dadosRequisicao : null,
             ],
             $dadosAuxiliares
         ));

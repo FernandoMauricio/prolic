@@ -12,7 +12,6 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
 ]);
 ?>
 
-
 <div class="processo-licitatorio-form">
     <h1 class="mb-4"><i class="bi bi-file-earmark-check me-2"></i> Cadastro de Processo Licitatório</h1>
     <?php $form = ActiveForm::begin([

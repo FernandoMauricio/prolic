@@ -50,30 +50,34 @@ class ProcessoLicitatorioController extends Controller
     public function actionLimite()
     {
         $out = [];
-        if (isset($_POST['depdrop_parents'])) {
-            $parents = $_POST['depdrop_parents'];
-            if ($parents != null) {
-                $cat_id = $parents[0];
-                $param1 = null;
-                $param2 = null;
-                if (!empty($_POST['depdrop_params'])) {
-                    $params = $_POST['depdrop_params'];
-                    $param1 = $params[0]; // get the value of input-type-1
-                    $param2 = $params[1]; // get the value of input-type-2
+        $selected = null;
+        $req = Yii::$app->request;
+
+        // os pais vêm normalmente em depdrop_parents
+        $parents = $req->post('depdrop_parents', []);
+        if (!empty($parents)) {
+            $cat_id = $parents[0];
+            // monta a lista de opções (id => nome)
+            $out = ProcessoLicitatorio::getLimiteSubCat($cat_id);
+
+            // depdrop_params[0] agora é o processo-id
+            $params = $req->post('depdrop_params', []);
+            if (!empty($params[0])) {
+                $processoId = (int)$params[0];
+                $modelProc  = ProcessoLicitatorio::findOne($processoId);
+                if ($modelProc) {
+                    // devolve o próprio valor salvo para pré-seleção
+                    $selected = $modelProc->modalidade_valorlimite_id;
                 }
-
-                $out = ProcessoLicitatorio::getLimiteSubCat($cat_id, $param1, $param2);
-
-                $selected = ProcessoLicitatorio::getSumLimite($cat_id, $param1);
-                // the getDefaultSubCat function will query the database
-                // and return the default sub cat for the cat_id
-
-                echo Json::encode(['output' => $out, 'selected' => $selected]);
-                return;
             }
         }
-        echo Json::encode(['output' => '', 'selected' => '']);
+
+        return $this->asJson([
+            'output'   => $out,
+            'selected' => $selected,
+        ]);
     }
+
 
     // Localiza os dados dos Limites
     public function actionGetLimite($limiteId)

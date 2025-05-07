@@ -65,9 +65,11 @@ $sumUrl = Url::toRoute(['/processolicitatorio/processo-licitatorio/get-sum-limit
             'pluginOptions' => [
                 'depends' => ['modalidade-id'],
                 'placeholder' => 'Selecione o Ramo...',
-                'initialize' => true,
                 'url' => Url::to(['/processolicitatorio/processo-licitatorio/limite']),
                 'data' => [$model->modalidade_valorlimite_id => $model->modalidadeValorlimite->ramo->ram_descricao],
+                'initialize'    => true,   // força o carregamento inicial
+                'initDepends'   => ['modalidade-id'],  // (opcional, reforça que depende de #modalidade-id)
+                'initValueText' => $model->modalidadeValorlimite->ramo->ram_descricao,
             ],
             'options' => [
                 'id' => 'valorlimite-id',

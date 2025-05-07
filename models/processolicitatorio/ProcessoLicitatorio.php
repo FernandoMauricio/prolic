@@ -105,7 +105,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
                 'prolic_valorefetivo',
                 'compare',
                 'compareAttribute' => 'valor_saldo',
-                'operator'         => '<=',
+                'operator'         => '<',
                 'type'             => 'number',
                 'when'             => function ($model) {
                     return $model->artigo->art_tipo == 'Valor'

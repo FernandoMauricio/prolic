@@ -38,10 +38,29 @@ AppAsset::register($this);
             <div class="container" style="max-width: 100%">
                 <div class="wrap" style="padding-top: 80px;">
                     <?= Breadcrumbs::widget([
-                        'itemTemplate' => "<li class=\"breadcrumb-item\">{link}</li>\n",
-                        'activeItemTemplate' => "<li class=\"breadcrumb-item active\" aria-current=\"page\">{link}</li>\n",
+                        // 1) Primeiro item “Home” com ícone e template próprio
+                        'homeLink' => [
+                            'label'    => '<i class="bi bi-house-door-fill"></i>',
+                            'url'      => Yii::$app->homeUrl,
+                            'encode'   => false,
+                            'template' => '<li class="breadcrumb-item me-1">{link}</li>',
+                        ],
+                        // 2) Seus breadcrumbs normais (strings ou arrays [‘label’=>…, ‘url’=>…])
                         'links' => $this->params['breadcrumbs'] ?? [],
-                        'options' => ['class' => 'breadcrumb bg-light px-3 py-2 rounded mb-3']
+
+                        // 3) Template para cada link intermediário
+                        'itemTemplate'       => '<li class="breadcrumb-item me-1">{link}</li>',
+                        // 4) Template para o link ativo (último)
+                        'activeItemTemplate' => '<li class="breadcrumb-item active" aria-current="page">{link}</li>',
+
+                        // 5) Permite usar HTML (para ícones, spans, etc.)
+                        'encodeLabels' => false,
+
+                        // 6) Classe do container e outros atributos
+                        'options'      => [
+                            'class'      => 'breadcrumb bg-white shadow-sm p-2 rounded mb-4',
+                            'aria-label' => 'breadcrumb',
+                        ],
                     ]) ?>
                 </div>
                 <?= Alert::widget() ?>

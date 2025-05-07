@@ -342,6 +342,9 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_usuariocriacao = $session['sess_nomeusuario'];
         $model->situacao_id = 1; // Em elaboração
         $model->ano_id = 8; // ano corrente
+        $model->prolic_valorestimado = 0;
+        $model->prolic_valoraditivo = 0;
+        $model->prolic_valorefetivo = 0;
 
         if ($model->load(Yii::$app->request->post())) {
             // número do processo: próximo dentro do ano corrente

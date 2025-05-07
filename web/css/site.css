@@ -285,3 +285,11 @@ a.desc:after {
 .select2-container .select2-selection--multiple {
     width: 100% !important;
 }
+
+.breadcrumb a {
+  color: #05628d;
+  text-decoration: none;
+}
+.breadcrumb a:hover {
+  text-decoration: underline;
+}

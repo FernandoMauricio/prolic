@@ -13,6 +13,30 @@ $sumUrl = Url::toRoute(['/processolicitatorio/processo-licitatorio/get-sum-limit
 ?>
 
 <div class="row g-3">
+    <div class="col-lg-6">
+        <?= $form->field($model, 'recursos_id')->widget(Select2::class, [
+            'data' => ArrayHelper::map($recurso, 'id', 'rec_descricao'),
+            'options' => ['placeholder' => 'Informe o Recurso...'],
+            'pluginOptions' => ['allowClear' => true],
+        ]) ?>
+    </div>
+
+    <div class="col-lg-6">
+        <?= $form->field($model, 'comprador_id')->widget(Select2::class, [
+            'data' => ArrayHelper::map($comprador, 'id', 'comp_descricao'),
+            'options' => ['placeholder' => 'Informe o Comprador...'],
+            'pluginOptions' => ['allowClear' => true],
+        ]) ?>
+    </div>
+
+    <div class="col-lg-12">
+        <?= $form->field($model, 'artigo_id')->widget(Select2::class, [
+            'data' => ArrayHelper::map($artigo, 'id', 'art_descricao'),
+            'options' => ['placeholder' => 'Informe o Artigo...'],
+            'pluginOptions' => ['allowClear' => true],
+        ]) ?>
+    </div>
+
     <div class="col-lg-4">
         <?php
         $data_modalidade = ArrayHelper::map($valorlimite, 'modalidade.id', 'modalidade.mod_descricao');
@@ -34,7 +58,7 @@ $sumUrl = Url::toRoute(['/processolicitatorio/processo-licitatorio/get-sum-limit
         ?>
     </div>
 
-    <div class="col-lg-4">
+    <div class="col-lg-8">
         <?= $form->field($model, 'modalidade_valorlimite_id')->widget(DepDrop::class, [
             'type' => DepDrop::TYPE_SELECT2,
             'select2Options' => ['pluginOptions' => ['allowClear' => true]],
@@ -68,24 +92,6 @@ $sumUrl = Url::toRoute(['/processolicitatorio/processo-licitatorio/get-sum-limit
         ")
             ],
         ]); ?>
-    </div>
-
-    <div class="col-lg-4">
-        <?= $form->field($model, 'recursos_id')->widget(Select2::class, [
-            'data' => ArrayHelper::map($recurso, 'id', 'rec_descricao'),
-            'options' => ['placeholder' => 'Informe o Recurso...'],
-            'pluginOptions' => ['allowClear' => true],
-        ]) ?>
-    </div>
-</div>
-
-<div class="row g-3 mt-1">
-    <div class="col-lg-12">
-        <?= $form->field($model, 'artigo_id')->widget(Select2::class, [
-            'data' => ArrayHelper::map($artigo, 'id', 'art_descricao'),
-            'options' => ['placeholder' => 'Informe o Artigo...'],
-            'pluginOptions' => ['allowClear' => true],
-        ]) ?>
     </div>
 </div>
 

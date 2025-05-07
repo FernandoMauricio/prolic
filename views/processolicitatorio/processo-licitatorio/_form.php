@@ -50,7 +50,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                             <h6 class="mb-0"><i class="bi bi-bar-chart-steps me-2"></i> Modalidade, Ramo, Recursos e Artigo</h6>
                         </div>
                         <div class="card-body">
-                            <?= $this->render('_modalidade', compact('form', 'model', 'valorlimite', 'artigo', 'recurso')) ?>
+                            <?= $this->render('_modalidade', compact('form', 'model', 'valorlimite', 'artigo', 'recurso', 'comprador')) ?>
                         </div>
                     </div>
 
@@ -70,7 +70,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                             <h6 class="mb-0"><i class="bi bi-diagram-3 me-2"></i> Informações Complementares</h6>
                         </div>
                         <div class="card-body">
-                            <?= $this->render('_complementares', compact('form', 'model', 'centrocusto', 'comprador')) ?>
+                            <?= $this->render('_complementares', compact('form', 'model', 'centrocusto')) ?>
                         </div>
                     </div>
 

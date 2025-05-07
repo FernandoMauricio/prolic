@@ -10,7 +10,7 @@ use yii\helpers\ArrayHelper;
             <div class="col-lg-2">
                 <?= $form->field($model, 'prolic_cotacoes')->textInput(['type' => 'number']) ?>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-5">
                 <?= $form->field($model, 'prolic_centrocusto')->widget(Select2::class, [
                     'data' => ArrayHelper::map($centrocusto, 'cen_centrocustoreduzido', 'cen_centrocustoreduzido'),
                     'options' => [
@@ -20,7 +20,7 @@ use yii\helpers\ArrayHelper;
                     'pluginOptions' => ['allowClear' => true],
                 ]) ?>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-5">
                 <?= $form->field($model, 'prolic_elementodespesa')->widget(JqueryTagsInput::class, [
                     'clientOptions' => [
                         'defaultText' => '',
@@ -29,13 +29,6 @@ use yii\helpers\ArrayHelper;
                         'delimiter' => ' / ',
                         'interactive' => true,
                     ],
-                ]) ?>
-            </div>
-            <div class="col-lg-4">
-                <?= $form->field($model, 'comprador_id')->widget(Select2::class, [
-                    'data' => ArrayHelper::map($comprador, 'id', 'comp_descricao'),
-                    'options' => ['placeholder' => 'Informe o Comprador...'],
-                    'pluginOptions' => ['allowClear' => true],
                 ]) ?>
             </div>
         </div>

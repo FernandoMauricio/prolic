@@ -4,9 +4,12 @@ use kartik\select2\Select2;
 use kartik\depdrop\DepDrop;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
+
+$sumUrl = Url::toRoute(['/processolicitatorio/processo-licitatorio/get-sum-limite']);
 ?>
 
 <div class="row g-3">
@@ -35,7 +38,6 @@ use yii\helpers\Url;
         <?= $form->field($model, 'modalidade_valorlimite_id')->widget(DepDrop::class, [
             'type' => DepDrop::TYPE_SELECT2,
             'select2Options' => ['pluginOptions' => ['allowClear' => true]],
-            'options' => ['id' => 'valorlimite-id'],
             'pluginOptions' => [
                 'depends' => ['modalidade-id'],
                 'placeholder' => 'Selecione o Ramo...',
@@ -44,37 +46,28 @@ use yii\helpers\Url;
                 'data' => [$model->modalidade_valorlimite_id => $model->modalidadeValorlimite->ramo->ram_descricao],
             ],
             'options' => [
-                'onchange' => "
-                    var select = this;
-                    var limiteId = $(this).val(); // Obtém o ID do limite selecionado
-                    console.log('Valor do limite selecionado:', limiteId); // Log para verificar o limite selecionado
-                    if (limiteId) {
-$.getJSON('" . Url::toRoute("/processolicitatorio/processo-licitatorio/get-sum-limite") . "', { limiteId: $(this).val(), processo: " . $model->id . " })
-    .done(function(data) {
-        console.log('Dados retornados do servidor:', data); // Verificando os dados retornados
-
-        if (data) {
-            // Garantir que os valores sejam números antes de passar para os campos
-            var valorLimite = parseFloat(data.valor_limite);
-            var valorLimiteApurado = parseFloat(data.valor_limite_apurado);
-            var valorSaldo = parseFloat(data.valor_saldo);
-
-            console.log('Valores formatados:', valorLimite, valorLimiteApurado, valorSaldo); // Verificando os valores formatados
-
-            // Atualizando os campos com os valores corretamente
-            $('#processolicitatorio-valor_limite').val(valorLimite).trigger('input');
-            $('#processolicitatorio-valor_limite_apurado').val(valorLimiteApurado).trigger('input');
-            $('#processolicitatorio-valor_saldo').val(valorSaldo).trigger('input');
-        }
-    })
-    .fail(function() {
-        console.error('Falha na requisição AJAX');
-    });
-
-                    }
-                "
-            ]
-        ]) ?>
+                'id' => 'valorlimite-id',
+                'onchange' => new JsExpression("
+            var limiteId = this.value;
+            if (!limiteId) return;
+            $.getJSON('{$sumUrl}', {
+                limiteId: limiteId,
+                processo: {$model->id}
+            })
+            .done(function(data) {
+                var vl = parseFloat(data.valor_limite) || 0;
+                var va = parseFloat(data.valor_limite_apurado) || 0;
+                // atualiza os mini-cards
+                $('#card-valor-limite').data('valor', vl).text(formatarMoeda(vl));
+                $('#card-limite-apurado').data('valor', va).text(formatarMoeda(va));
+                calcularValores();
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Falha ao buscar valores do limite:', textStatus, errorThrown);
+            });
+        ")
+            ],
+        ]); ?>
     </div>
 
     <div class="col-lg-4">

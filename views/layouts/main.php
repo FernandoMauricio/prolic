@@ -57,7 +57,8 @@ AppAsset::register($this);
 
                         // 6) Classe do container e outros atributos
                         'options'      => [
-                            'class'      => 'breadcrumb bg-white shadow-sm p-2 rounded mb-4',
+                            'class'      => 'breadcrumb shadow-sm p-2 rounded mb-4',
+                            'style'      => 'background-color: #f5f5f5;',
                             'aria-label' => 'breadcrumb',
                         ],
                     ]) ?>

@@ -12,7 +12,6 @@ use app\models\base\Centrocusto;
 use app\models\base\Recursos;
 use app\models\base\Comprador;
 use app\models\base\Situacao;
-use app\models\base\Empresa;
 use app\models\base\Emailusuario;
 use app\models\processolicitatorio\Observacoes;
 use app\models\processolicitatorio\ProcessoLicitatorio;
@@ -22,6 +21,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Json;
 use app\models\api\WebManagerService;
+use yii\helpers\Url;
 use yii\web\Response;
 
 /**
@@ -260,76 +260,6 @@ class ProcessoLicitatorioController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new ProcessoLicitatorio model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionGerarProcessoLicitatorio()
-    {
-        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-        $session = Yii::$app->session;
-        if ($session['sess_codunidade'] != 6) {
-            return $this->AccessoAdministrador();
-        }
-
-        $model = new ProcessoLicitatorio();
-
-        $ano         = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
-        $ramo        = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
-        $destinos    = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
-        //$valorlimite = Modalidade::find()->where(['mod_status' => 1])->all();
-        $valorlimite = ModalidadeValorlimite::find()->innerJoinWith('modalidade')->where(['mod_status' => 1])->andWhere(['!=', 'homologacao_usuario', ''])->all();
-        $artigo      = Artigo::find()->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])->andWhere(['!=', 'art_homologacaousuario', ''])->orderBy('art_descricao')->all();
-        $centrocusto = Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all();
-        $recurso     = Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all();
-        $comprador   = Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all();
-        $situacao    = Situacao::find()->where(['sit_status' => 1])->orderBy('sit_descricao')->all();
-        $empresa     = Empresa::find()->where(['emp_status' => 1])->orderBy('emp_descricao')->all();
-
-        $model->prolic_datacriacao    = date('Y-m-d');
-        $model->prolic_usuariocriacao = $session['sess_nomeusuario'];
-
-        if ($model->load(Yii::$app->request->post())) {
-
-            //Somatória dos valores
-            // $model->prolic_valorefetivo = $model->prolic_valorestimado + $model->prolic_valoraditivo;
-
-            //Junta todos destinos, centros de custos e empresas em uma linha
-            is_array($model->prolic_destino) ? $model->prolic_destino = implode(', ', $model->prolic_destino) : null;
-            is_array($model->prolic_centrocusto) ? $model->prolic_centrocusto = implode(', ', $model->prolic_centrocusto) : null;
-            is_array($model->prolic_empresa) ? $model->prolic_empresa = implode(', ', $model->prolic_empresa) : null;
-
-            //Número do Processo
-            $numeroProcesso = ProcessoLicitatorio::find()->innerJoinWith('ano')->where(['ano.an_ano' => date('Y')])->max('prolic_codprocesso');
-            $model->prolic_codprocesso = $numeroProcesso + 1;
-
-            //Sequencia do cód. da modalidade de acordo com o tipo
-            if (isset($model->modalidadeValorlimite->modalidade_id)) {
-                $incremento = ProcessoLicitatorio::find()->innerJoinWith('modalidadeValorlimite')->innerJoinWith('modalidadeValorlimite.modalidade')->innerJoinWith('ano')->where(['modalidade.id' => $model->modalidadeValorlimite->modalidade_id, 'ano.an_ano' => date('Y')])->count('prolic_sequenciamodal');
-                $model->prolic_sequenciamodal = $incremento + 1;
-            }
-            if ($model->validate()) {
-                $model->save();
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        }
-
-        return $this->renderAjax('gerar-processo-licitatorio', [
-            'model' => $model,
-            'ano' => $ano,
-            'ramo' => $ramo,
-            'destinos' => $destinos,
-            'valorlimite' => $valorlimite,
-            'artigo' => $artigo,
-            'centrocusto' => $centrocusto,
-            'recurso' => $recurso,
-            'comprador' => $comprador,
-            'situacao' => $situacao,
-            'empresa' => $empresa,
-        ]);
-    }
-
     public function actionBuscarFornecedor($q)
     {
         $dados = WebManagerService::consultarFornecedor($q);
@@ -388,6 +318,62 @@ class ProcessoLicitatorioController extends Controller
 
         return ['results' => []];
     }
+
+    /**
+     * Cria um novo ProcessoLicitatorio apenas com Modalidade e Ramo,
+     * gera codprocesso e sequência, e então redireciona para editar tudo.
+     */
+    public function actionCreate()
+    {
+        $session = Yii::$app->session;
+        if ($session['sess_codunidade'] != 6) {
+            return $this->AccessoAdministrador();
+        }
+
+        $model    = new ProcessoLicitatorio();
+        $dadosAuxiliares = $this->carregarDadosAuxiliares();
+
+        // seta data/usuário de criação
+        $model->prolic_datacriacao    = date('Y-m-d');
+        $model->prolic_usuariocriacao = $session['sess_nomeusuario'];
+
+        if ($model->load(Yii::$app->request->post())) {
+            // número do processo: próximo dentro do ano corrente
+            $ultimo = ProcessoLicitatorio::find()
+                ->innerJoinWith('ano')
+                ->where(['ano.an_ano' => date('Y')])
+                ->max('prolic_codprocesso');
+            $model->prolic_codprocesso = ((int)$ultimo) + 1;
+
+            // sequência da modalidade no ano
+            if (isset($model->modalidadeValorlimite->modalidade_id)) {
+                $cont = ProcessoLicitatorio::find()
+                    ->innerJoinWith(['modalidadeValorlimite', 'modalidadeValorlimite.modalidade', 'ano'])
+                    ->where([
+                        'modalidade.id' => $model->modalidadeValorlimite->modalidade_id,
+                        'ano.an_ano'    => date('Y'),
+                    ])
+                    ->count('prolic_sequenciamodal');
+                $model->prolic_sequenciamodal = $cont + 1;
+            }
+
+            // salva sem precisar dos outros campos ainda
+            $model->save(false);
+
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return ['redirect' => Url::to(['update', 'id' => $model->id])];
+            }
+            return $this->redirect(['update', 'id' => $model->id]);
+        }
+
+        // fallback se alguém acessar create direto
+        return $this->renderAjax('create', array_merge(
+            ['model' => $model],
+            $dadosAuxiliares
+        ));
+    }
+
 
     /**
      * Updates an existing ProcessoLicitatorio model.
@@ -454,15 +440,53 @@ class ProcessoLicitatorioController extends Controller
     private function carregarDadosAuxiliares()
     {
         return [
-            'ano' => Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all(),
-            'ramo' => Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all(),
-            'destinos' => Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all(),
-            'valorlimite' => ModalidadeValorlimite::find()->innerJoinWith('modalidade')->where(['mod_status' => 1])->andWhere(['!=', 'homologacao_usuario', ''])->all(),
-            'artigo' => Artigo::find()->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])->andWhere(['!=', 'art_homologacaousuario', ''])->orderBy('art_descricao')->all(),
-            'centrocusto' => Centrocusto::find()->where(['cen_codsituacao' => 1])->orderBy('cen_codano')->all(),
-            'recurso' => Recursos::find()->where(['rec_status' => 1])->orderBy('rec_descricao')->all(),
-            'comprador' => Comprador::find()->where(['comp_status' => 1])->orderBy('comp_descricao')->all(),
-            'situacao' => Situacao::find()->where(['sit_status' => 1])->orderBy('sit_descricao')->all(),
+            'ano' => Ano::find()
+                ->where(['an_status' => 1])
+                ->orderBy(['an_ano' => SORT_DESC])
+                ->all(),
+
+            'ramo' => Ramo::find()
+                ->where(['ram_status' => 1])
+                ->orderBy(['ram_descricao' => SORT_DESC])
+                ->all(),
+
+            'destinos' => Unidades::find()
+                ->where(['uni_codsituacao' => 1])
+                ->orderBy(['uni_nomeabreviado' => SORT_DESC])
+                ->all(),
+
+            'valorlimite' => ModalidadeValorlimite::find()
+                ->innerJoinWith('modalidade')
+                ->where(['mod_status' => 1])
+                ->andWhere(['!=', 'homologacao_usuario', ''])
+                ->orderBy(['modalidade.mod_descricao' => SORT_DESC])
+                ->all(),
+
+            'artigo' => Artigo::find()
+                ->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])
+                ->andWhere(['!=', 'art_homologacaousuario', ''])
+                ->orderBy(['art_descricao' => SORT_DESC])
+                ->all(),
+
+            'centrocusto' => Centrocusto::find()
+                ->where(['cen_codsituacao' => 1])
+                ->orderBy(['cen_codano' => SORT_DESC])
+                ->all(),
+
+            'recurso' => Recursos::find()
+                ->where(['rec_status' => 1])
+                ->orderBy(['rec_descricao' => SORT_DESC])
+                ->all(),
+
+            'comprador' => Comprador::find()
+                ->where(['comp_status' => 1])
+                ->orderBy(['comp_descricao' => SORT_DESC])
+                ->all(),
+
+            'situacao' => Situacao::find()
+                ->where(['sit_status' => 1])
+                ->orderBy(['sit_descricao' => SORT_DESC])
+                ->all(),
         ];
     }
 

@@ -16,6 +16,7 @@ $this->title = 'Acompanhamento de Processos Licitatórios';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+
 <div class="processo-licitatorio-index">
     <?php $gridColumns = require(__DIR__ . '/_gridColumns.php'); ?>
 
@@ -43,12 +44,22 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::button(
             '<i class="bi bi-plus-circle me-1"></i> Processo Licitatório',
             [
-                'value' => Url::to(['processolicitatorio/processo-licitatorio/gerar-processo-licitatorio']),
+                'value' => Url::to(['processolicitatorio/processo-licitatorio/create']),
                 'class' => 'btn btn-success shadow-sm',
                 'id' => 'modalButton'
             ]
         ) ?>
-
+        <?php
+        Modal::begin([
+            'id'           => 'modal',
+            'size'         => Modal::SIZE_LARGE,
+            'options'      => ['tabindex' => false],
+            'clientOptions' => ['backdrop' => 'static', 'keyboard' => false],
+            'title'        => '<h5>Gerar Processo Licitatório</h5>',
+        ]);
+        echo "<div id='modalContent'></div>";
+        Modal::end();
+        ?>
         <div class="d-flex gap-2">
             <?= Html::a('<i class="bi bi-arrows-angle-expand me-1"></i> Todos', [''], [
                 'class' => 'btn btn-outline-primary',
@@ -68,18 +79,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ]) ?>
         </div>
     </div>
-
-    <?php
-    Modal::begin([
-        'options' => ['tabindex' => false], // important for Select2 to work properly
-        'title' => '<h3>Processo Licitatório</h3>',
-        'clientOptions' => ['backdrop' => 'static', 'keyboard' => true],
-        'id' => 'modal',
-        'size' => 'modal-lg',
-    ]);
-    echo "<div id='modalContent'></div>";
-    Modal::end();
-    ?>
 
     <?php Pjax::begin(['id' => 'w0-pjax']); ?>
 

@@ -3,23 +3,14 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
-
+/* @var app\models\processolicitatorio\ProcessoLicitatorio $model */
+/* @var array $valorlimite */
 ?>
 <div class="processo-licitatorio-create">
-
-    <?= $this->renderAjax('gerar-processo-licitatorio', [
-        'model' => $model,
-        'ano' => $ano,
-        'ramo' => $ramo,
-        'destinos' => $destinos,
+    <h1><?= Html::encode($this->title) ?></h1>
+    <?= $this->render('_gerar-processo-licitatorio', [
+        'model'       => $model,
         'valorlimite' => $valorlimite,
-        'artigo' => $artigo,
-        'centrocusto' => $centrocusto,
-        'recurso' => $recurso,
-        'comprador' => $comprador,
-        'situacao' => $situacao,
-        'empresa' => $empresa,
+        'artigo'      => $artigo,
     ]) ?>
-
 </div>

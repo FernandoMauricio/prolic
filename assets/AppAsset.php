@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,7 +26,6 @@ class AppAsset extends AssetBundle
     public $js = [
         'js/main.js',
         'js/jquery.bootstrap.wizard.js',
-        'js/processolicitatorio.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

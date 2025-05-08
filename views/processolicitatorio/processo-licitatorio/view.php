@@ -115,7 +115,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
 
                         <!-- Demandantes como badges em linha flexível -->
                         <div class="col-12">
-                            <small class="text-muted">Demandantes(s)</small>
+                            <small class="text-muted">Demandante(s)</small>
                             <div class="d-flex flex-wrap align-items-center gap-2 fw-semibold">
                                 <?php
                                 $destinos = $model->getUnidades($model->prolic_destino);

@@ -9,7 +9,7 @@ use yii\web\View;
 /* @var $this View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
 
-$this->title = $model->prolic_sequenciamodal;
+$this->title = $model->prolic_sequenciamodal . '/' . $model->ano->an_ano;
 $this->params['breadcrumbs'][] = ['label' => 'Processos Licitatórios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -27,7 +27,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="fs-3 fw-bold text-primary d-flex align-items-center gap-2 mb-0">
             <i class="bi bi-file-earmark-text fs-2"></i>
-            Processo <span class="text-dark"><?= Html::encode($this->title . '/' . $model->ano->an_ano) ?></span>
+            Acompanhamento de <span class="text-dark"><?= Html::encode($this->title) ?></span>
         </h1>
         <div class="btn-group">
             <?= Html::a('← Voltar', ['index'], ['class' => 'btn btn-outline-secondary']) ?>
@@ -46,15 +46,16 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
     <?php Modal::end(); ?>
 
     <div class="row g-4">
-        <!-- Coluna Esquerda -->
+        <!-- Coluna Esquerda: Dados e Seções -->
         <div class="col-lg-8">
+
             <!-- Detalhes do Processo -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light fw-bold">Detalhes do Processo</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <?php
-                        // Itens principais sem Destinos
+                        // Campos principais
                         $fields = [
                             'Ano'        => $model->ano->an_ano,
                             'Código'     => $model->prolic_sequenciamodal . '/' . $model->ano->an_ano,
@@ -77,20 +78,11 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                             </div>
                         <?php endforeach; ?>
 
-                        <!-- Destinos como badges em linha flexível -->
+                        <!-- Destinos estilo Artigo, linha única -->
                         <div class="col-12">
                             <small class="text-muted">Destino(s)</small>
-                            <div class="d-flex flex-wrap align-items-center gap-2 fw-semibold">
-                                <?php
-                                $destinos = $model->getUnidades($model->prolic_destino);
-                                if ($destinos) {
-                                    foreach (explode(', ', $destinos) as $dest) {
-                                        echo Html::tag('span', Html::encode($dest), ['class' => 'badge bg-secondary fs-7 px-2 py-1 fw-light']);
-                                    }
-                                } else {
-                                    echo '<span class="text-danger fst-italic">(não definido)</span>';
-                                }
-                                ?>
+                            <div class="d-flex align-items-center gap-2 fw-semibold text-wrap">
+                                <?= Html::encode($model->getUnidades($model->prolic_destino) ?: '(não definido)') ?>
                             </div>
                         </div>
 
@@ -181,11 +173,27 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                     </div>
                 </div>
                 <div class="card-footer small text-muted text-center">
-                    Certame: <b><?= Yii::$app->formatter->asDate($model->prolic_datacertame, 'php:d/m/Y') ?> </b>|
-                    Devolução: <b><?= Yii::$app->formatter->asDate($model->prolic_datadevolucao, 'php:d/m/Y') ?> </b>|
-                    Homologação: <b><?= Yii::$app->formatter->asDate($model->prolic_datahomologacao, 'php:d/m/Y') ?></b>
+                    Certame: <?= Yii::$app->formatter->asDate($model->prolic_datacertame, 'php:d/m/Y') ?> |
+                    Devolução: <?= Yii::$app->formatter->asDate($model->prolic_datadevolucao, 'php:d/m/Y') ?> |
+                    Homologação: <?= Yii::$app->formatter->asDate($model->prolic_datahomologacao, 'php:d/m/Y') ?>
                 </div>
             </div>
+
+            <!-- Observações (exibe apenas se houver) -->
+            <?php if (!empty($model->observacoes)): ?>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light fw-bold">Observações</div>
+                    <div class="card-body">
+                        <?php foreach ($model->observacoes as $obs): ?>
+                            <div class="mb-3">
+                                <small class="text-muted"><?= Yii::$app->formatter->asDate($obs->obs_datacriacao, 'php:d/m/Y') ?> - <?= Html::encode($obs->obs_usuariocriacao) ?></small>
+                                <p class="mb-1"><?= nl2br(Html::encode($obs->obs_descricao)) ?></p>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
         </div>
 
         <!-- Coluna Direita: Requisições -->

@@ -162,20 +162,30 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                         ];
                         foreach ($fin as $k => $v):
                             $valor = ($v !== null && $v !== '') ? $v : 0.00;
+                            // Se valor efetivo for menor que estimado, destaque em verde
+                            if ($k === 'Efetivo' && $valor < $model->prolic_valorestimado) {
+                                $cardClass = 'bg-success text-white';
+                                $labelClass = 'text-white';
+                            } else {
+                                $cardClass = 'bg-light';
+                                $labelClass = 'text-muted';
+                            }
                         ?>
                             <div class="col-md-4">
-                                <div class="bg-light border rounded p-2">
-                                    <small class="text-muted d-block"><?= $k ?></small>
-                                    <div class="fw-semibold">R$ <?= Yii::$app->formatter->asDecimal($valor, 2) ?></div>
+                                <div class="<?= $cardClass ?> border rounded p-2">
+                                    <small class="<?= $labelClass ?> d-block"><?= $k ?></small>
+                                    <div class="fw-semibold <?= ($labelClass === 'text-white' ? 'text-white' : '') ?>">
+                                        R$ <?= Yii::$app->formatter->asDecimal($valor, 2) ?>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
                 </div>
                 <div class="card-footer small text-muted text-center">
-                    Certame: <?= Yii::$app->formatter->asDate($model->prolic_datacertame, 'php:d/m/Y') ?> |
-                    Devolução: <?= Yii::$app->formatter->asDate($model->prolic_datadevolucao, 'php:d/m/Y') ?> |
-                    Homologação: <?= Yii::$app->formatter->asDate($model->prolic_datahomologacao, 'php:d/m/Y') ?>
+                    Certame: <strong><?= Yii::$app->formatter->asDate($model->prolic_datacertame, 'php:d/m/Y') ?></strong> |
+                    Devolução: <strong><?= Yii::$app->formatter->asDate($model->prolic_datadevolucao, 'php:d/m/Y') ?></strong> |
+                    Homologação: <strong><?= Yii::$app->formatter->asDate($model->prolic_datahomologacao, 'php:d/m/Y') ?></strong>
                 </div>
             </div>
 

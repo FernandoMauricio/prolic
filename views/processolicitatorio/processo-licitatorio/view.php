@@ -86,7 +86,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
 
             <!-- Detalhes do Processo -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light fw-bold">Detalhes do Processo</div>
+                <div class="card-header bg-light fw-bold"><i class="bi bi-info-circle me-1"></i> Detalhes do Processo</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <?php
@@ -172,7 +172,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
 
             <!-- Itens Complementares -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light fw-bold">Itens Complementares</div>
+                <div class="card-header bg-light fw-bold"><i class="bi bi-list-columns me-1"></i> Itens Complementares</div>
                 <div class="card-body text-center">
                     <div class="row g-3">
                         <?php
@@ -195,7 +195,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
 
             <!-- Financeiro -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light fw-bold">Financeiro</div>
+                <div class="card-header bg-light fw-bold"><i class="bi bi-currency-dollar me-1"></i> Financeiro</div>
                 <div class="card-body text-center">
                     <div class="row g-3">
                         <?php
@@ -236,7 +236,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
             <!-- Observações (exibe apenas se houver) -->
             <?php if (!empty($model->observacoes)): ?>
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-light fw-bold">Observações</div>
+                    <div class="card-header bg-light fw-bold"><i class="bi bi-chat-left-text me-1"></i> Observações</div>
                     <div class="card-body">
                         <?php foreach ($model->observacoes as $obs): ?>
                             <div class="mb-3">

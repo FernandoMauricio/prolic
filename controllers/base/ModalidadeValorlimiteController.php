@@ -43,12 +43,12 @@ class ModalidadeValorlimiteController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
-        $searchModel = new ModalidadeValorlimiteSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            $searchModel = new ModalidadeValorlimiteSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             return $this->render('index', [
                 'searchModel' => $searchModel,
@@ -61,24 +61,24 @@ class ModalidadeValorlimiteController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
-        $model = $this->findModel($id);
+            $model = $this->findModel($id);
 
-        if($model->status == 0) { //Cadastros Inativados
-            Yii::$app->session->setFlash('danger', '<b>ERRO! </b>Não é possível homologar um cadastro inativo!</b>');
-            return $this->redirect(['index']);
-            }else{
-            //Homologa o limite da modalidade
-            $connection = Yii::$app->db;
-            $connection->createCommand()
-            ->update('modalidade_valorlimite', ['homologacao_usuario' => $session['sess_nomeusuario'], 'homologacao_data' => date('Y-m-d')], ['id' => $model->id])
-            ->execute();
+            if ($model->status == 0) { //Cadastros Inativados
+                Yii::$app->session->setFlash('danger', '<b>ERRO! </b>Não é possível homologar um cadastro inativo!</b>');
+                return $this->redirect(['index']);
+            } else {
+                //Homologa o limite da modalidade
+                $connection = Yii::$app->db;
+                $connection->createCommand()
+                    ->update('modalidade_valorlimite', ['homologacao_usuario' => $session['sess_nomeusuario'], 'homologacao_data' => date('Y-m-d')], ['id' => $model->id])
+                    ->execute();
 
-            Yii::$app->session->setFlash('success', '<b>SUCESSO!</b> Cadastro limite da Modalidade:<b> '.$model->modalidade->mod_descricao.'</b> e Ramo: <b>'.$model->ramo->ram_descricao .'</b> foi HOMOLOGADO!</b>');
-        }
+                Yii::$app->session->setFlash('success', '<b>SUCESSO!</b> Cadastro limite da Modalidade:<b> ' . $model->modalidade->mod_descricao . '</b> e Segmento: <b>' . $model->ramo->ram_descricao . '</b> foi HOMOLOGADO!</b>');
+            }
             return $this->redirect(['index']);
         }
     }
@@ -93,9 +93,9 @@ class ModalidadeValorlimiteController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
             return $this->render('view', [
                 'model' => $this->findModel($id),
@@ -112,20 +112,20 @@ class ModalidadeValorlimiteController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
-        $model = new ModalidadeValorlimite();
+            $model = new ModalidadeValorlimite();
 
-        $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
-        $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
-        $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
+            $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
+            $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
+            $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Limite cadastrado!</b>');
-            return $this->redirect(['index']);
-        }
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Limite cadastrado!</b>');
+                return $this->redirect(['index']);
+            }
 
             return $this->render('create', [
                 'model' => $model,
@@ -147,23 +147,23 @@ class ModalidadeValorlimiteController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
-        $model = $this->findModel($id);
+            $model = $this->findModel($id);
 
-        $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
-        $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
-        $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
+            $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
+            $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
+            $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $model->homologacao_usuario = NULL;
-            $model->homologacao_data    = NULL;
-            $model->save();
-            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Limite atualizado!</b>');
-            return $this->redirect(['index']);
-        }
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                $model->homologacao_usuario = NULL;
+                $model->homologacao_data    = NULL;
+                $model->save();
+                Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Limite atualizado!</b>');
+                return $this->redirect(['index']);
+            }
 
             return $this->render('update', [
                 'model' => $model,
@@ -207,18 +207,19 @@ class ModalidadeValorlimiteController extends Controller
     public function AccessAllow()
     {
         $session = Yii::$app->session;
-        if (!isset($session['sess_codusuario']) 
-            && !isset($session['sess_codcolaborador']) 
-            && !isset($session['sess_codunidade']) 
-            && !isset($session['sess_nomeusuario']) 
-            && !isset($session['sess_coddepartamento']) 
-            && !isset($session['sess_codcargo']) 
-            && !isset($session['sess_cargo']) 
-            && !isset($session['sess_setor']) 
-            && !isset($session['sess_unidade']) 
-            && !isset($session['sess_responsavelsetor'])) 
-        {
-           return $this->redirect('https://portalsenac.am.senac.br');
+        if (
+            !isset($session['sess_codusuario'])
+            && !isset($session['sess_codcolaborador'])
+            && !isset($session['sess_codunidade'])
+            && !isset($session['sess_nomeusuario'])
+            && !isset($session['sess_coddepartamento'])
+            && !isset($session['sess_codcargo'])
+            && !isset($session['sess_cargo'])
+            && !isset($session['sess_setor'])
+            && !isset($session['sess_unidade'])
+            && !isset($session['sess_responsavelsetor'])
+        ) {
+            return $this->redirect('https://portalsenac.am.senac.br');
         }
     }
 }

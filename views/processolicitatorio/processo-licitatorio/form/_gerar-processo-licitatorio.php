@@ -30,7 +30,7 @@ use yii\web\JsExpression;
             <strong>Próxima etapa:</strong> Após salvar esta solicitação, você será direcionado para adicionar mais detalhes sobre o processo.
         </div>
         <div class="row g-3">
-            <!-- Modalidade e Ramo -->
+            <!-- Modalidade e Segmento -->
             <div class="col-md-4">
                 <?php
                 echo $form->field($model, 'modalidade')->widget(Select2::classname(), [
@@ -61,11 +61,11 @@ use yii\web\JsExpression;
                     ],
                     'pluginOptions'   => [
                         'depends'      => ['modalidade-id'],
-                        'placeholder'  => 'Selecione o Ramo...',
+                        'placeholder'  => 'Selecione o Segmento...',
                         'initialize'   => true,
                         'url'          => Url::to(['/processolicitatorio/processo-licitatorio/limite']),
                     ],
-                ])->label('Ramo <span class="text-danger">*</span>');
+                ])->label('Segmento <span class="text-danger">*</span>');
                 ?>
             </div>
             <div class="col-md-6">

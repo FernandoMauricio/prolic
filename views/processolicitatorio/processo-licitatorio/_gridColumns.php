@@ -66,7 +66,7 @@ return [
             'ramo.ram_descricao'
         ),
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-        'filterInputOptions' => ['placeholder' => 'Ramo...'],
+        'filterInputOptions' => ['placeholder' => 'Segmento...'],
         'width' => '160px',
     ],
 

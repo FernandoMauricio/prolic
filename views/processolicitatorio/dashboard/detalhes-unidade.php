@@ -18,7 +18,7 @@ use yii\helpers\Html;
                         <tr>
                             <th>Processo</th>
                             <th>Modalidade</th>
-                            <th>Ramo</th>
+                            <th>Segmento</th>
                             <th>Recurso</th>
                             <th>Objeto</th>
                         </tr>

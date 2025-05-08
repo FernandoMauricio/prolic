@@ -69,7 +69,7 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
         return [
             'id' => 'Cód.',
             'modalidade_id' => 'Modalidade',
-            'ramo_id' => 'Ramo',
+            'ramo_id' => 'Segmento',
             'ano_id' => 'Ano',
             'valor_limite' => 'Valor Limite',
             'status' => 'Status',

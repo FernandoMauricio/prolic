@@ -312,7 +312,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'prolic_dataatualizacao' => 'Data Atualização',
             'prolic_empresa' => 'Empresa',
             'modalidade' => 'Modalidade',
-            'ramo' => 'Ramo',
+            'ramo' => 'Segmento',
             'ciclototal' => 'Ciclo Total',
             'ciclocertame' => 'Ciclo Certame',
         ];

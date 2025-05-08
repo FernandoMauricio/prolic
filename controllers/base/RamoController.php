@@ -39,12 +39,12 @@ class RamoController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
-        $searchModel = new RamoSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            $searchModel = new RamoSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             return $this->render('index', [
                 'searchModel' => $searchModel,
@@ -62,16 +62,16 @@ class RamoController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
-        $model = new Ramo();
+            $model = new Ramo();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Ramo cadastrado!</b>');
-            return $this->redirect(['index']);
-        }
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Segmento cadastrado!</b>');
+                return $this->redirect(['index']);
+            }
 
             return $this->render('create', [
                 'model' => $model,
@@ -90,15 +90,15 @@ class RamoController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
-        $model = $this->findModel($id);
+        } else {
+            $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Ramo atualizado!</b>');
-            return $this->redirect(['index']);
-        }
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Segmento atualizado!</b>');
+                return $this->redirect(['index']);
+            }
 
             return $this->render('update', [
                 'model' => $model,
@@ -139,18 +139,19 @@ class RamoController extends Controller
     public function AccessAllow()
     {
         $session = Yii::$app->session;
-        if (!isset($session['sess_codusuario']) 
-            && !isset($session['sess_codcolaborador']) 
-            && !isset($session['sess_codunidade']) 
-            && !isset($session['sess_nomeusuario']) 
-            && !isset($session['sess_coddepartamento']) 
-            && !isset($session['sess_codcargo']) 
-            && !isset($session['sess_cargo']) 
-            && !isset($session['sess_setor']) 
-            && !isset($session['sess_unidade']) 
-            && !isset($session['sess_responsavelsetor'])) 
-        {
-           return $this->redirect('https://portalsenac.am.senac.br');
+        if (
+            !isset($session['sess_codusuario'])
+            && !isset($session['sess_codcolaborador'])
+            && !isset($session['sess_codunidade'])
+            && !isset($session['sess_nomeusuario'])
+            && !isset($session['sess_coddepartamento'])
+            && !isset($session['sess_codcargo'])
+            && !isset($session['sess_cargo'])
+            && !isset($session['sess_setor'])
+            && !isset($session['sess_unidade'])
+            && !isset($session['sess_responsavelsetor'])
+        ) {
+            return $this->redirect('https://portalsenac.am.senac.br');
         }
     }
 }

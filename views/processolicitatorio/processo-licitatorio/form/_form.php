@@ -46,7 +46,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                     <!-- Seção 'Modalidade' -->
                     <div class="mb-4 border">
                         <div class="card-header bg-soft-custom text-white border-bottom">
-                            <h6 class="mb-0"><i class="bi bi-bar-chart-steps me-2"></i> Modalidade, Ramo, Recursos e Artigo</h6>
+                            <h6 class="mb-0"><i class="bi bi-bar-chart-steps me-2"></i> Modalidade, Segmento, Recursos e Artigo</h6>
                         </div>
                         <div class="card-body">
                             <?= $this->render('_modalidade', compact('form', 'model', 'valorlimite', 'artigo', 'recurso', 'comprador')) ?>

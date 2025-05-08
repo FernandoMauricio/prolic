@@ -13,10 +13,11 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="ramo-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); 
+    ?>
 
     <p>
-        <?= Html::a('Novo Ramo', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Novo Segmento', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -27,12 +28,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'ram_descricao',
             [
-                'class'=>'kartik\grid\BooleanColumn',
-                'attribute'=>'ram_status', 
-                'vAlign'=>'middle'
-            ], 
+                'class' => 'kartik\grid\BooleanColumn',
+                'attribute' => 'ram_status',
+                'vAlign' => 'middle'
+            ],
 
-            ['class' => 'yii\grid\ActionColumn','template' => '{update}'],
+            ['class' => 'yii\grid\ActionColumn', 'template' => '{update}'],
         ],
     ]); ?>
 </div>

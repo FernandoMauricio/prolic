@@ -99,7 +99,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                             'Recurso'    => $model->recursos->rec_descricao,
                             'Comprador'  => $model->comprador->comp_descricao,
                             'Modalidade' => $model->modalidadeValorlimite->modalidade->mod_descricao,
-                            'Ramo'       => $model->modalidadeValorlimite->ramo->ram_descricao,
+                            'Segmento'   => $model->modalidadeValorlimite->ramo->ram_descricao,
                         ];
                         foreach ($fields as $label => $value):
                             $display = ($value !== null && $value !== '') ? $value : '<span class="text-danger fst-italic">(não definido)</span>';

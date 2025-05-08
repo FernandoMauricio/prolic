@@ -77,14 +77,16 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                             </div>
                         <?php endforeach; ?>
 
-                        <!-- Destinos como full-width similar ao Artigo -->
+                        <!-- Destinos como badges em linha flexível -->
                         <div class="col-12">
                             <small class="text-muted">Destino(s)</small>
-                            <div class="d-flex align-items-center gap-2 fw-semibold">
+                            <div class="d-flex flex-wrap align-items-center gap-2 fw-semibold">
                                 <?php
-                                $dest = $model->getUnidades($model->prolic_destino);
-                                if ($dest) {
-                                    echo Html::encode($dest);
+                                $destinos = $model->getUnidades($model->prolic_destino);
+                                if ($destinos) {
+                                    foreach (explode(', ', $destinos) as $dest) {
+                                        echo Html::tag('span', Html::encode($dest), ['class' => 'badge bg-secondary fs-7 px-2 py-1 fw-light']);
+                                    }
                                 } else {
                                     echo '<span class="text-danger fst-italic">(não definido)</span>';
                                 }
@@ -115,8 +117,17 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                         <!-- Empresas Participantes -->
                         <div class="col-12">
                             <small class="text-muted">Empresas Participantes</small>
-                            <div class="fw-normal text-wrap">
-                                <?= nl2br(Html::encode($model->prolic_empresa ?: '(não definido)')) ?>
+                            <div class="d-flex flex-wrap align-items-center gap-2 fw-semibold">
+                                <?php
+                                $empresas = $model->prolic_empresa;
+                                if ($empresas) {
+                                    foreach (explode(', ', $empresas) as $emp) {
+                                        echo Html::tag('span', Html::encode($emp), ['class' => 'badge bg-secondary fs-7 px-2 py-2 fw-light']);
+                                    }
+                                } else {
+                                    echo '<span class="text-danger fst-italic">(não definido)</span>';
+                                }
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -170,9 +181,9 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                     </div>
                 </div>
                 <div class="card-footer small text-muted text-center">
-                    Certame: <?= Yii::$app->formatter->asDate($model->prolic_datacertame, 'php:d/m/Y') ?> |
-                    Devolução: <?= Yii::$app->formatter->asDate($model->prolic_datadevolucao, 'php:d/m/Y') ?> |
-                    Homologação: <?= Yii::$app->formatter->asDate($model->prolic_datahomologacao, 'php:d/m/Y') ?>
+                    Certame: <b><?= Yii::$app->formatter->asDate($model->prolic_datacertame, 'php:d/m/Y') ?> </b>|
+                    Devolução: <b><?= Yii::$app->formatter->asDate($model->prolic_datadevolucao, 'php:d/m/Y') ?> </b>|
+                    Homologação: <b><?= Yii::$app->formatter->asDate($model->prolic_datahomologacao, 'php:d/m/Y') ?></b>
                 </div>
             </div>
         </div>

@@ -27,3 +27,78 @@
     border-radius: 4px;
     font-size: 14px;
 }
+
+@media print {
+  /* --- reset geral e full-width --- */
+  @page { margin: 1cm; }
+  html, body {
+    margin: 0; padding: 0; width: 100%;
+  }
+  .container {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* --- esconder UI extras --- */
+  .btn-group,
+  .btn,
+  .breadcrumb,
+  .spinner-border,
+  nav,
+  header,
+  footer {
+    display: none !important;
+  }
+
+  /* --- título mais colado ao topo --- */
+  .processo-licitatorio-view > .row:first-child,
+  h1.fs-3 {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  /* --- cards limpos e bordas nítidas --- */
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #555 !important;
+    page-break-inside: avoid;
+    margin-bottom: 1rem !important;
+  }
+  .card-header {
+    background: none !important;
+    border-bottom: 1px solid #555 !important;
+    padding: .5rem 1rem !important;
+    font-size: 16pt !important;
+  }
+  .card-body {
+    padding: .5rem 1rem !important;
+  }
+
+  /* --- forçar duas colunas nas seções Complementares/Financeiro --- */
+  /* identifica a row que contém esses cards */
+  .card + .row.g-4 {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 1rem !important;
+  }
+  .card + .row.g-4 > .col-md-6 {
+    width: 48% !important;
+    flex: 0 0 auto !important;
+  }
+  /* fallback: cada seção ocupa 100% se não couber lado a lado */
+  @media print and (max-width: 800pt) {
+    .card + .row.g-4 {
+      flex-wrap: wrap !important;
+    }
+    .card + .row.g-4 > .col-md-6 {
+      width: 100% !important;
+    }
+  }
+    /* Garantir que badges mantenham a cor de fundo na impressão */
+  .badge {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

@@ -36,6 +36,10 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
             <?= Html::button('🖨 Capa', ['value' => Url::to(['/capas/gerar-relatorio', 'id' => $model->id]), 'class' => 'btn btn-warning', 'id' => 'modalButton2']) ?>
         </div>
     </div>
+    <?= Html::button('<i class="bi bi-printer me-1"></i> Imprimir Página', [
+        'class'   => 'btn btn-outline-secondary ms-2',
+        'onclick' => 'window.print()',
+    ]) ?>
 
     <!-- Modais -->
     <?php Modal::begin(['title' => '<h5>Observação - Processo ' . $model->id . '</h5>', 'id' => 'modal', 'size' => 'modal-lg']); ?>
@@ -78,11 +82,20 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                             </div>
                         <?php endforeach; ?>
 
-                        <!-- Destinos estilo Artigo, linha única -->
+                        <!-- Destinos como badges em linha flexível -->
                         <div class="col-12">
                             <small class="text-muted">Destino(s)</small>
-                            <div class="d-flex align-items-center gap-2 fw-semibold text-wrap">
-                                <?= Html::encode($model->getUnidades($model->prolic_destino) ?: '(não definido)') ?>
+                            <div class="d-flex flex-wrap align-items-center gap-2 fw-semibold">
+                                <?php
+                                $destinos = $model->getUnidades($model->prolic_destino);
+                                if ($destinos) {
+                                    foreach (explode(', ', $destinos) as $dest) {
+                                        echo Html::tag('span', Html::encode($dest), ['class' => 'badge bg-secondary fs-7 px-2 py-1 fw-light']);
+                                    }
+                                } else {
+                                    echo '<span class="text-danger fst-italic">(não definido)</span>';
+                                }
+                                ?>
                             </div>
                         </div>
 

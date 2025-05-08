@@ -10,7 +10,16 @@ use yii\web\JsExpression;
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
 
 $sumUrl = Url::toRoute(['/processolicitatorio/processo-licitatorio/get-sum-limite']);
+$artigoItems = [];
+foreach ($artigo as $a) {
+    $artigoItems[] = [
+        'id'   => $a->id,
+        'text' => $a->art_descricao,
+        'type' => $a->art_tipo,
+    ];
+}
 ?>
+
 
 <div class="row g-3">
     <div class="col-lg-6">
@@ -30,10 +39,41 @@ $sumUrl = Url::toRoute(['/processolicitatorio/processo-licitatorio/get-sum-limit
     </div>
 
     <div class="col-lg-12">
-        <?= $form->field($model, 'artigo_id')->widget(Select2::class, [
+        <?= $form->field($model, 'artigo_id', [
+            'template' => "{label} " .
+                "<span id=\"artigo-type-badge\" class=\"badge d-none ms-2 align-middle\"></span>\n" .
+                "{input}\n{error}\n{hint}",
+        ])->widget(Select2::class, [
             'data' => ArrayHelper::map($artigo, 'id', 'art_descricao'),
-            'options' => ['placeholder' => 'Informe o Artigo...'],
-            'pluginOptions' => ['allowClear' => true],
+            'options' => [
+                'id' => 'artigo-id',
+                'placeholder' => 'Informe o Artigo…',
+            ],
+            'pluginOptions' => [
+                'allowClear' => true,
+                'data' => array_map(function ($a) {
+                    return [
+                        'id'   => $a->id,
+                        'text' => $a->art_descricao,
+                        'type' => $a->art_tipo,  // "Valor" ou "Situação"
+                    ];
+                }, $artigo),
+                'templateResult'    => new JsExpression('function(item){ return item.text; }'),
+                'templateSelection' => new JsExpression('function(item){ return item.text; }'),
+            ],
+            'pluginEvents' => [
+                "select2:select"   => new JsExpression(<<<JS
+                    function(e) {
+                      var tipo = e.params.data.type;
+                      var badge = $("#artigo-type-badge");
+                      badge
+                        .removeClass("d-none badge-success badge-warning")
+                        .addClass(tipo === "Valor" ? "badge-success" : "badge-warning")
+                        .text(tipo);
+                    }
+                JS),
+                "select2:unselect" => new JsExpression('function(){ $("#artigo-type-badge").addClass("d-none"); }'),
+            ],
         ]) ?>
     </div>
 
@@ -114,3 +154,33 @@ $this->registerJsFile('https://cdn.jsdelivr.net/npm/inputmask@5.0.9/dist/inputma
         }).mask("#processolicitatorio-valor_limite, #processolicitatorio-valor_limite_apurado, #processolicitatorio-valor_saldo");
     });
 </script>
+
+<?php
+$js = <<<JS
+(function(){
+  var \$sel   = \$('#artigo-id');
+  var \$badge = \$('#artigo-type-badge');
+
+  function updateBadge(data){
+    if (data && data.length){
+      var tipo = data[0].type;
+      \$badge
+        .removeClass('d-none badge-success badge-warning')
+        .addClass(tipo === 'Valor' ? 'badge-success' : 'badge-warning')
+        .text(tipo);
+    } else {
+      \$badge.addClass('d-none');
+    }
+  }
+
+  // dispara sempre que muda seleção
+  \$sel.on('select2:select select2:unselect', function(){
+    updateBadge(\$sel.select2('data'));
+  });
+
+  // dispara uma vez na carga da página
+  updateBadge(\$sel.select2('data'));
+})();
+JS;
+$this->registerJs($js);
+?>

@@ -470,7 +470,7 @@ class ProcessoLicitatorioController extends Controller
                 ->all(),
 
             'artigo' => Artigo::find()
-                ->select(['id, CONCAT("(",art_tipo,")", " - ", art_descricao) AS art_descricao'])
+                ->select(['id', 'art_descricao', 'art_tipo'])
                 ->andWhere(['!=', 'art_homologacaousuario', ''])
                 ->orderBy(['art_descricao' => SORT_DESC])
                 ->all(),

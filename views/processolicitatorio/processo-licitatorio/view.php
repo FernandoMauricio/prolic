@@ -46,7 +46,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
     <?php Modal::end(); ?>
 
     <div class="row g-4">
-        <!-- Lado esquerdo: Dados Principais, Itens e Financeiro -->
+        <!-- Coluna Esquerda -->
         <div class="col-lg-8">
             <!-- Detalhes do Processo -->
             <div class="card shadow-sm mb-4">
@@ -54,45 +54,71 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                 <div class="card-body">
                     <div class="row g-3">
                         <?php
-                        $items = [
-                            'Ano'         => $model->ano->an_ano,
-                            'Código'      => $model->prolic_sequenciamodal . '/' . $model->ano->an_ano,
-                            'Situação'    => Html::tag('span', Html::encode($model->situacao->sit_descricao), ['class' => 'badge bg-info']),
-                            'Data Proc.'  => Yii::$app->formatter->asDate($model->prolic_dataprocesso, 'php:d/m/Y'),
-                            'Recurso'     => Html::encode($model->recursos->rec_descricao),
-                            'Comprador'   => Html::encode($model->comprador->comp_descricao),
+                        // Itens principais sem Destinos
+                        $fields = [
+                            'Ano'        => $model->ano->an_ano,
+                            'Código'     => $model->prolic_sequenciamodal . '/' . $model->ano->an_ano,
+                            'Situação'   => Html::tag('span', Html::encode($model->situacao->sit_descricao), ['class' => 'badge bg-success']),
+                            'Data Proc.' => Yii::$app->formatter->asDate($model->prolic_dataprocesso, 'php:d/m/Y'),
+                            'Recurso'    => $model->recursos->rec_descricao,
+                            'Comprador'  => $model->comprador->comp_descricao,
+                            'Modalidade' => $model->modalidadeValorlimite->modalidade->mod_descricao,
+                            'Ramo'       => $model->modalidadeValorlimite->ramo->ram_descricao,
                         ];
-                        foreach ($items as $label => $value): ?>
+                        foreach ($fields as $label => $value):
+                            $display = ($value !== null && $value !== '') ? $value : '<span class="text-danger fst-italic">(não definido)</span>';
+                            $raw = ($label === 'Situação');
+                        ?>
                             <div class="col-6 col-md-4">
                                 <small class="text-muted"><?= $label ?></small>
-                                <div class="fw-semibold"><?= $value ?></div>
+                                <div class="fw-semibold">
+                                    <?= $raw ? $display : Html::encode(strip_tags($display)) ?>
+                                </div>
                             </div>
                         <?php endforeach; ?>
 
+                        <!-- Destinos como full-width similar ao Artigo -->
                         <div class="col-12">
                             <small class="text-muted">Destino(s)</small>
-                            <div class="fw-normal text-wrap"><?= nl2br(Html::encode(str_replace(', ', "
-", $model->getUnidades($model->prolic_destino)))) ?></div>
-                        </div>
-
-                        <div class="col-12">
-                            <small class="text-muted">Artigo</small>
-                            <div class="fw-normal d-flex align-items-center gap-2">
-                                <?= Html::encode($model->artigo->art_descricao) ?>
-                                <?= Html::tag('span', Html::encode($model->artigo->art_tipo), ['class' => 'badge ' . ($model->artigo->art_tipo == 'Valor' ? 'bg-success' : 'bg-danger')]) ?>
+                            <div class="d-flex align-items-center gap-2 fw-semibold">
+                                <?php
+                                $dest = $model->getUnidades($model->prolic_destino);
+                                if ($dest) {
+                                    echo Html::encode($dest);
+                                } else {
+                                    echo '<span class="text-danger fst-italic">(não definido)</span>';
+                                }
+                                ?>
                             </div>
                         </div>
 
+                        <!-- Artigo -->
+                        <div class="col-12">
+                            <small class="text-muted">Artigo</small>
+                            <div class="d-flex align-items-center gap-2 fw-semibold">
+                                <?= Html::encode($model->artigo->art_descricao ?: '(não definido)') ?>
+                                <?= Html::tag('span', Html::encode($model->artigo->art_tipo ?: '(não definido)'), ['class' => 'badge ' . ($model->artigo->art_tipo === 'Valor' ? 'bg-success' : 'bg-danger')]) ?>
+                            </div>
+                        </div>
+
+                        <!-- Motivo -->
                         <div class="col-12">
                             <small class="text-muted">Motivo</small>
-                            <div class="fw-normal text-wrap"><?= nl2br(Html::encode($model->prolic_motivo)) ?></div>
+                            <div class="fw-normal text-wrap">
+                                <?= $model->prolic_motivo
+                                    ? nl2br(Html::encode($model->prolic_motivo))
+                                    : '<span class="text-danger fst-italic">(não definido)</span>';
+                                ?>
+                            </div>
                         </div>
 
+                        <!-- Empresas Participantes -->
                         <div class="col-12">
                             <small class="text-muted">Empresas Participantes</small>
-                            <div class="fw-normal text-wrap"><?= nl2br(Html::encode($model->prolic_empresa)) ?></div>
+                            <div class="fw-normal text-wrap">
+                                <?= nl2br(Html::encode($model->prolic_empresa ?: '(não definido)')) ?>
+                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -100,18 +126,20 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
             <!-- Itens Complementares -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light fw-bold">Itens Complementares</div>
-                <div class="card-body">
-                    <div class="row g-3 text-center">
+                <div class="card-body text-center">
+                    <div class="row g-3">
                         <?php
                         $comp = [
                             'Cotações'        => $model->prolic_cotacoes,
                             'Centro de Custo' => $model->prolic_centrocusto,
                             'Despesa'         => $model->prolic_elementodespesa,
                         ];
-                        foreach ($comp as $k => $v): ?>
+                        foreach ($comp as $k => $v):
+                            $displayComp = ($v !== null && $v !== '') ? $v : '<span class="text-danger fst-italic">(não definido)</span>';
+                        ?>
                             <div class="col-md-4">
                                 <small class="text-muted d-block"><?= $k ?></small>
-                                <div class="fw-semibold"><?= Html::encode($v ?: '0,00') ?></div>
+                                <div class="fw-semibold"><?= strip_tags($displayComp) ?></div>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -121,8 +149,8 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
             <!-- Financeiro -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light fw-bold">Financeiro</div>
-                <div class="card-body">
-                    <div class="row g-3 text-center">
+                <div class="card-body text-center">
+                    <div class="row g-3">
                         <?php
                         $fin = [
                             'Estimado' => $model->prolic_valorestimado,

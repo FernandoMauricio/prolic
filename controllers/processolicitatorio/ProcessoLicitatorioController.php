@@ -294,7 +294,7 @@ class ProcessoLicitatorioController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         if (!empty($dados)) {
-            $html = $this->renderPartial('_requisicao-preview', ['dados' => $dados]);
+            $html = $this->renderPartial('form/_requisicao-preview', ['dados' => $dados]);
             return ['success' => true, 'html' => $html, 'numeroRequisicao' => $numeroRequisicao];
         }
 

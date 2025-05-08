@@ -8,7 +8,7 @@ use yii\helpers\Html;
 ?>
 <div class="processo-licitatorio-create">
     <h1><?= Html::encode($this->title) ?></h1>
-    <?= $this->render('_gerar-processo-licitatorio', [
+    <?= $this->render('form/_gerar-processo-licitatorio', [
         'model'       => $model,
         'valorlimite' => $valorlimite,
         'artigo'      => $artigo,

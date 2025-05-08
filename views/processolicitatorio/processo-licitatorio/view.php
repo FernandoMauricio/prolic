@@ -135,7 +135,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                             <small class="text-muted">Artigo</small>
                             <div class="d-flex align-items-center gap-2 fw-semibold">
                                 <?= Html::encode($model->artigo->art_descricao ?: '(não definido)') ?>
-                                <?= Html::tag('span', Html::encode($model->artigo->art_tipo ?: '(não definido)'), ['class' => 'badge ' . ($model->artigo->art_tipo === 'Valor' ? 'bg-success' : 'bg-danger')]) ?>
+                                <?= Html::tag('span', Html::encode($model->artigo->art_tipo ?: '(não definido)'), ['class' => 'badge ' . ($model->artigo->art_tipo === 'Valor' ? 'bg-success' : 'bg-info')]) ?>
                             </div>
                         </div>
 
@@ -170,29 +170,6 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                 </div>
             </div>
 
-            <!-- Itens Complementares -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light fw-bold"><i class="bi bi-list-columns me-1"></i> Itens Complementares</div>
-                <div class="card-body text-center">
-                    <div class="row g-3">
-                        <?php
-                        $comp = [
-                            'Cotações'        => $model->prolic_cotacoes,
-                            'Centro de Custo' => $model->prolic_centrocusto,
-                            'Despesa'         => $model->prolic_elementodespesa,
-                        ];
-                        foreach ($comp as $k => $v):
-                            $displayComp = ($v !== null && $v !== '') ? $v : '<span class="text-danger fst-italic">(não definido)</span>';
-                        ?>
-                            <div class="col-md-4">
-                                <small class="text-muted d-block"><?= $k ?></small>
-                                <div class="fw-semibold"><?= strip_tags($displayComp) ?></div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </div>
-
             <!-- Financeiro -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light fw-bold"><i class="bi bi-currency-dollar me-1"></i> Financeiro</div>
@@ -209,6 +186,9 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                             // Se valor efetivo for menor que estimado, destaque em verde
                             if ($k === 'Efetivo' && $valor < $model->prolic_valorestimado) {
                                 $cardClass = 'bg-success text-white';
+                                $labelClass = 'text-white';
+                            } else if ($k === 'Efetivo' && $valor > $model->prolic_valorestimado) {
+                                $cardClass = 'bg-danger text-white';
                                 $labelClass = 'text-white';
                             } else {
                                 $cardClass = 'bg-light';
@@ -230,6 +210,29 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                     Certame: <strong><?= Yii::$app->formatter->asDate($model->prolic_datacertame, 'php:d/m/Y') ?></strong> |
                     Devolução: <strong><?= Yii::$app->formatter->asDate($model->prolic_datadevolucao, 'php:d/m/Y') ?></strong> |
                     Homologação: <strong><?= Yii::$app->formatter->asDate($model->prolic_datahomologacao, 'php:d/m/Y') ?></strong>
+                </div>
+            </div>
+
+            <!-- Itens Complementares -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light fw-bold"><i class="bi bi-list-columns me-1"></i> Itens Complementares</div>
+                <div class="card-body text-center">
+                    <div class="row g-3">
+                        <?php
+                        $comp = [
+                            'Cotações'        => $model->prolic_cotacoes,
+                            'Centro de Custo' => $model->prolic_centrocusto,
+                            'Despesa'         => $model->prolic_elementodespesa,
+                        ];
+                        foreach ($comp as $k => $v):
+                            $displayComp = ($v !== null && $v !== '') ? $v : '<span class="text-danger fst-italic">(não definido)</span>';
+                        ?>
+                            <div class="col-md-4">
+                                <small class="text-muted d-block"><?= $k ?></small>
+                                <div class="fw-semibold"><?= strip_tags($displayComp) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
 

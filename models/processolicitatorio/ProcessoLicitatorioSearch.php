@@ -63,13 +63,22 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
         $dataProvider->sort->attributes['modalidade'] = [
             'asc' => ['modalidade.mod_descricao' => SORT_ASC],
             'desc' => ['modalidade.mod_descricao' => SORT_DESC],
+            'label' => 'Modalidade',
         ];
+
+        if (!empty($this->prolic_dataprocesso)) {
+            $d = \DateTime::createFromFormat('d/m/Y', $this->prolic_dataprocesso);
+            if ($d) {
+                $query->andFilterWhere([
+                    'prolic_dataprocesso' => $d->format('Y-m-d'),
+                ]);
+            }
+        }
 
         // grid filtering conditions
         $query->andFilterWhere([
             'processo_licitatorio.id' => $this->id,
             'prolic_codprocesso' => $this->prolic_codprocesso,
-            'prolic_dataprocesso' => $this->prolic_dataprocesso,
             'prolic_codmxm' => $this->prolic_codmxm,
             'modalidade_valorlimite_id' => $this->modalidade_valorlimite_id,
             'prolic_sequenciamodal' => $this->prolic_sequenciamodal,

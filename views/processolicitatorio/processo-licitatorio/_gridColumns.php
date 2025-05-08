@@ -24,25 +24,39 @@ return [
         'groupEvenCssClass' => 'kv-grouped-row', // mesma coisa aqui
         'value' => fn($model) => $model->ano->an_ano,
         'filterType' => GridView::FILTER_SELECT2,
-        'headerOptions' => ['style' => 'display:none'], // não mostrar o cabeçalho da coluna
     ],
 
     [
         'attribute' => 'prolic_dataprocesso',
-        'format' => ['date', 'php:d/m/Y'],
+        'format'    => ['date', 'php:d/m/Y'],
         'filterType' => GridView::FILTER_DATE,
-        'width' => '120px',
+        'filterWidgetOptions' => [
+            'pluginOptions' => [
+                'autoclose'     => true,
+                'format'        => 'dd/mm/yyyy',
+                'todayHighlight' => true,
+            ],
+        ],
+        'filterInputOptions' => [
+            'placeholder' => 'dd/mm/aaaa',
+            'class'       => 'form-control'
+        ],
+        'width' => '350px',
         'hAlign' => 'center',
     ],
 
     [
-        'attribute' => 'modalidade',
-        'value' => fn($model) => $model->modalidadeValorlimite->modalidade->mod_descricao,
-        'filterType' => GridView::FILTER_SELECT2,
-        'filter' => ArrayHelper::map(Modalidade::find()->where(['mod_status' => 1])->asArray()->all(), 'id', 'mod_descricao'),
+        'attribute'           => 'modalidade',
+        'value'               => fn($model) => $model->modalidadeValorlimite->modalidade->mod_descricao,
+        'filterType'          => GridView::FILTER_SELECT2,
+        'filter'              => ArrayHelper::map(
+            Modalidade::find()->where(['mod_status' => 1])->asArray()->all(),
+            'id',
+            'mod_descricao'
+        ),
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-        'filterInputOptions' => ['placeholder' => 'Modalidade...'],
-        'width' => '5%'
+        'filterInputOptions'  => ['placeholder' => 'Modalidade...'],
+        'width'               => '5%',
     ],
 
     [

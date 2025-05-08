@@ -150,9 +150,9 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                             </div>
                         </div>
 
-                        <!-- Empresas Participantes -->
+                        <!-- Empresa(s) Participante(s) -->
                         <div class="col-12">
-                            <small class="text-muted">Empresas Participantes</small>
+                            <small class="text-muted">Empresa(s) Participante(s)</small>
                             <div class="d-flex flex-wrap align-items-center gap-2 fw-semibold">
                                 <?php
                                 $empresas = $model->prolic_empresa;

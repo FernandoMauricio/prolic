@@ -93,10 +93,10 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                         </div>
                     </div>
 
-                    <!-- Seção 'Empresas Participantes' -->
+                    <!-- Seção 'Empresa(s) Participante(s)' -->
                     <div class="mb-4 border">
                         <div class="card-header bg-soft-custom text-white border-bottom">
-                            <h6 class="mb-0"><i class="bi bi-buildings me-2"></i> Empresas Participantes</h6>
+                            <h6 class="mb-0"><i class="bi bi-buildings me-2"></i> Empresa(s) Participante(s)</h6>
                         </div>
                         <div class="card-body">
                             <?= $this->render('_empresas', compact('form', 'model')) ?>

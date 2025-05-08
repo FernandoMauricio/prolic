@@ -1,370 +1,163 @@
 <?php
+// views/processolicitatorio/view.php
 
 use yii\helpers\Html;
-use kartik\detail\DetailView;
 use yii\bootstrap5\Modal;
 use yii\helpers\Url;
+use yii\web\View;
 
-use app\models\processolicitatorio\ProcessoLicitatorio;
-use app\models\processolicitatorio\Observacoes;
-
-/* @var $this yii\web\View */
+/* @var $this View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
 
-$this->title = $model->prolic_codprocesso;
-$this->params['breadcrumbs'][] = ['label' => 'Listagem de Processo Licitatórios', 'url' => ['index']];
+$this->title = $model->prolic_sequenciamodal . '/' . $model->ano->an_ano;
+$this->params['breadcrumbs'][] = ['label' => 'Processos Licitatórios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+// Estilos e scripts
+$this->registerCssFile('@web/css/requisicao-preview.css', ['depends' => [\yii\bootstrap5\BootstrapAsset::class]]);
+$this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+$cods = is_array($model->prolic_codmxm)
+    ? $model->prolic_codmxm
+    : (strlen($model->prolic_codmxm) ? explode(';', $model->prolic_codmxm) : []);
+$this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::POS_HEAD);
 ?>
-<div class="processo-licitatorio-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('<span class="glyphicon glyphicon-arrow-left"></span> Retornar', ['index'], ['class' => 'btn btn-default']) ?>
-        <?= Html::a('Atualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::button('<span class="glyphicon glyphicon-tags"> </span> Incluir Observação', ['value' => Url::to(['processolicitatorio/processo-licitatorio/observacoes', 'id' => $model->id]), 'class' => 'btn btn-success', 'id' => 'modalButton']) ?>
-        <?= Html::button('<span class="glyphicon glyphicon-print"> </span> Gerar Capa', ['value' => Url::to(['processolicitatorio/capas/gerar-relatorio', 'id' => $model->id]), 'class' => 'btn btn-warning pull-right', 'id' => 'modalButton2']) ?>
-    </p>
-
-    <?php
-    Modal::begin([
-        'title' => '<h3>Incluir Observação ' . '<small> Processo Licitatório ' . $model->id . '</small></h3>',
-        'id' => 'modal',
-        'size' => 'modal-lg',
-    ]);
-
-    echo "<div id='modalContent'></div>";
-
-    Modal::end();
-    ?>
-
-    <?php
-    Modal::begin([
-        'title' => '<h3>Imprimir Capa ' . '<small> Processo Licitatório ' . $model->id . '</small></h3>',
-        'id' => 'modal2',
-        'size' => 'modal-lg',
-    ]);
-
-    echo "<div id='modalContent2'></div>";
-
-    Modal::end();
-    ?>
-
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> DETALHES DO PROCESSO LICITATÓRIO</h3>
+<div class="processo-licitatorio-view container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fs-3 fw-bold text-primary d-flex align-items-center gap-2 mb-0">
+            <i class="bi bi-file-earmark-text fs-2"></i>
+            Acompanhamento de <span class="text-dark"><?= Html::encode($this->title) ?></span>
+        </h1>
+        <div class="btn-group">
+            <?= Html::a('← Voltar', ['index'], ['class' => 'btn btn-outline-secondary']) ?>
+            <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+            <?= Html::button('📝 Obs', ['value' => Url::to(['observacoes', 'id' => $model->id]), 'class' => 'btn btn-success', 'id' => 'modalButton']) ?>
+            <?= Html::button('🖨 Capa', ['value' => Url::to(['/capas/gerar-relatorio', 'id' => $model->id]), 'class' => 'btn btn-warning', 'id' => 'modalButton2']) ?>
         </div>
-        <div id="rootwizard" class="tabbable tabs-left">
-            <ul>
-                <li><a href="#tab1" data-toggle="tab"><span class="glyphicon glyphicon-file"></span> Processo Licitatório</a></li>
-                <li><a href="#tab2" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> Observações <?= Observacoes::getCountObservacoes($model->id) > 0 ? "<span class='badge badge-danger'>" . Observacoes::getCountObservacoes($model->id) . "</span>" : '' ?></a></li>
-            </ul>
+    </div>
 
-            <div class="tab-content"><br>
-                <div class="tab-pane" id="tab1">
-                    <?php
-                    $attributes = [
-                        [
-                            'group' => true,
-                            'label' => 'SEÇÃO 1: Informações',
-                            'rowOptions' => ['class' => 'info']
-                        ],
+    <!-- Modais -->
+    <?php Modal::begin(['title' => '<h5>Observação - Processo ' . $model->id . '</h5>', 'id' => 'modal', 'size' => 'modal-lg']); ?>
+    <div id="modalContent"></div>
+    <?php Modal::end(); ?>
+    <?php Modal::begin(['title' => '<h5>Capa - Processo ' . $model->id . '</h5>', 'id' => 'modal2', 'size' => 'modal-lg']); ?>
+    <div id="modalContent2"></div>
+    <?php Modal::end(); ?>
 
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'ano_id',
-                                    'value' => $model->ano->an_ano,
-                                    'displayOnly' => true,
-                                ],
+    <div class="row g-4">
+        <!-- Lado esquerdo: Dados Principais, Itens e Financeiro -->
+        <div class="col-lg-8">
+            <!-- Detalhes do Processo -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light fw-bold">Detalhes do Processo</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <?php
+                        $items = [
+                            'Ano'         => $model->ano->an_ano,
+                            'Código'      => $model->prolic_sequenciamodal . '/' . $model->ano->an_ano,
+                            'Situação'    => Html::tag('span', Html::encode($model->situacao->sit_descricao), ['class' => 'badge bg-info']),
+                            'Data Proc.'  => Yii::$app->formatter->asDate($model->prolic_dataprocesso, 'php:d/m/Y'),
+                            'Recurso'     => Html::encode($model->recursos->rec_descricao),
+                            'Comprador'   => Html::encode($model->comprador->comp_descricao),
+                        ];
+                        foreach ($items as $label => $value): ?>
+                            <div class="col-6 col-md-4">
+                                <small class="text-muted"><?= $label ?></small>
+                                <div class="fw-semibold"><?= $value ?></div>
+                            </div>
+                        <?php endforeach; ?>
 
-                                [
-                                    'attribute' => 'prolic_codmxm',
-                                    'displayOnly' => true
-                                ],
+                        <div class="col-12">
+                            <small class="text-muted">Destino(s)</small>
+                            <div class="fw-normal text-wrap"><?= nl2br(Html::encode(str_replace(', ', "
+", $model->getUnidades($model->prolic_destino)))) ?></div>
+                        </div>
 
-                                [
-                                    'attribute' => 'prolic_sequenciamodal',
-                                    'value' => $model->prolic_sequenciamodal . '/' . $model->ano->an_ano,
-                                    'displayOnly' => true
-                                ],
+                        <div class="col-12">
+                            <small class="text-muted">Artigo</small>
+                            <div class="fw-normal d-flex align-items-center gap-2">
+                                <?= Html::encode($model->artigo->art_descricao) ?>
+                                <?= Html::tag('span', Html::encode($model->artigo->art_tipo), ['class' => 'badge ' . ($model->artigo->art_tipo == 'Valor' ? 'bg-success' : 'bg-danger')]) ?>
+                            </div>
+                        </div>
 
-                                [
-                                    'attribute' => 'situacao_id',
-                                    'value' => $model->situacao->sit_descricao,
-                                    'displayOnly' => true,
-                                    'labelColOptions' => ['style' => 'width:0%'],
-                                ],
+                        <div class="col-12">
+                            <small class="text-muted">Motivo</small>
+                            <div class="fw-normal text-wrap"><?= nl2br(Html::encode($model->prolic_motivo)) ?></div>
+                        </div>
 
-                            ],
-                        ],
+                        <div class="col-12">
+                            <small class="text-muted">Empresas Participantes</small>
+                            <div class="fw-normal text-wrap"><?= nl2br(Html::encode($model->prolic_empresa)) ?></div>
+                        </div>
 
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'prolic_destino',
-                                    'format' => 'ntext',
-                                    'value' => ProcessoLicitatorio::getUnidades($model->prolic_destino),
-                                    'type' => DetailView::INPUT_TEXTAREA,
-                                    'options' => ['rows' => 4]
-                                ]
-                            ],
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'prolic_objeto',
-                                    'format' => 'ntext',
-                                    'value' => $model->prolic_objeto,
-                                    'type' => DetailView::INPUT_TEXTAREA,
-                                    'options' => ['rows' => 4]
-                                ]
-                            ],
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'modalidade',
-                                    'value' => $model->modalidadeValorlimite->modalidade->mod_descricao,
-                                    'displayOnly' => true,
-                                ],
-
-                                [
-                                    'attribute' => 'ramo',
-                                    'value' => $model->modalidadeValorlimite->ramo->ram_descricao,
-                                    'displayOnly' => true,
-                                ],
-
-                                [
-                                    'attribute' => 'artigo_id',
-                                    'value' => $model->artigo->art_descricao,
-                                    'displayOnly' => true,
-                                ],
-                            ],
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'prolic_cotacoes',
-                                    'value' => $model->prolic_cotacoes,
-                                    'displayOnly' => true,
-                                ],
-
-                                [
-                                    'attribute' => 'prolic_centrocusto',
-                                    'value' => $model->prolic_centrocusto,
-                                    'displayOnly' => true,
-                                    'labelColOptions' => ['style' => 'width:0%'],
-                                ],
-
-                                [
-                                    'attribute' => 'prolic_elementodespesa',
-                                    'value' => $model->prolic_elementodespesa,
-                                    'displayOnly' => true,
-                                ],
-
-                                [
-                                    'attribute' => 'recursos_id',
-                                    'value' => $model->recursos->rec_descricao,
-                                    'displayOnly' => true,
-                                ],
-                            ],
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'label' => 'Empresa(s)',
-                                    'attribute' => 'prolic_empresa',
-                                    'value' => $model->prolic_empresa,
-                                    'displayOnly' => true,
-                                ]
-                            ],
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'prolic_motivo',
-                                    'format' => 'ntext',
-                                    'value' => $model->prolic_motivo,
-                                    'type' => DetailView::INPUT_TEXTAREA,
-                                    'options' => ['rows' => 4]
-                                ]
-                            ],
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'comprador_id',
-                                    'value' => $model->comprador->comp_descricao,
-                                    'displayOnly' => true,
-                                ],
-                            ],
-                        ],
-
-                        [
-                            'group' => true,
-                            'label' => 'SEÇÃO 2: Informações Financeiras',
-                            'rowOptions' => ['class' => 'info']
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'prolic_valorestimado',
-                                    'label' => 'Valor Estimado (R$)',
-                                    'format' => ['decimal', 2],
-                                    'inputContainer' => ['class' => 'col-sm-6'],
-                                ],
-                            ],
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'prolic_valoraditivo',
-                                    'label' => 'Valor Aditivo (R$)',
-                                    'format' => ['decimal', 2],
-                                    'inputContainer' => ['class' => 'col-sm-6'],
-                                ],
-                            ],
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'prolic_valorefetivo',
-                                    'label' => 'Valor Efetivo (R$)',
-                                    'format' => ['decimal', 2],
-                                    'inputContainer' => ['class' => 'col-sm-6'],
-                                ],
-                            ],
-                        ],
-
-                        [
-                            'group' => true,
-                            'label' => 'SEÇÃO 3: Datas',
-                            'rowOptions' => ['class' => 'info']
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'prolic_datacertame',
-                                    'format' => ['date', 'php:d/m/Y'],
-                                    'value' => $model->prolic_datacertame,
-                                    'displayOnly' => true,
-                                ],
-
-                                [
-                                    'attribute' => 'prolic_datadevolucao',
-                                    'format' => ['date', 'php:d/m/Y'],
-                                    'value' => $model->prolic_datadevolucao,
-                                    'displayOnly' => true,
-                                ],
-
-                                [
-                                    'attribute' => 'prolic_datahomologacao',
-                                    'format' => ['date', 'php:d/m/Y'],
-                                    'value' => $model->prolic_datahomologacao,
-                                    'displayOnly' => true,
-                                ],
-
-                            ],
-                        ],
-
-                        [
-                            'group' => true,
-                            'label' => 'SEÇÃO 4: Auditoria',
-                            'rowOptions' => ['class' => 'info']
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'prolic_usuariocriacao',
-                                    'value' => $model->prolic_usuariocriacao,
-                                    'displayOnly' => true,
-                                ],
-
-                                [
-                                    'attribute' => 'prolic_datacriacao',
-                                    'format' => ['date', 'php:d/m/Y'],
-                                    'value' => $model->prolic_datacriacao,
-                                    'displayOnly' => true,
-                                ],
-                            ],
-                        ],
-
-                        [
-                            'columns' => [
-                                [
-                                    'attribute' => 'prolic_usuarioatualizacao',
-                                    'value' => $model->prolic_usuarioatualizacao,
-                                    'displayOnly' => true,
-                                ],
-
-                                [
-                                    'attribute' => 'prolic_dataatualizacao',
-                                    'format' => ['date', 'php:d/m/Y'],
-                                    'value' => $model->prolic_dataatualizacao,
-                                    'displayOnly' => true,
-                                ],
-                            ],
-                        ],
-
-                    ];
-
-                    echo DetailView::widget([
-                        'model' => $model,
-                        'condensed' => true,
-                        'hover' => true,
-                        'mode' => DetailView::MODE_VIEW,
-                        'attributes' => $attributes,
-                    ]);
-
-                    ?>
+                    </div>
                 </div>
-                <div class="tab-pane" id="tab2">
-                    <table class="table table-condensed table-hover">
-                        <thead>
-                            <tr>
-                                <th>Observação</th>
-                                <th>Usuário</th>
-                                <th>Data</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($model->observacoes as $observacao): ?>
-                                <tr>
-                                    <td><?= $observacao->obs_descricao ?></td>
-                                    <td><?= $observacao->obs_usuariocriacao ?></td>
-                                    <td><?= date('d/m/Y', strtotime($observacao->obs_datacriacao)); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+            </div>
+
+            <!-- Itens Complementares -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light fw-bold">Itens Complementares</div>
+                <div class="card-body">
+                    <div class="row g-3 text-center">
+                        <?php
+                        $comp = [
+                            'Cotações'        => $model->prolic_cotacoes,
+                            'Centro de Custo' => $model->prolic_centrocusto,
+                            'Despesa'         => $model->prolic_elementodespesa,
+                        ];
+                        foreach ($comp as $k => $v): ?>
+                            <div class="col-md-4">
+                                <small class="text-muted d-block"><?= $k ?></small>
+                                <div class="fw-semibold"><?= Html::encode($v ?: '0,00') ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financeiro -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light fw-bold">Financeiro</div>
+                <div class="card-body">
+                    <div class="row g-3 text-center">
+                        <?php
+                        $fin = [
+                            'Estimado' => $model->prolic_valorestimado,
+                            'Aditivo'  => $model->prolic_valoraditivo,
+                            'Efetivo'  => $model->prolic_valorefetivo,
+                        ];
+                        foreach ($fin as $k => $v):
+                            $valor = ($v !== null && $v !== '') ? $v : 0.00;
+                        ?>
+                            <div class="col-md-4">
+                                <div class="bg-light border rounded p-2">
+                                    <small class="text-muted d-block"><?= $k ?></small>
+                                    <div class="fw-semibold">R$ <?= Yii::$app->formatter->asDecimal($valor, 2) ?></div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="card-footer small text-muted text-center">
+                    Certame: <?= Yii::$app->formatter->asDate($model->prolic_datacertame, 'php:d/m/Y') ?> |
+                    Devolução: <?= Yii::$app->formatter->asDate($model->prolic_datadevolucao, 'php:d/m/Y') ?> |
+                    Homologação: <?= Yii::$app->formatter->asDate($model->prolic_datahomologacao, 'php:d/m/Y') ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna Direita: Requisições -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light fw-bold"><i class="bi bi-list-ul me-1"></i> Requisições</div>
+                <div class="card-body position-relative" id="requisicao-preview">
+                    <div id="requisicao-spinner" class="spinner-border text-primary position-absolute top-50 start-50 translate-middle d-none" role="status"></div>
+                    <div class="accordion" id="accordionPreview"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-<!--          JS etapas dos formularios            -->
-<?php
-$script = <<< JS
-$(document).ready(function() {
-    $('#rootwizard').bootstrapWizard({'tabClass': 'nav nav-tabs'});
-});
-
-JS;
-$this->registerJs($script);
-?>
-
-<?php $this->registerJsFile(Yii::$app->request->baseUrl . '/js/jquery.bootstrap.wizard.js', ['depends' => [\yii\web\JqueryAsset::className()]]); ?>

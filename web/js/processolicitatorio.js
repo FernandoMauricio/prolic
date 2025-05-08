@@ -56,7 +56,6 @@ $(document).ready(function () {
             if (response.success && response.html) {
                 const htmlComRemocao = `
                 <div class="requisicao-preview-item" data-id="${numero}">
-                    <button class="btn btn-xs btn-danger requisicao-remover" style="position: absolute; top: 5px; right: 5px;">Remover</button>
                     ${response.html}
                 </div>`;
 

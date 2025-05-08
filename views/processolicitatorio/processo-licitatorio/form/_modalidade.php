@@ -104,7 +104,7 @@ foreach ($artigo as $a) {
             'select2Options' => ['pluginOptions' => ['allowClear' => true]],
             'pluginOptions' => [
                 'depends' => ['modalidade-id'],
-                'placeholder' => 'Selecione o Ramo...',
+                'placeholder' => 'Selecione o Segmento...',
                 'url' => Url::to(['/processolicitatorio/processo-licitatorio/limite']),
                 'data' => [$model->modalidade_valorlimite_id => $model->modalidadeValorlimite->ramo->ram_descricao],
                 'initialize'    => true,   // força o carregamento inicial

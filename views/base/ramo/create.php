@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\base\Ramo */
 
-$this->title = 'Novo Ramo';
-$this->params['breadcrumbs'][] = ['label' => 'Listagem de Ramos', 'url' => ['index']];
+$this->title = 'Novo Segmento';
+$this->params['breadcrumbs'][] = ['label' => 'Listagem de Segmentos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="ramo-create">

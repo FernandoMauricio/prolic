@@ -7,7 +7,7 @@ use kartik\grid\GridView;
 /* @var $searchModel app\models\base\RamoSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Listagem de Ramos';
+$this->title = 'Listagem de Segmentos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="ramo-index">

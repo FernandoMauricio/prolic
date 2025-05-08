@@ -34,7 +34,7 @@ use yii\web\JsExpression;
     <div class="col-lg-8">
         <?= $form->field($model, 'prolic_destino')->widget(Select2::class, [
             'data' => ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado'),
-            'options' => ['placeholder' => 'Informe os Destinos...', 'multiple' => true],
+            'options' => ['placeholder' => 'Informe os Demandantes...', 'multiple' => true],
             'pluginOptions' => ['allowClear' => true],
         ]) ?>
     </div>

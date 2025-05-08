@@ -289,7 +289,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'ano_id' => 'Ano',
             'prolic_objeto' => 'Objeto',
             'prolic_codmxm' => 'Requisição MXM',
-            'prolic_destino' => 'Destino',
+            'prolic_destino' => 'Demandante',
             'modalidade_valorlimite_id' => 'Segmento',
             'prolic_sequenciamodal' => 'Nº Mod',
             'artigo_id' => 'Artigo',

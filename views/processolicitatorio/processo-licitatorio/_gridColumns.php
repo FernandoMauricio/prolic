@@ -41,7 +41,7 @@ return [
             'placeholder' => 'dd/mm/aaaa',
             'class'       => 'form-control'
         ],
-        'width' => '350px',
+        'width' => '180px',
         'hAlign' => 'center',
     ],
 

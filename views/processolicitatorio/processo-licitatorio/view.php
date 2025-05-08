@@ -29,17 +29,48 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
             <i class="bi bi-file-earmark-text fs-2"></i>
             Acompanhamento de <span class="text-dark"><?= Html::encode($this->title) ?></span>
         </h1>
-        <div class="btn-group">
-            <?= Html::a('← Voltar', ['index'], ['class' => 'btn btn-outline-secondary']) ?>
-            <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <?= Html::button('📝 Obs', ['value' => Url::to(['observacoes', 'id' => $model->id]), 'class' => 'btn btn-success', 'id' => 'modalButton']) ?>
-            <?= Html::button('🖨 Capa', ['value' => Url::to(['/capas/gerar-relatorio', 'id' => $model->id]), 'class' => 'btn btn-warning', 'id' => 'modalButton2']) ?>
+        <div class="btn-toolbar">
+            <?= Html::a('<i class="bi bi-arrow-left"></i>', ['index'], [
+                'class' => 'btn btn-outline-secondary me-2',
+                'title' => 'Voltar',
+                'aria-label' => 'Voltar'
+            ]) ?>
+            <?= Html::a('<i class="bi bi-pencil"></i>', ['update', 'id' => $model->id], [
+                'class' => 'btn btn-primary me-2',
+                'title' => 'Editar',
+                'aria-label' => 'Editar'
+            ]) ?>
+            <div class="btn-group">
+                <?= Html::button('<i class="bi bi-three-dots-vertical"></i>', [
+                    'class' => 'btn btn-outline-secondary dropdown-toggle',
+                    'data-bs-toggle' => 'dropdown',
+                    'aria-expanded' => false,
+                    'title' => 'Mais ações',
+                    'aria-label' => 'Mais ações',
+                ]) ?>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><?= Html::button('<i class="bi bi-chat-left-text me-1"></i> Observação', [
+                            'class' => 'dropdown-item',
+                            'value' => Url::to(['observacoes', 'id' => $model->id]),
+                            'id' => 'modalButton'
+                        ]) ?></li>
+                    <li><?= Html::button('<i class="bi bi-printer-fill me-1"></i> Gerar Capa', [
+                            'class' => 'dropdown-item',
+                            'value' => Url::to(['/capas/gerar-relatorio', 'id' => $model->id]),
+                            'id' => 'modalButton2'
+                        ]) ?></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><?= Html::button('<i class="bi bi-printer me-1"></i> Imprimir', [
+                            'class' => 'dropdown-item',
+                            'onclick' => 'window.print()'
+                        ]) ?></li>
+                </ul>
+            </div>
         </div>
     </div>
-    <?= Html::button('<i class="bi bi-printer me-1"></i> Imprimir Página', [
-        'class'   => 'btn btn-outline-secondary ms-2',
-        'onclick' => 'window.print()',
-    ]) ?>
+
 
     <!-- Modais -->
     <?php Modal::begin(['title' => '<h5>Observação - Processo ' . $model->id . '</h5>', 'id' => 'modal', 'size' => 'modal-lg']); ?>

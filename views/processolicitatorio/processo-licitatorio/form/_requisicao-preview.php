@@ -15,24 +15,26 @@
 
     <?php if (!empty($dados['itens'])): ?>
         <h5>Itens da Requisição</h5>
-        <table class="table table-bordered table-condensed">
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Quantidade</th>
-                    <th>Valor Unitário</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($dados['itens'] as $item): ?>
+        <div class="table-responsive">
+            <table class="table table-bordered table-condensed mb-0">
+                <thead>
                     <tr>
-                        <td><?= $item['Descricao'] ?? '-' ?></td>
-                        <td><?= $item['QuantidadePedida'] ?? '-' ?></td>
-                        <td>R$ <?= number_format((float)($item['ValorUnitario'] ?? 0), 2, ',', '.') ?></td>
+                        <th>Item</th>
+                        <th>Quantidade</th>
+                        <th>Valor Unitário</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($dados['itens'] as $item): ?>
+                        <tr>
+                            <td><?= $item['Descricao'] ?? '-' ?></td>
+                            <td><?= $item['QuantidadePedida'] ?? '-' ?></td>
+                            <td>R$ <?= number_format((float)($item['ValorUnitario'] ?? 0), 2, ',', '.') ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php else: ?>
         <p><em>Nenhum item encontrado.</em></p>
     <?php endif; ?>

@@ -14,10 +14,14 @@
 }
 
 .requisicao-card table {
-    margin-top: 10px;
-    background-color: white;
+  width: 100%;
+  table-layout: fixed;
+  word-wrap: break-word;
 }
-
+.requisicao-card th,
+.requisicao-card td {
+  vertical-align: top;
+}
 .requisicao-feedback {
     padding: 8px 12px;
     margin-bottom: 15px;

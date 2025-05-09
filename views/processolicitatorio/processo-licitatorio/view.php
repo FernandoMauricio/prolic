@@ -135,7 +135,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                             <small class="text-muted">Artigo</small>
                             <div class="d-flex align-items-center gap-2 fw-semibold">
                                 <?= Html::encode($model->artigo->art_descricao ?: '(não definido)') ?>
-                                <?= Html::tag('span', Html::encode($model->artigo->art_tipo ?: '(não definido)'), ['class' => 'badge ' . ($model->artigo->art_tipo === 'Valor' ? 'bg-success' : 'bg-info')]) ?>
+                                <?= Html::tag('span', Html::encode($model->artigo->art_tipo ?: '(não definido)'), ['class' => 'badge ' . ($model->artigo->art_tipo === 'Valor' ? 'bg-info' : 'bg-warning text-dark')]) ?>
                             </div>
                         </div>
 

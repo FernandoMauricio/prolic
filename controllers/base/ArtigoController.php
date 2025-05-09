@@ -39,11 +39,18 @@ class ArtigoController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
-        $searchModel = new ArtigoSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        } else {
+            $searchModel = new ArtigoSearch();
+            $params = Yii::$app->request->queryParams;
+
+            // Força o filtro de status, se vier via GET
+            if (isset($params['status'])) {
+                $params['ArtigoSearch']['art_status'] = $params['status'];
+            }
+
+            $dataProvider = $searchModel->search($params);
 
             return $this->render('index', [
                 'searchModel' => $searchModel,
@@ -56,25 +63,25 @@ class ArtigoController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
-        $session = Yii::$app->session;
-        $model = $this->findModel($id);
+            $session = Yii::$app->session;
+            $model = $this->findModel($id);
 
-        if($model->art_status == 0) { //Cadastros Inativados
-            Yii::$app->session->setFlash('danger', '<b>ERRO! </b>Não é possível homologar um cadastro inativo!</b>');
-            return $this->redirect(['index']);
-            }else{
-            //Homologa o limite da modalidade
-            $connection = Yii::$app->db;
-            $connection->createCommand()
-            ->update('artigo', ['art_homologacaousuario' => $session['sess_nomeusuario'], 'art_homologacaodata' => date('Y-m-d')], ['id' => $model->id])
-            ->execute();
+            if ($model->art_status == 0) { //Cadastros Inativados
+                Yii::$app->session->setFlash('danger', '<b>ERRO! </b>Não é possível homologar um cadastro inativo!</b>');
+                return $this->redirect(['index']);
+            } else {
+                //Homologa o limite da modalidade
+                $connection = Yii::$app->db;
+                $connection->createCommand()
+                    ->update('artigo', ['art_homologacaousuario' => $session['sess_nomeusuario'], 'art_homologacaodata' => date('Y-m-d')], ['id' => $model->id])
+                    ->execute();
 
-            Yii::$app->session->setFlash('success', '<b>SUCESSO!</b> Artigo:<b> '.$model->art_descricao.'</b> foi HOMOLOGADO!</b>');
-        }
+                Yii::$app->session->setFlash('success', '<b>SUCESSO!</b> Artigo:<b> ' . $model->art_descricao . '</b> foi HOMOLOGADO!</b>');
+            }
             return $this->redirect(['index']);
         }
     }
@@ -88,16 +95,16 @@ class ArtigoController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
-        $model = new Artigo();
+            $model = new Artigo();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Artigo cadastrado!</b>');
-            return $this->redirect(['index']);
-        }
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Artigo cadastrado!</b>');
+                return $this->redirect(['index']);
+            }
 
             return $this->render('create', [
                 'model' => $model,
@@ -116,16 +123,16 @@ class ArtigoController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
-        $model = $this->findModel($id);
+            $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Artigo atuaizado!</b>');
-            return $this->redirect(['index']);
-        }
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Artigo atuaizado!</b>');
+                return $this->redirect(['index']);
+            }
 
             return $this->render('update', [
                 'model' => $model,
@@ -166,18 +173,19 @@ class ArtigoController extends Controller
     public function AccessAllow()
     {
         $session = Yii::$app->session;
-        if (!isset($session['sess_codusuario']) 
-            && !isset($session['sess_codcolaborador']) 
-            && !isset($session['sess_codunidade']) 
-            && !isset($session['sess_nomeusuario']) 
-            && !isset($session['sess_coddepartamento']) 
-            && !isset($session['sess_codcargo']) 
-            && !isset($session['sess_cargo']) 
-            && !isset($session['sess_setor']) 
-            && !isset($session['sess_unidade']) 
-            && !isset($session['sess_responsavelsetor'])) 
-        {
-           return $this->redirect('https://portalsenac.am.senac.br');
+        if (
+            !isset($session['sess_codusuario'])
+            && !isset($session['sess_codcolaborador'])
+            && !isset($session['sess_codunidade'])
+            && !isset($session['sess_nomeusuario'])
+            && !isset($session['sess_coddepartamento'])
+            && !isset($session['sess_codcargo'])
+            && !isset($session['sess_cargo'])
+            && !isset($session['sess_setor'])
+            && !isset($session['sess_unidade'])
+            && !isset($session['sess_responsavelsetor'])
+        ) {
+            return $this->redirect('https://portalsenac.am.senac.br');
         }
     }
 }

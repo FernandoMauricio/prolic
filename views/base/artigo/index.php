@@ -24,6 +24,10 @@ $status = Yii::$app->request->get('status', 1);
         <i class="bi bi-journal-text fs-2"></i> <?= Html::encode($this->title) ?>
     </h1>
 
+    <p class="mb-4">
+        <?= Html::a('<i class="bi bi-plus-circle me-1"></i> Novo Artigo', ['create'], ['class' => 'btn btn-success shadow-sm']) ?>
+    </p>
+
     <ul class="nav nav-tabs mb-3">
         <li class="nav-item">
             <a class="nav-link <?= $status == 1 ? 'active' : '' ?>" href="<?= Url::to(['index', 'status' => 1]) ?>">
@@ -37,13 +41,10 @@ $status = Yii::$app->request->get('status', 1);
         </li>
     </ul>
 
-    <p class="mb-4">
-        <?= Html::a('<i class="bi bi-plus-circle me-1"></i> Novo Artigo', ['create'], ['class' => 'btn btn-success shadow-sm']) ?>
-    </p>
-
     <?php
     // Aplica o filtro automaticamente ao dataProvider
     $searchModel->art_status = $status;
+    $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
     ?>
     <style>
         .kv-panel-before {
@@ -65,7 +66,7 @@ $status = Yii::$app->request->get('status', 1);
         'containerOptions' => ['class' => 'table-responsive shadow-sm rounded'],
         'summary' => 'Mostrando <strong>{begin}-{end}</strong> de <strong>{totalCount}</strong> itens',
         'panel' => [
-            'type' => GridView::TYPE_PRIMARY,
+            'type' => $panelType,
             'heading' => '<i class="bi bi-table me-2"></i>Listagem de Artigos',
         ],
         'columns' => [
@@ -92,7 +93,21 @@ $status = Yii::$app->request->get('status', 1);
                 'attribute' => 'art_tipo',
                 'format' => 'raw',
                 'width' => '150px',
-                'value' => fn($model) => $model->art_tipo,
+                'value' => function ($model) {
+                    $tipo = $model->art_tipo;
+                    switch (strtolower($tipo)) {
+                        case 'valor':
+                            $badgeClass = 'badge bg-info';
+                            break;
+                        case 'situação':
+                            $badgeClass = 'badge bg-secondary';
+                            break;
+                        default:
+                            $badgeClass = 'badge bg-warning text-dark';
+                            break;
+                    }
+                    return "<span class='$badgeClass'>{$tipo}</span>";
+                },
                 'filterType' => GridView::FILTER_SELECT2,
                 'filter' => ArrayHelper::map(
                     Artigo::find()
@@ -108,6 +123,7 @@ $status = Yii::$app->request->get('status', 1);
                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
                 'filterInputOptions' => ['placeholder' => 'Tipo...'],
             ],
+
             [
                 'attribute' => 'art_homologacaousuario',
                 'format' => 'raw',

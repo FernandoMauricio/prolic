@@ -94,7 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => $gridColumns,
         'rowOptions' => ['class' => 'align-middle'],
-        'headerRowOptions' => ['class' => 'table-primary text-center align-middle'],
+        'headerRowOptions' => ['class' => 'table-light text-center align-middle'],
         'filterRowOptions' => ['class' => 'table-light'],
         'containerOptions' => ['class' => 'table-responsive'],
         'hover' => true,

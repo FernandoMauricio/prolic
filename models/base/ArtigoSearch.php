@@ -41,7 +41,7 @@ class ArtigoSearch extends Artigo
      */
     public function search($params)
     {
-        $query = Artigo::find();
+        $query = Artigo::find()->orderBy(['id' => SORT_DESC]);
 
         // add conditions that should always apply here
 
@@ -64,9 +64,9 @@ class ArtigoSearch extends Artigo
         ]);
 
         $query->andFilterWhere(['like', 'art_descricao', $this->art_descricao])
-              ->andFilterWhere(['like', 'art_homologacaousuario', $this->art_tipo])
-              ->andFilterWhere(['like', 'art_homologacaodata', $this->art_tipo])
-              ->andFilterWhere(['like', 'art_tipo', $this->art_tipo]);
+            ->andFilterWhere(['like', 'art_homologacaousuario', $this->art_homologacaousuario])
+            ->andFilterWhere(['like', 'art_homologacaodata', $this->art_homologacaodata])
+            ->andFilterWhere(['like', 'art_tipo', $this->art_tipo]);
 
         return $dataProvider;
     }

@@ -9,7 +9,7 @@ use yii\web\View;
 /* @var $this View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
 
-$this->title = $model->prolic_sequenciamodal . '/' . $model->ano->an_ano;
+$this->title = $model->prolic_sequenciamodal;
 $this->params['breadcrumbs'][] = ['label' => 'Processos Licitatórios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -27,7 +27,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="fs-3 fw-bold text-primary d-flex align-items-center gap-2 mb-0">
             <i class="bi bi-file-earmark-text fs-2"></i>
-            Acompanhamento de <span class="text-dark"><?= Html::encode($this->title) ?></span>
+            Acompanhamento de <span class="text-dark"><?= Html::encode($this->title) . '/' . $model->ano->an_ano ?></span>
         </h1>
         <div class="btn-toolbar">
             <?= Html::a('<i class="bi bi-arrow-left"></i>', ['index'], [
@@ -56,7 +56,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                         ]) ?></li>
                     <li><?= Html::button('<i class="bi bi-printer-fill me-1"></i> Gerar Capa', [
                             'class' => 'dropdown-item',
-                            'value' => Url::to(['/capas/gerar-relatorio', 'id' => $model->id]),
+                            'value' => Url::to(['processolicitatorio/capas/gerar-relatorio', 'id' => $model->id]),
                             'id' => 'modalButton2'
                         ]) ?></li>
                     <li>

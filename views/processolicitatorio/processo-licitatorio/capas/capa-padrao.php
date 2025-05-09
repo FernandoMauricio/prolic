@@ -61,7 +61,7 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
                 <th>DE</th>
                 <td>GSP</td>
                 <th>PARA</th>
-                <td>DDAD</td>
+                <td>DAD</td>
                 <th>DATA:</th>
                 <td colspan="2"></td>
             </tr>

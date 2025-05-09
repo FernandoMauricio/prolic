@@ -40,7 +40,7 @@ class AnoSearch extends Ano
      */
     public function search($params)
     {
-        $query = Ano::find();
+        $query = Ano::find()->orderBy(['id' => SORT_DESC]);
 
         // add conditions that should always apply here
 

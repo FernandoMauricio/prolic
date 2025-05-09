@@ -41,7 +41,7 @@ class ModalidadeSearch extends Modalidade
      */
     public function search($params)
     {
-        $query = Modalidade::find();
+        $query = Modalidade::find()->orderBy(['id' => SORT_DESC]);
 
         // add conditions that should always apply here
 

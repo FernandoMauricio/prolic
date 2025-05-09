@@ -37,20 +37,32 @@ class RecursosController extends Controller
      */
     public function actionIndex()
     {
-        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+        // VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
         if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        } else {
-
-            $searchModel = new RecursosSearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-            ]);
         }
+
+        $params = Yii::$app->request->queryParams;
+
+        // Redireciona para a aba "Ativos" se não houver status informado
+        if (!isset($params['status'])) {
+            return $this->redirect(['index', 'status' => 1]);
+        }
+
+        $searchModel = new \app\models\base\RecursosSearch();
+
+        // Aplica o status ao filtro
+        if (isset($params['status'])) {
+            $params['RecursosSearch']['rec_status'] = $params['status'];
+        }
+
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**

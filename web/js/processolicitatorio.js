@@ -23,10 +23,14 @@ $(document).ready(function () {
     }
 
     // Caso existam valores salvos, carregue-os automaticamente
-    if (requisicoesSalvas.length > 0) {
-        adicionarSpinner(); // Adiciona o spinner antes de carregar as requisições
-        requisicoesSalvas.forEach(function (numero) {
-            carregarRequisicao(numero);  // Carregar os dados da requisição
+    const requisicoesValidas = requisicoesSalvas.filter(function (numero) {
+        return numero && numero.trim() !== '';
+    });
+
+    if (requisicoesValidas.length > 0) {
+        adicionarSpinner();
+        requisicoesValidas.forEach(function (numero) {
+            carregarRequisicao(numero);
         });
     }
 

@@ -42,7 +42,7 @@ class ModalidadeValorlimiteSearch extends ModalidadeValorlimite
      */
     public function search($params)
     {
-        $query = ModalidadeValorlimite::find();
+        $query = ModalidadeValorlimite::find()->orderBy(['id' => SORT_DESC]);
 
         // add conditions that should always apply here
 
@@ -59,8 +59,8 @@ class ModalidadeValorlimiteSearch extends ModalidadeValorlimite
         }
 
         $query->joinWith('modalidade')
-        ->joinWith('ramo')
-        ->joinWith('ano');
+            ->joinWith('ramo')
+            ->joinWith('ano');
 
 
         // grid filtering conditions
@@ -71,11 +71,11 @@ class ModalidadeValorlimiteSearch extends ModalidadeValorlimite
         ]);
 
         $query->andFilterWhere(['like', 'modalidade.mod_descricao', $this->modalidade_id])
-        ->andFilterWhere(['like', 'ramo.ram_descricao', $this->ramo_id])
-        ->andFilterWhere(['like', 'ano.an_ano', $this->ano_id])
-        ->andFilterWhere(['like', 'homologacao_usuario', $this->homologacao_usuario])
-        ->andFilterWhere(['like', 'homologacao_data', $this->homologacao_data])
-        ->andFilterWhere(['like', 'tipo', $this->tipo]);
+            ->andFilterWhere(['like', 'ramo.ram_descricao', $this->ramo_id])
+            ->andFilterWhere(['like', 'ano.an_ano', $this->ano_id])
+            ->andFilterWhere(['like', 'homologacao_usuario', $this->homologacao_usuario])
+            ->andFilterWhere(['like', 'homologacao_data', $this->homologacao_data])
+            ->andFilterWhere(['like', 'tipo', $this->tipo]);
         return $dataProvider;
     }
 }

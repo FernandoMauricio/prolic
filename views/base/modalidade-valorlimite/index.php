@@ -1,175 +1,150 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\widgets\DatePicker;
-use kartik\grid\GridView;
-use yii\widgets\Pjax;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use kartik\editable\Editable;
-use yii\bootstrap5\Modal;
-
-use app\models\base\Ano;
-use app\models\base\ModalidadeValorlimite;
-use app\models\base\Comprador;
-use app\models\base\Artigo;
-use app\models\base\Situacao;
+use yii\helpers\ArrayHelper;
+use kartik\grid\GridView;
+use kartik\widgets\DatePicker;
+use yii\widgets\Pjax;
 use app\models\base\Modalidade;
+use app\models\base\Ano;
+use app\models\base\Ramo;
 
-/* @var $this yii\web\View */
-/* @var $searchModel app\models\base\ModalidadeValorlimiteSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = 'Listagem de Valor Limite - Modalidade';
+$this->title = 'Valor Limite por Modalidade';
 $this->params['breadcrumbs'][] = $this->title;
+
+// Tabs - status da aba ativa
+$status = Yii::$app->request->get('status', 1);
+$searchModel->status = $status;
+$panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
 ?>
+
 <div class="modalidade-valorlimite-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); 
-    ?>
+    <h1 class="fs-3 fw-bold text-primary d-flex align-items-center gap-2 mb-4">
+        <i class="bi bi-graph-up-arrow"></i> <?= Html::encode($this->title) ?>
+    </h1>
 
-    <p>
-        <?= Html::a('Novo Valor Limite - Modalidade', ['create'], ['class' => 'btn btn-success']) ?>
+    <p class="mb-4">
+        <?= Html::a('<i class="bi bi-plus-circle me-1"></i> Novo Valor Limite', ['create'], ['class' => 'btn btn-success shadow-sm']) ?>
     </p>
 
-    <?php
-
-    $gridColumns = [
-        [
-            'attribute' => 'modalidade_id',
-            'width' => '250px',
-            'value' => function ($model, $key, $index, $widget) {
-                return $model->modalidade->mod_descricao;
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => ArrayHelper::map(Modalidade::find()->where(['mod_status' => 1])->asArray()->all(), 'mod_descricao', 'mod_descricao'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'Modalidade...'],
-        ],
-
-        [
-            'attribute' => 'ramo_id',
-            'width' => '250px',
-            'value' => function ($model, $key, $index, $widget) {
-                return $model->ramo->ram_descricao;
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => ArrayHelper::map(ModalidadeValorlimite::find()->innerJoinWith('ramo')->where(['status' => 1])->andWhere(['!=', 'homologacao_usuario', ''])->orderBy('id')->asArray()->all(), 'ramo.ram_descricao', 'ramo.ram_descricao'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'Ramo...'],
-        ],
-
-        [
-            'attribute' => 'ano_id',
-            'value' => 'ano.an_ano',
-        ],
-
-        [
-            'format' => 'Currency',
-            'attribute' => 'valor_limite',
-        ],
-
-        'homologacao_usuario',
-
-        [
-            'attribute' => 'homologacao_data',
-            'format' => ['datetime', 'php:d/m/Y'],
-            'width' => '190px',
-            'hAlign' => 'center',
-            'filter' => DatePicker::widget([
-                'model' => $searchModel,
-                'attribute' => 'homologacao_data',
-                'pluginOptions' => [
-                    'autoclose' => true,
-                    'format' => 'yyyy-mm-dd',
-                ]
-            ])
-        ],
-
-        [
-            'attribute' => 'tipo',
-            'format' => 'raw',
-            'width' => '6%',
-            'value' => function ($data) {
-                return $data->tipo == 0 ? '<span class="label label-warning"> Limitado</span>' : '<span class="label label-success"> Ilimitado</span>';
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => ['0' => 'Limitado', '1' => 'Ilimitado'],
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'Tipo'],
-        ],
-
-        [
-            'class' => 'kartik\grid\BooleanColumn',
-            'attribute' => 'status',
-            'vAlign' => 'middle'
-        ],
-
-        [
-            'class' => 'yii\grid\ActionColumn',
-            'template' => '{update} {homologar}',
-            'contentOptions' => ['style' => 'width: 7%;'],
-            'buttons' => [
-
-                //VISUALIZAR/IMPRIMIR
-                'update' => function ($url, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-pencil"></span> ', $url, [
-                        'class' => 'btn btn-default btn-xs',
-                        'title' => Yii::t('app', 'Atualizar'),
-
-                    ]);
-                },
-
-                //HOMOLOGAR - Acesso somente para o Gerente do GGP 7 - ggp / 1 - responsavel setor
-                'homologar' => function ($url, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-ok"></span>', $url, [
-                        'class' => 'btn btn-success btn-xs',
-                        'title' => Yii::t('app', 'Homologar Cargo'),
-                        'data' =>  [
-                            'confirm' => 'Você tem CERTEZA que deseja <b>HOMOLOGAR</b> esse item?',
-                            'method' => 'post',
-                        ],
-                    ]);
-                },
-            ],
-        ],
-    ];
-    ?>
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link <?= $status == 1 ? 'active' : '' ?>" href="<?= Url::to(['index', 'status' => 1]) ?>">
+                <i class="bi bi-check-circle-fill me-1"></i> Ativos
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?= $status == 0 ? 'active' : '' ?>" href="<?= Url::to(['index', 'status' => 0]) ?>">
+                <i class="bi bi-x-circle-fill me-1"></i> Inativos
+            </a>
+        </li>
+    </ul>
 
     <?php Pjax::begin(); ?>
 
-    <?php
-    echo GridView::widget([
+    <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => $gridColumns,
-        'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
-        'headerRowOptions' => ['class' => 'kartik-sheet-style'],
-        'filterRowOptions' => ['class' => 'kartik-sheet-style'],
-        'pjax' => true, // pjax is set to always true for this demo
-
-        'beforeHeader' => [
-            [
-                'columns' => [
-                    ['content' => 'Detalhes dos Processos', 'options' => ['colspan' => 8, 'class' => 'text-center warning']],
-                    ['content' => 'Área de Ações', 'options' => ['colspan' => 1, 'class' => 'text-center warning']],
-                ],
-            ]
-        ],
+        'filterModel'  => $searchModel,
         'hover' => true,
+        'pjax' => true,
+        'summary' => 'Mostrando <strong>{begin}-{end}</strong> de <strong>{totalCount}</strong> itens',
         'panel' => [
-            'type' => GridView::TYPE_PRIMARY,
-            'heading' => '<h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> Listagem - Processos Licitatórios</h3>',
+            'type' => $panelType,
+            'heading' => '<i class="bi bi-table me-2"></i>Listagem de Valores Limite',
         ],
-    ]);
-    ?>
-    <?php Pjax::end(); ?>
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
 
+            [
+                'attribute' => 'modalidade_id',
+                'value' => fn($model) => $model->modalidade->mod_descricao,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' => ArrayHelper::map(Modalidade::find()->where(['mod_status' => 1])->all(), 'id', 'mod_descricao'),
+                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
+                'filterInputOptions' => ['placeholder' => 'Modalidade...'],
+            ],
+            [
+                'attribute' => 'ramo_id',
+                'value' => fn($model) => $model->ramo->ram_descricao,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' => ArrayHelper::map(Ramo::find()->where(['ram_status' => 1])->all(), 'id', 'ram_descricao'),
+                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
+                'filterInputOptions' => ['placeholder' => 'Segmento...'],
+            ],
+            [
+                'attribute' => 'ano_id',
+                'value' => fn($model) => $model->ano->an_ano,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' => ArrayHelper::map(Ano::find()->where(['an_status' => 1])->all(), 'id', 'an_ano'),
+                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
+                'filterInputOptions' => ['placeholder' => 'Ano...'],
+            ],
+            [
+                'attribute' => 'valor_limite',
+                'format' => 'raw',
+                'hAlign' => 'right',
+                'value' => fn($model) => Html::tag(
+                    'span',
+                    \yii\helpers\StringHelper::truncate(Yii::$app->formatter->asCurrency($model->valor_limite), 15),
+                    ['title' => Yii::$app->formatter->asCurrency($model->valor_limite)]
+                ),
+            ],
+            'homologacao_usuario',
+            [
+                'attribute' => 'homologacao_data',
+                'format' => ['date', 'php:d/m/Y'],
+                'hAlign' => 'center',
+                'filter' => DatePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'homologacao_data',
+                    'type' => DatePicker::TYPE_COMPONENT_APPEND,
+                    'pluginOptions' => ['autoclose' => true, 'format' => 'yyyy-mm-dd'],
+                ]),
+            ],
+            [
+                'attribute' => 'tipo',
+                'format' => 'raw',
+                'value' => fn($model) => Html::tag(
+                    'span',
+                    $model->tipo == 0 ? 'Limitado' : 'Ilimitado',
+                    ['class' => 'badge ' . ($model->tipo == 0 ? 'bg-warning text-dark' : 'bg-success')]
+                ),
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' => ['0' => 'Limitado', '1' => 'Ilimitado'],
+                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
+                'filterInputOptions' => ['placeholder' => 'Tipo...'],
+            ],
+            [
+                'class' => 'kartik\grid\BooleanColumn',
+                'attribute' => 'status',
+                'vAlign' => 'middle',
+            ],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{update} {homologar}',
+                'header' => 'Ações',
+                'contentOptions' => ['class' => 'text-center', 'width' => '110px'],
+                'buttons' => [
+                    'update' => fn($url) =>
+                    Html::a('<i class="bi bi-pencil-square"></i>', $url, [
+                        'class' => 'btn btn-outline-secondary btn-sm',
+                        'title' => 'Editar Valor',
+                    ]),
+                    'homologar' => fn($url) =>
+                    Html::a('<i class="bi bi-patch-check-fill"></i>', $url, [
+                        'class' => 'btn btn-outline-success btn-sm',
+                        'title' => 'Homologar Valor',
+                        'data' => [
+                            'confirm' => 'Você deseja <b>homologar</b> este valor limite?',
+                            'method' => 'post',
+                        ],
+                    ]),
+                ],
+            ],
+        ],
+    ]); ?>
+
+    <?php Pjax::end(); ?>
 </div>

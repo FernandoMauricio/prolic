@@ -46,17 +46,11 @@ $status = Yii::$app->request->get('status', 1);
     $searchModel->art_status = $status;
     $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
     ?>
-    <style>
-        .kv-panel-before {
-            display: none !important;
-        }
-    </style>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'hover' => true,
-        'export' => false,
-        'toggleData' => false,
         'pjax' => true,
         'rowOptions' => ['class' => 'align-middle'],
         'headerRowOptions' => ['class' => 'table-light text-center align-middle'],

@@ -1,9 +1,7 @@
 <?php
 
-use app\models\base\Comprador;
 use yii\helpers\Html;
 use kartik\grid\GridView;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
@@ -20,7 +18,6 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
 ?>
 
 <div class="comprador-index">
-
     <h1 class="fs-3 fw-bold text-primary d-flex align-items-center gap-2 mb-4">
         <i class="bi bi-person-badge fs-2"></i> <?= Html::encode($this->title) ?>
     </h1>

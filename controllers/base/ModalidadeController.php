@@ -37,14 +37,26 @@ class ModalidadeController extends Controller
      */
     public function actionIndex()
     {
-        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+        // VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
+            $params = Yii::$app->request->queryParams;
 
-        $searchModel = new ModalidadeSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            // Redireciona para a aba "Ativos" se não houver status informado
+            if (!isset($params['status'])) {
+                return $this->redirect(['index', 'status' => 1]);
+            }
+
+            $searchModel = new ModalidadeSearch();
+
+            // Aplica o status ao filtro
+            if (isset($params['status'])) {
+                $params['ModalidadeSearch']['mod_status'] = $params['status'];
+            }
+
+            $dataProvider = $searchModel->search($params);
 
             return $this->render('index', [
                 'searchModel' => $searchModel,
@@ -62,16 +74,16 @@ class ModalidadeController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
-        $model = new Modalidade();
+            $model = new Modalidade();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Modalidade cadastrada!</b>');
-            return $this->redirect(['index']);
-        }
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Modalidade cadastrada!</b>');
+                return $this->redirect(['index']);
+            }
 
             return $this->render('create', [
                 'model' => $model,
@@ -90,16 +102,16 @@ class ModalidadeController extends Controller
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
-        if($session['sess_codunidade'] != 6) {
+        if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        }else{
+        } else {
 
-        $model = $this->findModel($id);
+            $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Modalidade atualizada!</b>');
-            return $this->redirect(['index']);
-        }
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Modalidade atualizada!</b>');
+                return $this->redirect(['index']);
+            }
 
             return $this->render('update', [
                 'model' => $model,
@@ -140,18 +152,19 @@ class ModalidadeController extends Controller
     public function AccessAllow()
     {
         $session = Yii::$app->session;
-        if (!isset($session['sess_codusuario']) 
-            && !isset($session['sess_codcolaborador']) 
-            && !isset($session['sess_codunidade']) 
-            && !isset($session['sess_nomeusuario']) 
-            && !isset($session['sess_coddepartamento']) 
-            && !isset($session['sess_codcargo']) 
-            && !isset($session['sess_cargo']) 
-            && !isset($session['sess_setor']) 
-            && !isset($session['sess_unidade']) 
-            && !isset($session['sess_responsavelsetor'])) 
-        {
-           return $this->redirect('https://portalsenac.am.senac.br');
+        if (
+            !isset($session['sess_codusuario'])
+            && !isset($session['sess_codcolaborador'])
+            && !isset($session['sess_codunidade'])
+            && !isset($session['sess_nomeusuario'])
+            && !isset($session['sess_coddepartamento'])
+            && !isset($session['sess_codcargo'])
+            && !isset($session['sess_cargo'])
+            && !isset($session['sess_setor'])
+            && !isset($session['sess_unidade'])
+            && !isset($session['sess_responsavelsetor'])
+        ) {
+            return $this->redirect('https://portalsenac.am.senac.br');
         }
     }
 }

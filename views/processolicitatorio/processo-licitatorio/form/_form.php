@@ -27,7 +27,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
     <!-- Linha para o formulário e a requisição -->
     <div class="row g-3">
         <!-- Formulário à esquerda -->
-        <div class="col-lg-8">
+        <div class="col-lg-7">
             <div class="card shadow-sm mb-4 border-primary">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i> Processo Licitatório</h5>
@@ -113,7 +113,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
         </div>
 
         <!-- Container para preview à direita -->
-        <div class="col-lg-4">
+        <div class="col-lg-5">
             <div class="card shadow-sm">
                 <div class="card-header bg-light fw-bold"><i class="bi bi-list-ul me-1"></i> Requisições MXM</div>
                 <div class="card-body position-relative" id="requisicao-preview">

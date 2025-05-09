@@ -8,18 +8,35 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="comprador-form">
+<div class="comprador-form card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="bi bi-person-fill me-2"></i> <?= $model->isNewRecord ? 'Novo Comprador' : 'Editar Comprador' ?></h5>
+    </div>
 
-    <?php $form = ActiveForm::begin(); ?>
+    <div class="card-body">
+        <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'comp_descricao')->textInput(['readonly' => !$model->isNewRecord]) ?>
+        <div class="row g-3">
+            <div class="col-md-8">
+                <?= $form->field($model, 'comp_descricao')->textInput([
+                    'readonly' => !$model->isNewRecord,
+                    'placeholder' => 'Informe o nome do comprador...',
+                ]) ?>
+            </div>
 
-    <?= $form->field($model, 'comp_status')->radioList(['1' => 'Ativo', '0' => 'Inativo']) ?>
-    
-    <div class="form-group">
-        <?= Html::submitButton('Gravar', ['class' => 'btn btn-success']) ?>
+            <div class="col-md-4">
+                <?= $form->field($model, 'comp_status')->radioList([
+                    '1' => 'Ativo',
+                    '0' => 'Inativo',
+                ], ['class' => 'mt-2']) ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer bg-light text-end">
+        <?= Html::a('<i class="bi bi-arrow-left-circle me-1"></i> Cancelar', ['index'], ['class' => 'btn btn-outline-secondary']) ?>
+        <?= Html::submitButton('<i class="bi bi-check-circle-fill me-1"></i> Gravar', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
-
 </div>

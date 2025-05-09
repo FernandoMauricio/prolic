@@ -37,17 +37,21 @@ class CompradorController extends Controller
      */
     public function actionIndex()
     {
-        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+        // VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
         if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
         } else {
+            $params = Yii::$app->request->queryParams;
+
+            // Redireciona para a aba "Ativos" se não houver status informado
+            if (!isset($params['status'])) {
+                return $this->redirect(['index', 'status' => 1]);
+            }
 
             $searchModel = new CompradorSearch();
 
-            $params = Yii::$app->request->queryParams;
-
-            // Força o filtro de status, se vier via GET
+            // Aplica o status ao filtro
             if (isset($params['status'])) {
                 $params['CompradorSearch']['comp_status'] = $params['status'];
             }

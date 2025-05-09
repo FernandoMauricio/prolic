@@ -37,15 +37,21 @@ class ArtigoController extends Controller
      */
     public function actionIndex()
     {
-        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
+        // VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
         if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
         } else {
-            $searchModel = new ArtigoSearch();
             $params = Yii::$app->request->queryParams;
 
-            // Força o filtro de status, se vier via GET
+            // Se não tiver status na URL, redireciona para a aba "Ativos"
+            if (!isset($params['status'])) {
+                return $this->redirect(['index', 'status' => 1]);
+            }
+
+            $searchModel = new ArtigoSearch();
+
+            // Força o filtro de status no search model
             if (isset($params['status'])) {
                 $params['ArtigoSearch']['art_status'] = $params['status'];
             }

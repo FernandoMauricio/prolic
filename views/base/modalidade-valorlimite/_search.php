@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap5\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\base\ModalidadeValorlimiteSearch */
@@ -25,7 +25,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'valor_limite') ?>
 
-    <?php // echo $form->field($model, 'status') ?>
+    <?php // echo $form->field($model, 'status') 
+    ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

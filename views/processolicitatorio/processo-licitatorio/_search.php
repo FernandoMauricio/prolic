@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\widgets\ActiveForm;
+use yii\bootstrap5\ActiveForm;
 use kartik\select2\Select2;
 use app\models\base\Ano;
 use app\models\base\Unidades;

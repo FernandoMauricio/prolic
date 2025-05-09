@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
 use miloschuman\highcharts\Highcharts;
-use yii\widgets\ActiveForm;
+use yii\bootstrap5\ActiveForm;
 use kartik\export\ExportMenu;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Url;

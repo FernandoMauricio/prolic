@@ -2,6 +2,7 @@
 
 namespace app\models\base;
 
+use app\models\processolicitatorio\ProcessoLicitatorio;
 use Yii;
 
 /**
@@ -29,7 +30,7 @@ class Artigo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['art_descricao', 'art_status'], 'required'],
+            [['art_descricao', 'art_tipo', 'art_status'], 'required'],
             [['art_status'], 'integer'],
             [['art_homologacaodata'], 'safe'],
             [['art_descricao', 'art_homologacaousuario'], 'string', 'max' => 255],

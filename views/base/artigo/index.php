@@ -158,7 +158,11 @@ $status = Yii::$app->request->get('status', 1);
                     ]
                 ])
             ],
-
+            [
+                'class' => 'kartik\grid\BooleanColumn',
+                'attribute' => 'art_status',
+                'vAlign' => 'middle',
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{update} {homologar}',

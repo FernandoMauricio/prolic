@@ -41,7 +41,7 @@ class CompradorSearch extends Comprador
      */
     public function search($params)
     {
-        $query = Comprador::find();
+        $query = Comprador::find()->orderBy(['id' => SORT_DESC]);
 
         // add conditions that should always apply here
 

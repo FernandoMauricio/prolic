@@ -10,14 +10,31 @@ function configurarValidacaoSaldo() {
         const saldo = parseFloat($('#processolicitatorio-valor_saldo').val()) || 0;
 
         if (saldo <= 0) {
-            return false; // saldo zerado ou negativo — não envia
+            $('#saldo-alerta').addClass('animate__shakeX'); // erro já tratado
+            return false;
         }
 
-        // saldo válido — mostra spinner e desabilita botão
-        $spinner.removeClass('d-none');
-        $botao.prop('disabled', true);
+        // Mostrar overlay de transição
+        const spinnerOverlay = $(`
+            <div id="overlay-loading" style="
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(255,255,255,0.8);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+            </div>
+        `);
+        $('body').append(spinnerOverlay);
+
         return true;
     });
+
 }
 
 // executa ao carregar a página

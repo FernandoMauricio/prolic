@@ -513,13 +513,19 @@ class ProcessoLicitatorioController extends Controller
         }
     }
 
-    private function formatarEmpresasParaSalvar(array $documentos): string
+    private function formatarEmpresasParaSalvar($documentos): string
     {
+        $documentos = is_array($documentos) ? $documentos : (empty($documentos) ? [] : explode(';', $documentos));
+
         $formatados = [];
 
         foreach ($documentos as $documento) {
-            $dados = WebManagerService::consultarFornecedor($documento);
             $docLimpo = preg_replace('/\D/', '', $documento);
+            if (!$docLimpo) {
+                continue;
+            }
+
+            $dados = WebManagerService::consultarFornecedor($docLimpo);
 
             if (strlen($docLimpo) === 14) {
                 $docFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $docLimpo);

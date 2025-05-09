@@ -115,7 +115,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
         <!-- Container para preview à direita -->
         <div class="col-lg-4">
             <div class="card shadow-sm">
-                <div class="card-header bg-light fw-bold"><i class="bi bi-list-ul me-1"></i> Requisições</div>
+                <div class="card-header bg-light fw-bold"><i class="bi bi-list-ul me-1"></i> Requisições MXM</div>
                 <div class="card-body position-relative" id="requisicao-preview">
                     <div id="requisicao-spinner" class="spinner-border text-primary position-absolute top-50 start-50 translate-middle d-none" role="status"></div>
                     <div class="accordion" id="accordionPreview"></div>

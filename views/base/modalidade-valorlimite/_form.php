@@ -62,17 +62,10 @@ use kartik\money\MaskMoney;
                 </div>
 
                 <div class="col-md-4">
-                    <?= $form->field($model, 'tipo')->radioList([
-                        '1' => 'Ilimitado',
-                        '0' => 'Limitado'
-                    ], ['class' => 'pt-2']) ?>
-                </div>
-
-                <div class="col-md-4">
                     <?= $form->field($model, 'status')->radioList([
                         '1' => 'Ativo',
                         '0' => 'Inativo'
-                    ], ['class' => 'pt-2']) ?>
+                    ], ['class' => 'd-flex gap-4']) ?>
                 </div>
             </div>
         </div>

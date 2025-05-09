@@ -30,10 +30,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'options' => ['class' => 'accordion w-50 mx-auto shadow-sm mb-4'],
         'items' => [
             [
-                'label' => '🔍 Pesquisa Avançada',
+                'label' => '<i class="bi bi-funnel-fill me-2"></i> Pesquisa Avançada',
                 'content' => $this->render('_search', ['model' => $searchModel]),
                 'contentOptions' => ['class' => 'bg-light p-3'],
                 'options' => ['class' => 'mb-2'],
+                'encode' => false,
                 'expand' => false,
             ],
         ],

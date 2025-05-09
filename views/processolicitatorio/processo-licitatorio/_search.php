@@ -17,102 +17,48 @@ use app\models\base\Unidades;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'options' => ['class' => 'row g-3']
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <div class="col-md-2">
+        <?= $form->field($model, 'id') ?>
+    </div>
 
-    <?php
-    $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
-    $data_ano = ArrayHelper::map($ano, 'id', 'an_ano');
-    echo $form->field($model, 'ano_id')->widget(Select2::classname(), [
-        'data' =>  $data_ano,
-        'options' => ['placeholder' => 'Selecione o Ano...'],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]);
-    ?>
+    <div class="col-md-3">
+        <?php
+        $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
+        $data_ano = ArrayHelper::map($ano, 'id', 'an_ano');
+        echo $form->field($model, 'ano_id')->widget(Select2::classname(), [
+            'data' =>  $data_ano,
+            'options' => ['placeholder' => 'Selecione o Ano...'],
+            'pluginOptions' => ['allowClear' => true],
+        ]);
+        ?>
+    </div>
 
-    <?= $form->field($model, 'prolic_objeto') ?>
+    <div class="col-md-4">
+        <?= $form->field($model, 'prolic_objeto') ?>
+    </div>
 
-    <?= $form->field($model, 'prolic_codmxm') ?>
+    <div class="col-md-3">
+        <?= $form->field($model, 'prolic_codmxm') ?>
+    </div>
 
-    <?php
-    $destinos = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
-    $options = ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado');
-    echo $form->field($model, 'prolic_destino')->widget(Select2::classname(), [
-        'data' => $options,
-        'options' => ['placeholder' => 'Informe os Demandantes...', 'multiple' => true],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]);
-    ?>
+    <div class="col-md-6">
+        <?php
+        $destinos = Unidades::find()->where(['uni_codsituacao' => 1])->orderBy('uni_nomeabreviado')->all();
+        $options = ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado');
+        echo $form->field($model, 'prolic_destino')->widget(Select2::classname(), [
+            'data' => $options,
+            'options' => ['placeholder' => 'Informe os Demandantes...', 'multiple' => true],
+            'pluginOptions' => ['allowClear' => true],
+        ]);
+        ?>
+    </div>
 
-
-    <?php // echo $form->field($model, 'modalidade_valorlimite_id') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_sequenciamodal') 
-    ?>
-
-    <?php // echo $form->field($model, 'artigo_id') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_cotacoes') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_centrocusto') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_elementodespesa') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_valorestimado') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_valoraditivo') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_valorefetivo') 
-    ?>
-
-    <?php // echo $form->field($model, 'recursos_id') 
-    ?>
-
-    <?php // echo $form->field($model, 'comprador_id') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_datacertame') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_datadevolucao') 
-    ?>
-
-    <?php // echo $form->field($model, 'situacao_id') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_datahomologacao') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_motivo') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_usuariocriacao') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_datacriacao') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_usuarioatualizacao') 
-    ?>
-
-    <?php // echo $form->field($model, 'prolic_dataatualizacao') 
-    ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+    <div class="col-12 d-flex justify-content-end">
+        <?= Html::submitButton('<i class="bi bi-search me-1"></i> Pesquisar', ['class' => 'btn btn-primary me-2']) ?>
+        <?= Html::resetButton('<i class="bi bi-x-circle me-1"></i> Limpar', ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

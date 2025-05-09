@@ -12,10 +12,18 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'obs_descricao')->textarea(['rows' => 3, 'maxlength' => true]) ?>
+    <div class="mb-3">
+        <?= $form->field($model, 'obs_descricao')->textarea([
+            'rows' => 3,
+            'maxlength' => true,
+            'class' => 'form-control'
+        ]) ?>
+    </div>
 
-    <div class="form-group">
-        <?= Html::submitButton('Salvar', ['class' => 'btn btn-success']) ?>
+    <div class="d-flex justify-content-end">
+        <?= Html::submitButton('<i class="bi bi-check2-circle me-1"></i> Salvar', [
+            'class' => 'btn btn-success shadow-sm'
+        ]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

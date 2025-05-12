@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\models\base\Ramo */
 
 $this->title = 'Atualizar Segmento: ' . $model->id . '';
+$this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 $this->params['breadcrumbs'][] = ['label' => 'Ramos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id];
 $this->params['breadcrumbs'][] = 'Atualizar';

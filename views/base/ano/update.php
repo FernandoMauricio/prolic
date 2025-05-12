@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\models\base\Ano */
 
 $this->title = 'Atualizar Ano: ' . $model->an_ano . '';
+$this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 $this->params['breadcrumbs'][] = ['label' => 'Anos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id];
 $this->params['breadcrumbs'][] = 'Atualizar';

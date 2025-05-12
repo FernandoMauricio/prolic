@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\models\base\Empresa */
 
 $this->title = 'Atualizar Empresa: ' . $model->emp_descricao . '';
+$this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 $this->params['breadcrumbs'][] = ['label' => 'Empresas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id];
 $this->params['breadcrumbs'][] = 'Atualizar';

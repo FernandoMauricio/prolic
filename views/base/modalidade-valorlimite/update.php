@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\models\base\ModalidadeValorlimite */
 
 $this->title = 'Atualizar Valor Limite: ' . $model->id . '';
+$this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 $this->params['breadcrumbs'][] = ['label' => 'Valor Limite - Modalidade', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Atualizar';

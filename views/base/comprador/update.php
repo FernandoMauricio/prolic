@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\models\base\Comprador */
 
 $this->title = 'Atualizar Comprador: ' . $model->comp_descricao . '';
+$this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 $this->params['breadcrumbs'][] = ['label' => 'Compradores', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id];
 $this->params['breadcrumbs'][] = 'Atualizar';

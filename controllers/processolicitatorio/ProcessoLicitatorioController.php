@@ -471,6 +471,7 @@ class ProcessoLicitatorioController extends Controller
 
             'artigo' => Artigo::find()
                 ->select(['id', 'art_descricao', 'art_tipo'])
+                ->where(['art_status' => 1])
                 ->andWhere(['!=', 'art_homologacaousuario', ''])
                 ->orderBy(['art_descricao' => SORT_DESC])
                 ->all(),

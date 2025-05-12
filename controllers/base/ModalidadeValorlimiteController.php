@@ -133,9 +133,17 @@ class ModalidadeValorlimiteController extends Controller
             $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
             $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
 
+            $model->status = 1; //Ativo
+
+            // if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            //     Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Limite cadastrado!</b>');
+            //     return $this->redirect(['index']);
+            // }
+
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Limite cadastrado!</b>');
-                return $this->redirect(['index']);
+                $tipo = $model->verificarTipoModalidade();
+                Yii::$app->session->setFlash('success', "Modalidade recomendada: <strong>$tipo</strong>");
+                return $this->redirect(['view', 'id' => $model->id]);
             }
 
             return $this->render('create', [

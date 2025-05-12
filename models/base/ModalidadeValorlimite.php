@@ -15,6 +15,7 @@ use Yii;
  * @property int $status
  * @property string $homologacao_usuario
  * @property string $homologacao_data
+ * @property string $tipo_modalidade
  *
  * @property Ano $ano
  * @property Modalidade $modalidade
@@ -25,6 +26,21 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
 {
     public $valor_limite_apurado;
     public $valor_saldo;
+    public $valor_limite_fake;
+
+    const MOD_CONVITE = 2;
+    const MOD_CONCORRENCIA = 4;
+    const MOD_LEILAO = 5;
+
+    const TIPO_OBRAS_SERVICOS = 'Obras e serviços de engenharia';
+    const TIPO_COMPRAS = 'Compras e demais serviços';
+    const TIPO_ALIENACOES = 'Alienações de bens, sempre precedidas de avaliação';
+
+    const LIMITE_OBRAS_CONVITE = 2465000.00;
+    const LIMITE_COMPRAS_CONVITE = 826000.00;
+    const LIMITE_ALIENACOES_CONCORRENCIA = 92000.00;
+
+
     /**
      * @inheritdoc
      */
@@ -43,7 +59,7 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
             [['modalidade_id', 'ramo_id', 'ano_id', 'status'], 'integer'],
             [['valor_limite'], 'number'],
             [['homologacao_data'], 'safe'],
-            [['homologacao_usuario'], 'string', 'max' => 255],
+            [['homologacao_usuario', 'tipo_modalidade'], 'string', 'max' => 255],
             [['ano_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ano::className(), 'targetAttribute' => ['ano_id' => 'id']],
             [['modalidade_id'], 'exist', 'skipOnError' => true, 'targetClass' => Modalidade::className(), 'targetAttribute' => ['modalidade_id' => 'id']],
             [['ramo_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ramo::className(), 'targetAttribute' => ['ramo_id' => 'id']],
@@ -75,8 +91,36 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
             'status' => 'Status',
             'homologacao_usuario' => 'Homologado Por',
             'homologacao_data' => 'Data Homologação',
+            'tipo_modalidade' => 'Tipo de Modalidade',
         ];
     }
+
+    public static function getTiposModalidade()
+    {
+        return [
+            self::TIPO_OBRAS_SERVICOS => self::TIPO_OBRAS_SERVICOS,
+            self::TIPO_COMPRAS => self::TIPO_COMPRAS,
+            self::TIPO_ALIENACOES => self::TIPO_ALIENACOES,
+        ];
+    }
+
+    public function verificarTipoModalidade()
+    {
+        switch ($this->tipo_modalidade) {
+            case self::TIPO_OBRAS_SERVICOS:
+                return $this->valor_limite <= self::LIMITE_OBRAS_CONVITE ? 'CONVITE' : 'CONCORRÊNCIA';
+
+            case self::TIPO_COMPRAS:
+                return $this->valor_limite <= self::LIMITE_COMPRAS_CONVITE ? 'CONVITE' : 'CONCORRÊNCIA';
+
+            case self::TIPO_ALIENACOES:
+                return $this->valor_limite > self::LIMITE_ALIENACOES_CONCORRENCIA ? 'LEILÃO OU CONCORRÊNCIA' : 'DISPENSÁVEL';
+
+            default:
+                return null;
+        }
+    }
+
 
     /**
      * @return \yii\db\ActiveQuery

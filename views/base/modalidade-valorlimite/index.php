@@ -57,7 +57,23 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
+            [
+                'attribute' => 'tipo_modalidade',
+                'label' => 'Tipo de<br> Modalidade',
+                'encodeLabel' => false,
+                'format' => 'raw',
+                'value' => fn($model) => Html::tag(
+                    $model->tipo_modalidade
+                ),
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' => [
+                    'Obras e serviços de engenharia' => 'Obras e serviços de engenharia',
+                    'Compras e demais serviços' => 'Compras e demais serviços',
+                    'Alienações de bens, sempre precedidas de avaliação' => 'Alienações de bens, sempre precedidas de avaliação',
+                ],
+                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
+                'filterInputOptions' => ['placeholder' => 'Tipo...'],
+            ],
             [
                 'attribute' => 'modalidade_id',
                 'value' => fn($model) => $model->modalidade->mod_descricao,
@@ -103,19 +119,6 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                     'type' => DatePicker::TYPE_COMPONENT_APPEND,
                     'pluginOptions' => ['autoclose' => true, 'format' => 'yyyy-mm-dd'],
                 ]),
-            ],
-            [
-                'attribute' => 'tipo',
-                'format' => 'raw',
-                'value' => fn($model) => Html::tag(
-                    'span',
-                    $model->tipo == 0 ? 'Limitado' : 'Ilimitado',
-                    ['class' => 'badge ' . ($model->tipo == 0 ? 'bg-warning text-dark' : 'bg-success')]
-                ),
-                'filterType' => GridView::FILTER_SELECT2,
-                'filter' => ['0' => 'Limitado', '1' => 'Ilimitado'],
-                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-                'filterInputOptions' => ['placeholder' => 'Tipo...'],
             ],
             [
                 'class' => 'kartik\grid\BooleanColumn',

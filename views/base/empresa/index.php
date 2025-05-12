@@ -7,7 +7,7 @@ use kartik\grid\GridView;
 /* @var $searchModel app\models\base\EmpresaSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Listagem de Empresas';
+$this->title = 'Empresas';
 $this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

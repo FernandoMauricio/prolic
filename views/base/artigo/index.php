@@ -63,7 +63,7 @@ $status = Yii::$app->request->get('status', 1);
         'summary' => 'Mostrando <strong>{begin}-{end}</strong> de <strong>{totalCount}</strong> itens',
         'panel' => [
             'type' => $panelType,
-            'heading' => '<i class="bi bi-table me-2"></i>Listagem de Artigos',
+            'heading' => '<i class="bi bi-table me-2"></i>Artigos',
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],

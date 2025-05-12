@@ -12,7 +12,7 @@ $this->registerJsFile(
 );
 
 $this->title = 'Atualizar Processo Licitatório: ' . $model->id . '';
-$this->params['breadcrumbs'][] = ['label' => 'Listagem de Processo Licitatórios', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Processo Licitatórios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Atualizar';
 ?>

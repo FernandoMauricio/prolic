@@ -53,7 +53,7 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
         'summary' => 'Mostrando <strong>{begin}-{end}</strong> de <strong>{totalCount}</strong> itens',
         'panel' => [
             'type' => $panelType,
-            'heading' => '<i class="bi bi-table me-2"></i>Listagem de Segmentos',
+            'heading' => '<i class="bi bi-table me-2"></i>Segmentos',
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],

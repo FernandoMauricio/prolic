@@ -12,7 +12,7 @@ use yii\bootstrap5\Accordion;
 /* @var $searchModel app\models\processolicitatorio\ProcessoLicitatorioSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Acompanhamento de Processos Licitatórios';
+$this->title = 'Processos Licitatórios';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

@@ -222,7 +222,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
                 FROM unidade_uni
                 WHERE uni_codunidade IN (" . implode(',', $placeholders) . ")";
 
-        $result = Yii::$app->db->createCommand($sql, $params)->queryOne();
+        $result = Yii::$app->db_base->createCommand($sql, $params)->queryOne();
 
         return $result['uni_nomeabreviado'] ?? null;
     }

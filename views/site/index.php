@@ -1,22 +1,104 @@
 <?php
 
-/* @var $this yii\web\View */
+use yii\helpers\Html;
+use yii\helpers\Url;
 
+/** @var yii\web\View $this */
+$session = Yii::$app->session;
 $this->title = 'Processos Licitatórios - PROLIC';
 ?>
-<div class="site-index">
 
-    <div class="jumbotron">
-        <h1>PROLIC</h1>
+<div class="container py-5">
 
-        <p class="lead">Acompanhamento de Processos Licitatórios.</p>
-
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">
+            <i class="bi bi-file-earmark-text-fill me-2"></i> PROLIC
+        </h1>
+        <p class="lead text-muted">Sistema de Acompanhamento de Processos Licitatórios</p>
     </div>
 
-    <div class="body-content">
+    <div class="row g-4 justify-content-center">
 
-        <div class="row">
-        </div>
+        <?php if ($session['sess_codunidade'] == 6): ?>
+            <!-- Admin - Cards completos -->
+
+            <!-- Processos Licitatórios -->
+            <div class="col-md-4">
+                <a href="<?= Url::to(['/processolicitatorio/processo-licitatorio/index']) ?>" class="text-decoration-none">
+                    <div class="card bg-light shadow-lg border-0 hover-shadow rounded-4 h-100 p-4">
+                        <div class="card-body text-center">
+                            <i class="bi bi-clipboard-data text-info display-4 mb-3"></i>
+                            <h5 class="card-title text-dark">Processos Licitatórios</h5>
+                            <p class="card-text text-muted">Gerencie todos os processos cadastrados.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Agenda -->
+            <div class="col-md-4">
+                <a href="<?= Url::to(['/processolicitatorio/agenda/index']) ?>" class="text-decoration-none">
+                    <div class="card bg-light shadow-lg border-0 hover-shadow rounded-4 h-100 p-4">
+                        <div class="card-body text-center">
+                            <i class="bi bi-calendar3 text-success display-4 mb-3"></i>
+                            <h5 class="card-title text-dark">Agenda de Compromissos</h5>
+                            <p class="card-text text-muted">Gerencie datas e eventos dos processos.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Dashboard -->
+            <div class="col-md-4">
+                <a href="<?= Url::to(['/processolicitatorio/dashboard/index']) ?>" class="text-decoration-none">
+                    <div class="card bg-light shadow-lg border-0 hover-shadow rounded-4 h-100 p-4">
+                        <div class="card-body text-center">
+                            <i class="bi bi-bar-chart-line-fill text-warning display-4 mb-3"></i>
+                            <h5 class="card-title text-dark">Acompanhamento</h5>
+                            <p class="card-text text-muted">Visualize relatórios e análises de dados.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Parâmetros -->
+            <div class="col-md-4">
+                <a href="<?= Url::to(['/site/parametros']) ?>" class="text-decoration-none">
+                    <div class="card bg-light shadow-lg border-0 hover-shadow rounded-4 h-100 p-4">
+                        <div class="card-body text-center">
+                            <i class="bi bi-sliders text-secondary display-4 mb-3"></i>
+                            <h5 class="card-title text-dark">Parâmetros</h5>
+                            <p class="card-text text-muted">Configure artigos, modalidades, empresas e mais.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        <?php else: ?>
+            <!-- Usuário comum - apenas consulta -->
+            <div class="col-md-6">
+                <a href="<?= Url::to(['/processolicitatorio/processo-licitatorio/consulta-processos-licitatorios']) ?>" class="text-decoration-none">
+                    <div class="card bg-light shadow-lg border-0 hover-shadow rounded-4 h-100 p-4">
+                        <div class="card-body text-center">
+                            <i class="bi bi-file-text-fill text-primary display-4 mb-3"></i>
+                            <h5 class="card-title text-dark">Consultar Processos</h5>
+                            <p class="card-text text-muted">Acesse os processos licitatórios disponíveis para consulta.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <?php endif; ?>
 
     </div>
 </div>
+
+<style>
+    .hover-shadow {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .hover-shadow:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15);
+    }
+</style>

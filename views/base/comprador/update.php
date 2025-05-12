@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\base\Comprador */
 
-$this->title = 'Atualizar Comprador: '.$model->comp_descricao.'';
-$this->params['breadcrumbs'][] = ['label' => 'Listagem de Compradores', 'url' => ['index']];
+$this->title = 'Atualizar Comprador: ' . $model->comp_descricao . '';
+$this->params['breadcrumbs'][] = ['label' => 'Compradores', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id];
 $this->params['breadcrumbs'][] = 'Atualizar';
 ?>

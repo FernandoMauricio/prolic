@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\base\Artigo */
 
-$this->title = 'Atualizar Artigo: '.$model->id.'';
-$this->params['breadcrumbs'][] = ['label' => 'Listagem de Artigos', 'url' => ['index']];
+$this->title = 'Atualizar Artigo: ' . $model->id . '';
+$this->params['breadcrumbs'][] = ['label' => 'Artigos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id];
 $this->params['breadcrumbs'][] = 'Atualizar';
 ?>

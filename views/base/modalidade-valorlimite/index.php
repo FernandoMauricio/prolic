@@ -11,6 +11,7 @@ use app\models\base\Ano;
 use app\models\base\Ramo;
 
 $this->title = 'Valor Limite por Modalidade';
+$this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 $this->params['breadcrumbs'][] = $this->title;
 
 // Tabs - status da aba ativa

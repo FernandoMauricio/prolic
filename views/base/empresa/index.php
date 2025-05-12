@@ -8,12 +8,14 @@ use kartik\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Listagem de Empresas';
+$this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="empresa-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); 
+    ?>
 
     <p>
         <?= Html::a('Nova Empresa', ['create'], ['class' => 'btn btn-success']) ?>
@@ -27,12 +29,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'emp_descricao',
             [
-                'class'=>'kartik\grid\BooleanColumn',
-                'attribute'=>'emp_status', 
-                'vAlign'=>'middle'
-            ], 
+                'class' => 'kartik\grid\BooleanColumn',
+                'attribute' => 'emp_status',
+                'vAlign' => 'middle'
+            ],
 
-            ['class' => 'yii\grid\ActionColumn','template' => '{update}'],
+            ['class' => 'yii\grid\ActionColumn', 'template' => '{update}'],
         ],
     ]); ?>
 </div>

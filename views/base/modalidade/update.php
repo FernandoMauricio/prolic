@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\base\Modalidade */
 
-$this->title = 'Atualizar Modalidade:'.$model->id.'';
-$this->params['breadcrumbs'][] = ['label' => 'Listagem de Modalidades', 'url' => ['index']];
+$this->title = 'Atualizar Modalidade:' . $model->id . '';
+$this->params['breadcrumbs'][] = ['label' => 'Modalidades', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id];
 $this->params['breadcrumbs'][] = 'Atualizar';
 ?>

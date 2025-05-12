@@ -199,9 +199,32 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
 
     public function getUnidades($prolic_destino)
     {
-        $sql = "SELECT GROUP_CONCAT(uni_nomeabreviado SEPARATOR ', ') AS uni_nomeabreviado FROM unidade_uni WHERE uni_codunidade IN($prolic_destino)";
-        $return = Unidades::findBySQL($sql)->one();
-        return $return['uni_nomeabreviado'];
+        // Se for string separada por vírgula, converte para array
+        if (is_string($prolic_destino)) {
+            $prolic_destino = array_filter(array_map('trim', explode(',', $prolic_destino)));
+        }
+
+        // Se estiver vazio, retorna null ou texto padrão
+        if (empty($prolic_destino)) {
+            return null;
+        }
+
+        // Cria placeholders para parâmetros vinculados
+        $placeholders = [];
+        $params = [];
+        foreach ($prolic_destino as $index => $id) {
+            $key = ":id$index";
+            $placeholders[] = $key;
+            $params[$key] = (int)$id;
+        }
+
+        $sql = "SELECT GROUP_CONCAT(uni_nomeabreviado SEPARATOR ', ') AS uni_nomeabreviado
+                FROM unidade_uni
+                WHERE uni_codunidade IN (" . implode(',', $placeholders) . ")";
+
+        $result = Yii::$app->db->createCommand($sql, $params)->queryOne();
+
+        return $result['uni_nomeabreviado'] ?? null;
     }
 
     //FUNÇÃO PARA COVERTER NUMERO POR EXTENSO

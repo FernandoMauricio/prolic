@@ -7,7 +7,8 @@ use yii\helpers\Html;
 /* @var $model app\models\base\Comprador */
 
 $this->title = 'Novo Comprador';
-$this->params['breadcrumbs'][] = ['label' => 'Listagem de Compradores', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
+$this->params['breadcrumbs'][] = ['label' => 'Compradores', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="comprador-create">

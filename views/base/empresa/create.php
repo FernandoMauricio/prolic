@@ -7,6 +7,7 @@ use yii\helpers\Html;
 /* @var $model app\models\base\Empresa */
 
 $this->title = 'Create Empresa';
+$this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 $this->params['breadcrumbs'][] = ['label' => 'Empresas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

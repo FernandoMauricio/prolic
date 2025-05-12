@@ -7,7 +7,8 @@ use yii\helpers\Html;
 /* @var $model app\models\base\Ano */
 
 $this->title = 'Novo Ano';
-$this->params['breadcrumbs'][] = ['label' => 'Listagem de Anos', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
+$this->params['breadcrumbs'][] = ['label' => 'Anos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="ano-create">

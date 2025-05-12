@@ -7,7 +7,8 @@ use yii\helpers\Html;
 /* @var $model app\models\base\Artigo */
 
 $this->title = 'Novo Artigo';
-$this->params['breadcrumbs'][] = ['label' => 'Listagem de Artigos', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
+$this->params['breadcrumbs'][] = ['label' => 'Artigos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="artigo-create">

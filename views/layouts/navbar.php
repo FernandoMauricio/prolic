@@ -29,7 +29,7 @@ echo NavX::widget([
                     ['label' => '<i class="bi bi-buildings"></i> Empresa', 'url' => ['/base/empresa/index']],
                     ['label' => '<i class="bi bi-person"></i> Comprador', 'url' => ['/base/comprador/index']],
                     ['label' => '<i class="bi bi-tag-fill"></i> Modalidade', 'url' => ['/base/modalidade/index']],
-                    ['label' => '<i class="bi bi-tags"></i> Valor Limite', 'url' => ['/base/modalidade-valorlimite/index']],
+                    ['label' => '<i class="bi bi-graph-up-arrow"></i> Valor Limite', 'url' => ['/base/modalidade-valorlimite/index']],
                     ['label' => '<i class="bi bi-diagram-2"></i> Segmento', 'url' => ['/base/ramo/index']],
                     ['label' => '<i class="bi bi-lightning-charge-fill"></i> Recursos', 'url' => ['/base/recursos/index']],
                 ]],

@@ -143,16 +143,19 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     public static function getLimiteSubCat($cat_id, $ramo_id = null)
     {
         $query = ModalidadeValorlimite::find()
-            ->joinWith('ramo', false, 'INNER JOIN')
+            ->joinWith(['ramo', 'ano'], false, 'INNER JOIN')
             ->where(['modalidade_id' => $cat_id])
             ->andWhere(['IS NOT', 'homologacao_usuario', null])
-            ->andWhere(['=', 'ano_id', 8]);
+            ->andWhere(['ano.an_ano' => date('Y')]);
 
         if ($ramo_id) {
             $query->andWhere(['ramo_id' => $ramo_id]);
         }
 
-        $data = $query->select(['modalidade_valorlimite.id AS id', 'ramo.ram_descricao AS name'])
+        $data = $query->select([
+            'modalidade_valorlimite.id AS id',
+            'ramo.ram_descricao AS name'
+        ])
             ->asArray()
             ->all();
 

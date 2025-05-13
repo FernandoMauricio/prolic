@@ -79,7 +79,7 @@ class ArtigoController extends Controller
             return ['success' => false, 'message' => 'Artigo não encontrado'];
         }
 
-        $model->art_status = !$model->art_status;
+        $model->art_status = $model->art_status ? 0 : 1;
 
         if ($model->save(false)) {
             return ['success' => true, 'status' => $model->art_status];

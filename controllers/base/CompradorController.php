@@ -79,7 +79,7 @@ class CompradorController extends Controller
             return ['success' => false, 'message' => 'Comprador não encontrado'];
         }
 
-        $model->comp_status = !$model->comp_status;
+        $model->comp_status = $model->comp_status ? 0 : 1;
 
         if ($model->save(false)) {
             return ['success' => true, 'status' => $model->comp_status];

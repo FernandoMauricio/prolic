@@ -79,7 +79,7 @@ class RamoController extends Controller
             return ['success' => false, 'message' => 'Segmento não encontrado'];
         }
 
-        $model->ram_status = !$model->ram_status;
+        $model->ram_status = $model->ram_status ? 0 : 1;
 
         if ($model->save(false)) {
             return ['success' => true, 'status' => $model->ram_status];

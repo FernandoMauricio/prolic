@@ -79,7 +79,7 @@ class AnoController extends Controller
             return ['success' => false, 'message' => 'Ano não encontrado'];
         }
 
-        $model->an_status = !$model->an_status;
+        $model->an_status = $model->an_status ? 0 : 1;
 
         if ($model->save(false)) {
             return ['success' => true, 'status' => $model->an_status];

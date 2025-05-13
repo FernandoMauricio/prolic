@@ -193,13 +193,19 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{homologar} {delete}',
+                'template' => '{view} {homologar} {delete}',
                 'header' => 'Ações',
-                'contentOptions' => ['class' => 'text-center', 'width' => '110px'],
+                'contentOptions' => ['class' => 'text-center', 'width' => '130px'],
                 'buttons' => [
+                    'view' => function ($url, $model) {
+                        return Html::a('<i class="bi bi-eye-fill"></i>', $url, [
+                            'class' => 'btn btn-outline-primary btn-sm',
+                            'title' => 'Visualizar Valor Limite',
+                        ]);
+                    },
                     'homologar' => function ($url, $model) {
                         if (!empty($model->homologacao_usuario) || !empty($model->homologacao_data)) {
-                            return ''; // já homologado, não exibe botão
+                            return ''; // já homologado
                         }
 
                         return Html::a('<i class="bi bi-patch-check-fill"></i>', $url, [
@@ -211,10 +217,9 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                             ],
                         ]);
                     },
-
                     'delete' => function ($url, $model) {
                         if ($model->getProcessos()->exists()) {
-                            return ''; // tem vínculo com processo, não exibe botão
+                            return ''; // não pode excluir se tiver processo
                         }
 
                         return Html::a('<i class="bi bi-trash3"></i>', $url, [
@@ -227,8 +232,8 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                         ]);
                     },
                 ],
-
             ],
+
         ],
     ]); ?>
 

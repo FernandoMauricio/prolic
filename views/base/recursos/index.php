@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\base\RecursosSearch */
@@ -46,7 +47,7 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
             display: none !important;
         }
     </style>
-
+    <?php Pjax::begin(['id' => 'pjax-grid-recurso']); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,
@@ -68,11 +69,35 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                 'format'    => 'raw',
                 'value'     => fn($model) => Html::encode($model->rec_descricao),
             ],
+
             [
-                'class'     => 'kartik\grid\BooleanColumn',
                 'attribute' => 'rec_status',
-                'vAlign'    => 'middle',
+                'format' => 'raw',
+                'label' => 'Ativo',
+                'filter' => [
+                    1 => 'Ativo',
+                    0 => 'Inativo',
+                ],
+                'contentOptions' => ['class' => 'text-center'],
+                'value' => function ($model) {
+                    $id = $model->id;
+                    $switchId = "switch-status-recurso-$id";
+                    return Html::tag(
+                        'div',
+                        Html::checkbox('status', $model->rec_status, [
+                            'class' => 'form-check-input status-switch',
+                            'id' => $switchId,
+                            'role' => 'switch',
+                            'data-id' => $id,
+                            'data-url' => Url::to(['base/recursos/toggle-status']),
+                            'data-container' => '#pjax-grid-recurso',
+                        ]) .
+                            Html::label('', $switchId, ['class' => 'form-check-label']),
+                        ['class' => 'form-check form-switch d-inline-block']
+                    );
+                },
             ],
+
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{update}',
@@ -87,4 +112,5 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
             ],
         ],
     ]); ?>
+    <?php Pjax::end(); ?>
 </div>

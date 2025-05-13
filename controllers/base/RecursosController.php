@@ -65,6 +65,29 @@ class RecursosController extends Controller
         ]);
     }
 
+    public function actionToggleStatus()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+        if (!$id) {
+            return ['success' => false, 'message' => 'ID ausente'];
+        }
+
+        $model = Recursos::findOne($id);
+        if (!$model) {
+            return ['success' => false, 'message' => 'Recurso não encontrado'];
+        }
+
+        $model->rec_status = $model->rec_status ? 0 : 1;
+
+        if ($model->save(false)) {
+            return ['success' => true, 'status' => $model->rec_status];
+        }
+
+        return ['success' => false, 'message' => 'Erro ao salvar'];
+    }
+
     /**
      * Creates a new Recursos model.
      * If creation is successful, the browser will be redirected to the 'view' page.

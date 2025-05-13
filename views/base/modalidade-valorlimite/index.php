@@ -197,18 +197,24 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                 'header' => 'Ações',
                 'contentOptions' => ['class' => 'text-center', 'width' => '110px'],
                 'buttons' => [
-                    'homologar' => fn($url) =>
-                    Html::a('<i class="bi bi-patch-check-fill"></i>', $url, [
-                        'class' => 'btn btn-outline-success btn-sm',
-                        'title' => 'Homologar Valor',
-                        'data' => [
-                            'confirm' => 'Você deseja <b>homologar</b> este valor limite?',
-                            'method' => 'post',
-                        ],
-                    ]),
+                    'homologar' => function ($url, $model) {
+                        if (!empty($model->homologacao_usuario) || !empty($model->homologacao_data)) {
+                            return ''; // já homologado, não exibe botão
+                        }
+
+                        return Html::a('<i class="bi bi-patch-check-fill"></i>', $url, [
+                            'class' => 'btn btn-outline-success btn-sm',
+                            'title' => 'Homologar Valor',
+                            'data' => [
+                                'confirm' => 'Você deseja <b>homologar</b> este valor limite?',
+                                'method' => 'post',
+                            ],
+                        ]);
+                    },
+
                     'delete' => function ($url, $model) {
                         if ($model->getProcessos()->exists()) {
-                            return ''; // não exibe o botão
+                            return ''; // tem vínculo com processo, não exibe botão
                         }
 
                         return Html::a('<i class="bi bi-trash3"></i>', $url, [
@@ -221,6 +227,7 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                         ]);
                     },
                 ],
+
             ],
         ],
     ]); ?>

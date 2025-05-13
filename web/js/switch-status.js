@@ -26,18 +26,21 @@ $(document).on('change', '.status-switch', function () {
 
 function showToast(message, type) {
     const toast = $(`
-        <div class="toast align-items-center text-white bg-${type} border-0 show position-fixed bottom-0 end-0 m-3 shadow" role="alert">
-            <div class="d-flex">
+        <div class="toast align-items-center text-white bg-${type} border-0 show position-fixed top-0 end-0 shadow fs-5"
+             role="alert" style="z-index: 1080; margin-top: 6.5rem; min-width: 320px; padding: 1rem 1.25rem;">
+            <div class="d-flex align-items-center">
                 <div class="toast-body">${message}</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="toast"></button>
             </div>
         </div>
     `);
 
     $('body').append(toast);
+
     setTimeout(() => {
         toast.fadeOut(500, function () {
             $(this).remove();
         });
     }, 2500);
 }
+

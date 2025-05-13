@@ -75,7 +75,7 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
         </li>
     </ul>
 
-    <?php Pjax::begin(); ?>
+    <?php Pjax::begin(['id' => 'pjax-grid']); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -171,11 +171,6 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
             ],
 
             [
-                'attribute' => 'homologacao_usuario',
-                'label' => 'Usuário<br>Homologação',
-                'encodeLabel' => false,
-            ],
-            [
                 'attribute' => 'homologacao_data',
                 'label' => 'Data<br>Homologação',
                 'encodeLabel' => false,
@@ -190,10 +185,33 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
             ],
 
             [
-                'class' => 'kartik\grid\BooleanColumn',
                 'attribute' => 'status',
-                'vAlign' => 'middle',
+                'format' => 'raw',
+                'label' => 'Ativo',
+                'filter' => [
+                    1 => 'Ativo',
+                    0 => 'Inativo',
+                ],
+                'contentOptions' => ['class' => 'text-center'],
+                'value' => function ($model) {
+                    $checked = $model->status ? 'checked' : '';
+                    $id = $model->id;
+                    $switchId = "switch-status-$id";
+
+                    return Html::tag(
+                        'div',
+                        Html::checkbox('status', $model->status, [
+                            'class' => 'form-check-input status-switch',
+                            'id' => $switchId,
+                            'role' => 'switch',
+                            'data-id' => $id,
+                        ]) .
+                            Html::label('', $switchId, ['class' => 'form-check-label']),
+                        ['class' => 'form-check form-switch d-inline-block']
+                    );
+                },
             ],
+
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {homologar} {delete}',
@@ -273,3 +291,55 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
 </div>
 
 <?php \yii\bootstrap5\Modal::end(); ?>
+
+<?php
+$toggleUrl = Url::to(['base/modalidade-valorlimite/toggle-status']);
+$this->registerJs(<<<JS
+    $(document).on('change', '.status-switch', function () {
+        const checkbox = $(this);
+        const id = checkbox.data('id');
+
+        $.ajax({
+            url: '$toggleUrl',
+            type: 'POST',
+            data: { id: id },
+            success: function (data) {
+                if (!data.success) {
+                    showToast('Erro ao atualizar status.', 'danger');
+                    checkbox.prop('checked', !checkbox.prop('checked'));
+                } else {
+                    const msg = data.status ? 'Ativado com sucesso.' : 'Desativado com sucesso.';
+                    showToast(msg, 'success');
+
+                    // Recarrega a grid após alteração do status, independente de ser ativação ou desativação
+                    $.pjax.reload({container: '#pjax-grid', timeout: 2000});
+                }
+            },
+            error: function () {
+                showToast('Erro de comunicação com o servidor.', 'danger');
+                checkbox.prop('checked', !checkbox.prop('checked'));
+            }
+        });
+    });
+
+    function showToast(message, type) {
+        const toast = $(`
+            <div class="toast align-items-center text-white bg-\${type} border-0 show position-fixed bottom-0 end-0 m-3 shadow" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">\${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `);
+
+        $('body').append(toast);
+
+        setTimeout(() => {
+            toast.fadeOut(500, function () {
+                $(this).remove();
+            });
+        }, 2500);
+    }
+JS);
+
+?>

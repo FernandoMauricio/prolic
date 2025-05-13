@@ -96,8 +96,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
                 'operator'         => '<=',
                 'type'             => 'number',
                 'when'             => function ($model) {
-                    return $model->artigo->art_tipo == 'Valor'
-                        && $model->modalidadeValorlimite->tipo == 0;
+                    return $model->artigo->art_tipo == 'Valor';
                 },
                 'message'          => 'Ultrapassa valor limite!'
             ],
@@ -108,8 +107,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
                 'operator'         => '<',
                 'type'             => 'number',
                 'when'             => function ($model) {
-                    return $model->artigo->art_tipo == 'Valor'
-                        && $model->modalidadeValorlimite->tipo == 0;
+                    return $model->artigo->art_tipo == 'Valor';
                 },
                 'message'          => 'Modalidade sem saldo!'
             ],

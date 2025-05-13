@@ -115,6 +115,25 @@ class ModalidadeValorlimiteController extends Controller
         }
     }
 
+    public function actionToggleStatus()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id'); // ← aqui é POST
+        if (!$id) {
+            return ['success' => false, 'error' => 'ID não informado'];
+        }
+
+        $model = $this->findModel($id);
+        $model->status = !$model->status;
+
+        if ($model->save(false)) {
+            return ['success' => true, 'status' => $model->status];
+        }
+
+        return ['success' => false];
+    }
+
     /**
      * Creates a new ModalidadeValorlimite model.
      * If creation is successful, the browser will be redirected to the 'view' page.

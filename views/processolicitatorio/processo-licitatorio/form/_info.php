@@ -42,10 +42,10 @@ use yii\web\JsExpression;
         <?= $form->field($model, 'prolic_codmxm')->widget(Select2::class, [
             'options' => [
                 'id' => 'processolicitatorio-prolic_codmxm',
-                'multiple' => true,  // Permite selecionar múltiplos itens
+                'multiple' => true,
                 'placeholder' => 'Digite o número da requisição...',
             ],
-            'value' => is_array($model->prolic_codmxm) ? $model->prolic_codmxm : explode(';', $model->prolic_codmxm),
+            'data' =>  array_combine($model->prolic_codmxm, $model->prolic_codmxm),
             'pluginOptions' => [
                 'allowClear' => true,
                 'minimumInputLength' => 5,
@@ -64,17 +64,6 @@ use yii\web\JsExpression;
 <div class="col-lg-12">
     <?= $form->field($model, 'prolic_objeto')->textarea(['rows' => 3]) ?>
 </div>
-
-<script>
-    // Transformar a seleção do Select2 em texto separado por ponto e vírgula
-    $('#processolicitatorio-prolic_codmxm').on('change', function() {
-        var selectedValues = $(this).val(); // Pega as opções selecionadas
-        if (selectedValues) {
-            // Junta os valores com ponto e vírgula
-            $('#processolicitatorio-prolic_codmxm').val(selectedValues.join('; '));
-        }
-    });
-</script>
 
 <script>
     // Verifique se o valor de $model->prolic_codmxm é uma string e aplique explode() ou use o valor diretamente

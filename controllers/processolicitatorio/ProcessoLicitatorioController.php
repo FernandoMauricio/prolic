@@ -301,26 +301,20 @@ class ProcessoLicitatorioController extends Controller
         return ['success' => false];
     }
 
-    public function actionBuscarRequisicaoOpcao($term = '')
+    public function actionBuscarRequisicaoOpcao($term = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        if (strlen($term) < 5) {
+        if (empty($term) || strlen(trim($term)) < 5) {
             return ['results' => []];
         }
 
-        $dados = WebManagerService::consultarPedidoRequisicao('02', $term);
-
-        if (!empty($dados)) {
-            return [
-                'results' => [[
-                    'id' => $term,
-                    'text' => $term . ' - ' . ($dados['requisitante'] ?? 'Desconhecido')
-                ]]
-            ];
-        }
-
-        return ['results' => []];
+        return [
+            'results' => [[
+                'id' => $term,
+                'text' => $term,
+            ]]
+        ];
     }
 
     /**
@@ -422,19 +416,30 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_codmxm = is_array($model->prolic_codmxm) ? array_map('trim', $model->prolic_codmxm) : (is_string($model->prolic_codmxm) ? array_map('trim', explode(';', $model->prolic_codmxm)) : []);
 
         if ($model->load(Yii::$app->request->post())) {
+            Yii::error('POST prolic_codmxm: ' . var_export($model->prolic_codmxm, true), 'postDebug');
             $this->ajustarSequenciaModalidade($model);
 
             // Ao salvar, converte os arrays de volta para strings
             $model->prolic_destino = implode(',', $model->prolic_destino);
             $model->prolic_centrocusto = implode(',', $model->prolic_centrocusto);
             $model->prolic_empresa = $this->formatarEmpresasParaSalvar($model->prolic_empresa);
-            $model->prolic_codmxm = implode(';', $model->prolic_codmxm);
+            $model->prolic_codmxm = implode(';', array_filter(array_map('trim', (array) $model->prolic_codmxm), fn($v) => $v !== ''));
 
             if ($model->validate()) {
                 $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
+
+        if (is_string($model->prolic_codmxm)) {
+            $model->prolic_codmxm = explode(';', $model->prolic_codmxm);
+        }
+
+        // Blindagem total com limpeza e reindexação
+        $model->prolic_codmxm = array_values(
+            array_filter(array_map('trim', (array) $model->prolic_codmxm), fn($v) => $v !== '')
+        );
+
 
         return $this->render('update', array_merge(
             [

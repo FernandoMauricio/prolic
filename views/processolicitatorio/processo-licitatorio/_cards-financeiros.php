@@ -3,44 +3,8 @@
 use yii\web\View;
 use yii\helpers\Html;
 
+$this->registerCssFile('@web/css/valores-cards.css');
 ?>
-
-<style>
-    .card .card-body h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        line-height: 1.1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: unset;
-    }
-
-    .card .card-body h2.texto-ajustado {
-        font-size: 1.0rem !important;
-    }
-
-    .card .card-body h6.card-subtitle {
-        font-size: 1rem;
-        margin-bottom: .5rem;
-    }
-
-    .card .card-body .card-subtitle {
-        color: #6c757d;
-    }
-
-    #card-saldo.text-bg-success .card-subtitle,
-    #card-saldo.text-bg-danger .card-subtitle {
-        color: rgba(255, 255, 255, 0.85) !important;
-    }
-
-    #card-saldo.text-bg-warning .card-subtitle {
-        color: rgba(0, 0, 0, 0.75) !important;
-    }
-
-    .card .card-body {
-        padding: 1.25rem;
-    }
-</style>
 
 <div class="row g-3 mb-4">
     <!-- Valor Limite -->

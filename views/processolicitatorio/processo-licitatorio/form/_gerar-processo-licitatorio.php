@@ -26,7 +26,7 @@ $form = ActiveForm::begin([
     'options' => ['class' => 'h-100', 'enctype' => 'multipart/form-data'],
 ]);
 $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [JqueryAsset::class]]);
-$this->registerCssFile('@web/css/processolicitatorio.css');
+$this->registerCssFile('@web/css/valores-cards.css');
 $this->registerJsFile('@web/js/valores-cards.js', ['depends' => [JqueryAsset::class]]);
 $this->registerJsFile('@web/js/saldo-validacao.js', ['depends' => [JqueryAsset::class]]);
 $this->registerJsFile('@web/js/alertas.js', ['depends' => [\yii\web\JqueryAsset::class]]);

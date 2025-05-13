@@ -80,7 +80,7 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                     return Html::tag(
                         'div',
                         Html::checkbox('status', $model->ram_status, [
-                            'class' => 'form-check-input status-switch',
+                            'class' => 'form-check-input status-switch switch-lg',
                             'id' => $switchId,
                             'role' => 'switch',
                             'data-id' => $id,

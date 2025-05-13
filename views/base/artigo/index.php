@@ -170,7 +170,7 @@ $status = Yii::$app->request->get('status', 1);
                     return Html::tag(
                         'div',
                         Html::checkbox('status', $model->art_status, [
-                            'class' => 'form-check-input status-switch',
+                            'class' => 'form-check-input status-switch switch-lg',
                             'id' => $switchId,
                             'role' => 'switch',
                             'data-id' => $id,

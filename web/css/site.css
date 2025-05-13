@@ -267,3 +267,9 @@ a.desc:after {
     padding-bottom: 0.35rem;
     vertical-align: middle;
 }
+
+.switch-lg {
+    transform: scale(1.5);
+    margin-right: 0.5rem;
+}
+

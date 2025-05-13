@@ -201,7 +201,7 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                     return Html::tag(
                         'div',
                         Html::checkbox('status', $model->status, [
-                            'class' => 'form-check-input status-switch',
+                            'class' => 'form-check-input status-switch switch-lg',
                             'data-id' => $model->id,
                             'data-url' => Url::to(['base/modalidade-valorlimite/toggle-status']),
                             'data-container' => '#pjax-grid',

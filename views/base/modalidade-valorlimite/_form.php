@@ -98,6 +98,7 @@ use kartik\money\MaskMoney;
 
                     <div class="row g-3 mt-3">
                         <div class="col-md-6">
+                            <!-- Campo oculto para envio -->
                             <?= $form->field($model, 'valor_limite')->hiddenInput()->label(false) ?>
 
                             <!-- Card verde -->
@@ -124,13 +125,9 @@ use kartik\money\MaskMoney;
                         </div>
                     </div>
 
-
                     <!-- Campo de valor -->
                     <div class="row g-3 mt-2">
                         <div class="col-md-6">
-                            <!-- Campo oculto para envio -->
-                            <?= $form->field($model, 'valor_limite')->textInput()->label(false) ?>
-
                             <!-- Card verde (valor definido) -->
                             <div id="card-valor-definido" class="card bg-success bg-opacity-25 border-0 mt-2 d-none">
                                 <div class="card-body py-2 px-3 d-flex align-items-center">

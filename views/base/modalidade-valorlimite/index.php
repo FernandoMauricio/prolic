@@ -62,9 +62,6 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                 'label' => 'Tipo de<br> Modalidade',
                 'encodeLabel' => false,
                 'format' => 'raw',
-                'value' => fn($model) => Html::tag(
-                    $model->tipo_modalidade
-                ),
                 'filterType' => GridView::FILTER_SELECT2,
                 'filter' => [
                     'Obras e serviços de engenharia' => 'Obras e serviços de engenharia',
@@ -102,24 +99,65 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                 'attribute' => 'valor_limite',
                 'format' => 'raw',
                 'hAlign' => 'right',
-                'value' => fn($model) => Html::tag(
-                    'span',
-                    \yii\helpers\StringHelper::truncate(Yii::$app->formatter->asCurrency($model->valor_limite), 15),
-                    ['title' => Yii::$app->formatter->asCurrency($model->valor_limite)]
-                ),
+                'value' => function ($model) {
+                    $tetoIlimitado = $model->valor_limite >= 999999999.99;
+                    return $tetoIlimitado
+                        ? Html::tag('span', '(não aplicável)', ['class' => 'text-muted fst-italic'])
+                        : Html::tag(
+                            'span',
+                            Yii::$app->formatter->asCurrency($model->valor_limite),
+                            ['title' => Yii::$app->formatter->asCurrency($model->valor_limite)]
+                        );
+                },
             ],
-            'homologacao_usuario',
+
             [
-                'attribute' => 'homologacao_data',
-                'format' => ['date', 'php:d/m/Y'],
-                'hAlign' => 'center',
-                'filter' => DatePicker::widget([
-                    'model' => $searchModel,
-                    'attribute' => 'homologacao_data',
-                    'type' => DatePicker::TYPE_COMPONENT_APPEND,
-                    'pluginOptions' => ['autoclose' => true, 'format' => 'yyyy-mm-dd'],
-                ]),
+                'label' => 'Limite Apurado',
+                'format' => 'raw',
+                'hAlign' => 'right',
+                'value' => function ($model) {
+                    $apurado = $model->valorApurado;
+                    return Html::tag(
+                        'span',
+                        Yii::$app->formatter->asCurrency($apurado),
+                        ['title' => Yii::$app->formatter->asCurrency($apurado)]
+                    );
+                },
             ],
+            [
+                'label' => 'Saldo',
+                'format' => 'raw',
+                'hAlign' => 'right',
+                'value' => function ($model) {
+                    if ($model->valor_limite >= 999999999.99) {
+                        return Html::tag('span', '(não aplicável)', ['class' => 'text-muted fst-italic']);
+                    }
+
+                    $apurado = $model->valorApurado;
+                    $saldo = $model->valor_limite - $apurado;
+                    $classe = $saldo >= 0 ? 'text-success' : 'text-danger';
+
+                    return Html::tag(
+                        'span',
+                        Yii::$app->formatter->asCurrency($saldo),
+                        ['class' => $classe, 'title' => 'Saldo disponível']
+                    );
+                },
+            ],
+
+
+            // 'homologacao_usuario',
+            // [
+            //     'attribute' => 'homologacao_data',
+            //     'format' => ['date', 'php:d/m/Y'],
+            //     'hAlign' => 'center',
+            //     'filter' => DatePicker::widget([
+            //         'model' => $searchModel,
+            //         'attribute' => 'homologacao_data',
+            //         'type' => DatePicker::TYPE_COMPONENT_APPEND,
+            //         'pluginOptions' => ['autoclose' => true, 'format' => 'yyyy-mm-dd'],
+            //     ]),
+            // ],
             [
                 'class' => 'kartik\grid\BooleanColumn',
                 'attribute' => 'status',

@@ -55,7 +55,7 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['modalidade_id', 'ramo_id', 'ano_id', 'valor_limite', 'status'], 'required'],
+            [['modalidade_id', 'ramo_id', 'ano_id', 'valor_limite', 'status', 'tipo_modalidade'], 'required'],
             [['modalidade_id', 'ramo_id', 'ano_id', 'status'], 'integer'],
             [['valor_limite'], 'number'],
             [['homologacao_data'], 'safe'],
@@ -94,6 +94,14 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
             'tipo_modalidade' => 'Tipo de Modalidade',
         ];
     }
+
+    public function getValorApurado()
+    {
+        return (float) \app\models\processolicitatorio\ProcessoLicitatorio::find()
+            ->where(['modalidade_valorlimite_id' => $this->id])
+            ->sum('prolic_valorestimado + prolic_valoraditivo');
+    }
+
 
     public static function getTiposModalidade()
     {

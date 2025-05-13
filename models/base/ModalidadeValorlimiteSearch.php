@@ -76,8 +76,8 @@ class ModalidadeValorlimiteSearch extends ModalidadeValorlimite
             'status' => $this->status,
         ]);
 
-        $query->andFilterWhere(['like', 'modalidade.mod_descricao', $this->modalidade_id])
-            ->andFilterWhere(['like', 'ramo.ram_descricao', $this->ramo_id])
+        $query->andFilterWhere(['like', 'modalidade.id', $this->modalidade_id])
+            ->andFilterWhere(['ramo.id' => $this->ramo_id])
             ->andFilterWhere(['ano.id' => $this->ano_id])
             ->andFilterWhere(['like', 'homologacao_usuario', $this->homologacao_usuario])
             ->andFilterWhere(['like', 'homologacao_data', $this->homologacao_data])

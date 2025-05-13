@@ -42,8 +42,11 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
         <i class="bi bi-graph-up-arrow"></i> <?= Html::encode($this->title) ?>
     </h1>
 
-    <p class="mb-4">
+    <p class="mb-4 d-flex flex-wrap gap-2">
         <?= Html::a('<i class="bi bi-plus-circle me-1"></i> Novo Valor Limite', ['create'], ['class' => 'btn btn-success shadow-sm']) ?>
+        <button type="button" class="btn btn-outline-dark shadow-sm" data-bs-toggle="modal" data-bs-target="#modalLimitesLegais">
+            <i class="bi bi-info-circle-fill me-1"></i> Ver Limites Legais
+        </button>
     </p>
 
     <ul class="nav nav-tabs mb-3">
@@ -239,3 +242,34 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
 
     <?php Pjax::end(); ?>
 </div>
+<?php
+\yii\bootstrap5\Modal::begin([
+    'id' => 'modalLimitesLegais',
+    'title' => '<i class="bi bi-info-circle-fill me-2"></i> Art. 7.º — Limites legais por tipo de modalidade',
+    'size' => 'modal-lg',
+]);
+?>
+
+<div class="mb-3">
+    <ul class="mb-0 small ps-3">
+        <li><strong>I - Obras e serviços de engenharia:</strong>
+            <ul>
+                <li>CONVITE: até <strong>R$ 2.465.000,00</strong></li>
+                <li>CONCORRÊNCIA: acima de <strong>R$ 2.465.000,00</strong></li>
+            </ul>
+        </li>
+        <li><strong>II - Compras e demais serviços:</strong>
+            <ul>
+                <li>CONVITE: até <strong>R$ 826.000,00</strong></li>
+                <li>CONCORRÊNCIA: acima de <strong>R$ 826.000,00</strong></li>
+            </ul>
+        </li>
+        <li><strong>III - Alienações de bens:</strong>
+            <ul>
+                <li>LEILÃO ou CONCORRÊNCIA: acima de <strong>R$ 92.000,00</strong>, dispensável na fase de habilitação</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<?php \yii\bootstrap5\Modal::end(); ?>

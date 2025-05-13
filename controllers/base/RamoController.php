@@ -65,6 +65,29 @@ class RamoController extends Controller
         ]);
     }
 
+    public function actionToggleStatus()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+        if (!$id) {
+            return ['success' => false, 'message' => 'ID ausente'];
+        }
+
+        $model = Ramo::findOne($id);
+        if (!$model) {
+            return ['success' => false, 'message' => 'Segmento não encontrado'];
+        }
+
+        $model->ram_status = !$model->ram_status;
+
+        if ($model->save(false)) {
+            return ['success' => true, 'status' => $model->ram_status];
+        }
+
+        return ['success' => false, 'message' => 'Erro ao salvar'];
+    }
+
     /**
      * Creates a new Ramo model.
      * If creation is successful, the browser will be redirected to the 'view' page.

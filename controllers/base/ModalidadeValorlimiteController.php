@@ -119,7 +119,7 @@ class ModalidadeValorlimiteController extends Controller
     {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        $id = Yii::$app->request->post('id'); // ← aqui é POST
+        $id = Yii::$app->request->post('id');
         if (!$id) {
             return ['success' => false, 'error' => 'ID não informado'];
         }

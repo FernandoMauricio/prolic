@@ -65,6 +65,29 @@ class ModalidadeController extends Controller
         }
     }
 
+    public function actionToggleStatus()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+        if (!$id) {
+            return ['success' => false, 'message' => 'ID ausente'];
+        }
+
+        $model = Modalidade::findOne($id);
+        if (!$model) {
+            return ['success' => false, 'message' => 'Modalidade não encontrado'];
+        }
+
+        $model->mod_status = !$model->mod_status;
+
+        if ($model->save(false)) {
+            return ['success' => true, 'status' => $model->mod_status];
+        }
+
+        return ['success' => false, 'message' => 'Erro ao salvar'];
+    }
+
     /**
      * Creates a new Modalidade model.
      * If creation is successful, the browser will be redirected to the 'view' page.

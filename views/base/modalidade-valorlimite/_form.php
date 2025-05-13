@@ -129,7 +129,7 @@ use kartik\money\MaskMoney;
                     <div class="row g-3 mt-2">
                         <div class="col-md-6">
                             <!-- Campo oculto para envio -->
-                            <?= $form->field($model, 'valor_limite')->hiddenInput()->label(false) ?>
+                            <?= $form->field($model, 'valor_limite')->textInput()->label(false) ?>
 
                             <!-- Card verde (valor definido) -->
                             <div id="card-valor-definido" class="card bg-success bg-opacity-25 border-0 mt-2 d-none">
@@ -228,7 +228,8 @@ function atualizarValorLimite() {
     }
 
     if (readonly) {
-        campoOculto.val('');
+        // Para modalidades ilimitadas (CONCORRÊNCIA ou LEILÃO em Alienações):
+        campoOculto.val(999999999.99);
         cardDefinido.addClass('d-none');
         cardSemLimite.removeClass('d-none');
         spanFormatado.text('');

@@ -10,6 +10,14 @@ use yii\web\View;
         font-size: 1.5rem;
         font-weight: 600;
         line-height: 1.1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: unset;
+        /* garantido */
+    }
+
+    .card .card-body h2.texto-ajustado {
+        font-size: 1.0rem !important;
     }
 
     /* 2) Ajusta o subtítulo para ficar proporcional ao novo tamanho */
@@ -50,15 +58,17 @@ use yii\web\View;
 
 <div class="row g-3 mb-4">
     <!-- Valor Limite -->
-    <div class="col-lg-4">
-        <div class="card shadow-sm text-center">
+    <div class="col-lg-4" id="card-wrapper-valor-limite">
+        <div class="card shadow-sm text-center" id="card-valor-limite-wrapper">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Valor Limite</h6>
                 <h2
                     id="card-valor-limite"
                     data-valor="<?= $model->valor_limite ?>"
                     class="display-4 mb-0">
-                    <?= Yii::$app->formatter->asCurrency($model->valor_limite) ?>
+                    <?= $model->valor_limite >= 999999999.99
+                        ? '<span class="text-muted fst-italic">(não aplicável)</span>'
+                        : Yii::$app->formatter->asCurrency($model->valor_limite) ?>
                 </h2>
             </div>
         </div>
@@ -123,6 +133,7 @@ $js = <<<'JS'
   window.calcularValores = function() {
     // pega os valores dos mini-cards
     var valorLimite         = parseFloat($('#card-valor-limite').data('valor')) || 0;
+    var semTeto = valorLimite >= 999999999.99;
     var valorLimiteApurado  = parseFloat($('#card-limite-apurado').data('valor')) || 0;
 
     // pega os campos de entrada, removendo qualquer máscara
@@ -135,13 +146,43 @@ $js = <<<'JS'
 
     // *** o cálculo do saldo ***
     var valorSaldo = valorLimite 
-                     - valorLimiteApurado 
-                     - (valorEstimado + valorAdicional);
+                 - valorLimiteApurado 
+                 - (valorEstimado + valorAdicional);
+
+// Ajusta fonte se o número for muito longo (valor limite, saldo, apurado)
+function ajustarFonteSeNecessario(id) {
+    const texto = $(id).text().trim();
+    if (texto.length > 15) {
+        $(id).addClass('texto-ajustado');
+    } else {
+        $(id).removeClass('texto-ajustado');
+    }
+}
+
+ajustarFonteSeNecessario('#card-valor-limite');
+ajustarFonteSeNecessario('#card-limite-apurado');
+ajustarFonteSeNecessario('#card-saldo-valor');
 
   // 1) atualiza mini-card
+  if (semTeto) {
+  $('#card-valor-limite').html('<span class="text-muted fst-italic">(não aplicável)</span>');
+
+  $('#card-valor-limite-wrapper')
+    .removeClass('text-bg-success text-bg-danger text-bg-light')
+    .addClass('text-bg-warning');
+
+  $('#card-saldo-valor').html('<span class="text-muted fst-italic">(não aplicável)</span>').addClass('texto-ajustado');
+  $('#card-saldo')
+    .removeClass('text-bg-success text-bg-danger')
+    .addClass('text-bg-warning');
+} else {
+  $('#card-valor-limite-wrapper').removeClass('text-bg-warning');
   $('#card-saldo-valor').text(formatarMoeda(valorSaldo));
-  $('#card-saldo').toggleClass('text-bg-success', valorSaldo > 0)
-                  .toggleClass('text-bg-danger', valorSaldo <= 0);
+  $('#card-saldo')
+    .removeClass('text-bg-warning')
+    .toggleClass('text-bg-success', valorSaldo > 0)
+    .toggleClass('text-bg-danger', valorSaldo <= 0);
+}
 
   // atualiza hidden inputs
   $('#processolicitatorio-valor_limite').val(valorLimite);

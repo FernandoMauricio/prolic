@@ -151,44 +151,6 @@ class ModalidadeValorlimiteController extends Controller
     }
 
     /**
-     * Updates an existing ModalidadeValorlimite model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-        $session = Yii::$app->session;
-        if ($session['sess_codunidade'] != 6) {
-            return $this->render('/site/acesso-negado');
-        } else {
-
-            $model = $this->findModel($id);
-
-            $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
-            $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
-            $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
-
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                $model->homologacao_usuario = NULL;
-                $model->homologacao_data    = NULL;
-                $model->save();
-                Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Limite atualizado!</b>');
-                return $this->redirect(['index']);
-            }
-
-            return $this->render('update', [
-                'model' => $model,
-                'modalidade' => $modalidade,
-                'ano' => $ano,
-                'ramo' => $ramo,
-            ]);
-        }
-    }
-
-    /**
      * Deletes an existing ModalidadeValorlimite model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id

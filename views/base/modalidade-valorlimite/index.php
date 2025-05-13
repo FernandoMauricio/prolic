@@ -193,15 +193,10 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{update} {homologar}',
+                'template' => '{homologar} {delete}',
                 'header' => 'Ações',
                 'contentOptions' => ['class' => 'text-center', 'width' => '110px'],
                 'buttons' => [
-                    'update' => fn($url) =>
-                    Html::a('<i class="bi bi-pencil-square"></i>', $url, [
-                        'class' => 'btn btn-outline-secondary btn-sm',
-                        'title' => 'Editar Valor',
-                    ]),
                     'homologar' => fn($url) =>
                     Html::a('<i class="bi bi-patch-check-fill"></i>', $url, [
                         'class' => 'btn btn-outline-success btn-sm',
@@ -211,6 +206,20 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                             'method' => 'post',
                         ],
                     ]),
+                    'delete' => function ($url, $model) {
+                        if ($model->getProcessos()->exists()) {
+                            return ''; // não exibe o botão
+                        }
+
+                        return Html::a('<i class="bi bi-trash3"></i>', $url, [
+                            'class' => 'btn btn-outline-danger btn-sm',
+                            'title' => 'Excluir Valor Limite',
+                            'data' => [
+                                'confirm' => 'Deseja realmente <b>excluir</b> este valor limite? Essa ação não poderá ser desfeita.',
+                                'method' => 'post',
+                            ],
+                        ]);
+                    },
                 ],
             ],
         ],

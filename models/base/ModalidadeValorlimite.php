@@ -2,6 +2,7 @@
 
 namespace app\models\base;
 
+use app\models\processolicitatorio\ProcessoLicitatorio;
 use Yii;
 
 /**
@@ -99,9 +100,9 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
     {
         return (float) \app\models\processolicitatorio\ProcessoLicitatorio::find()
             ->where(['modalidade_valorlimite_id' => $this->id])
-            ->sum('prolic_valorestimado + prolic_valoraditivo');
+            ->select(['soma' => new \yii\db\Expression('SUM(IFNULL(prolic_valorestimado, 0) + IFNULL(prolic_valoraditivo, 0))')])
+            ->scalar();
     }
-
 
     public static function getTiposModalidade()
     {
@@ -152,5 +153,10 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
     public function getRamo()
     {
         return $this->hasOne(Ramo::className(), ['id' => 'ramo_id']);
+    }
+
+    public function getProcessos()
+    {
+        return $this->hasMany(ProcessoLicitatorio::class, ['modalidade_valorlimite_id' => 'id']);
     }
 }

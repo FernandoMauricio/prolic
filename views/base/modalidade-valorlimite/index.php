@@ -14,9 +14,25 @@ $this->title = 'Valor Limite por Modalidade';
 $this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 $this->params['breadcrumbs'][] = $this->title;
 
-// Tabs - status da aba ativa
-$status = Yii::$app->request->get('status', 1);
+$status = Yii::$app->request->get('status', 1);  // 1 = ativos, 0 = inativos
+$anoFiltro = Yii::$app->request->get('ano', 'corrente'); // 'corrente' | 'anteriores'
+
 $searchModel->status = $status;
+
+if ($status == 1) {
+    if ($anoFiltro === 'corrente') {
+        $searchModel->ano_id = \app\models\base\Ano::find()
+            ->select('id')
+            ->where(['an_ano' => date('Y')])
+            ->scalar(); // só um valor
+    } elseif ($anoFiltro === 'anteriores') {
+        $searchModel->ano_id = \app\models\base\Ano::find()
+            ->select('id')
+            ->where(['<', 'an_ano', date('Y')])
+            ->column(); // array com vários
+    }
+}
+
 $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
 ?>
 
@@ -31,13 +47,26 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
     </p>
 
     <ul class="nav nav-tabs mb-3">
+        <!-- Ativos do ano corrente -->
         <li class="nav-item">
-            <a class="nav-link <?= $status == 1 ? 'active' : '' ?>" href="<?= Url::to(['index', 'status' => 1]) ?>">
-                <i class="bi bi-check-circle-fill me-1"></i> Ativos
+            <a class="nav-link <?= ($status == 1 && $anoFiltro === 'corrente') ? 'active' : '' ?>"
+                href="<?= Url::to(['index', 'status' => 1, 'ano' => 'corrente']) ?>">
+                <i class="bi bi-check-circle-fill me-1"></i> Ano: <?= date('Y') ?>
             </a>
         </li>
+
+        <!-- Ativos de anos anteriores -->
         <li class="nav-item">
-            <a class="nav-link <?= $status == 0 ? 'active' : '' ?>" href="<?= Url::to(['index', 'status' => 0]) ?>">
+            <a class="nav-link <?= ($status == 1 && $anoFiltro === 'anteriores') ? 'active' : '' ?>"
+                href="<?= Url::to(['index', 'status' => 1, 'ano' => 'anteriores']) ?>">
+                <i class="bi bi-clock-history me-1"></i> Anos Anteriores
+            </a>
+        </li>
+
+        <!-- Inativos -->
+        <li class="nav-item">
+            <a class="nav-link <?= $status == 0 ? 'active' : '' ?>"
+                href="<?= Url::to(['index', 'status' => 0]) ?>">
                 <i class="bi bi-x-circle-fill me-1"></i> Inativos
             </a>
         </li>
@@ -50,6 +79,7 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
         'filterModel'  => $searchModel,
         'hover' => true,
         'pjax' => true,
+        'tableOptions' => ['class' => 'table table-bordered table-hover table-sm'],
         'summary' => 'Mostrando <strong>{begin}-{end}</strong> de <strong>{totalCount}</strong> itens',
         'panel' => [
             'type' => $panelType,
@@ -86,14 +116,6 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                 'filter' => ArrayHelper::map(Ramo::find()->where(['ram_status' => 1])->all(), 'id', 'ram_descricao'),
                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
                 'filterInputOptions' => ['placeholder' => 'Segmento...'],
-            ],
-            [
-                'attribute' => 'ano_id',
-                'value' => fn($model) => $model->ano->an_ano,
-                'filterType' => GridView::FILTER_SELECT2,
-                'filter' => ArrayHelper::map(Ano::find()->where(['an_status' => 1])->all(), 'id', 'an_ano'),
-                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-                'filterInputOptions' => ['placeholder' => 'Ano...'],
             ],
             [
                 'attribute' => 'valor_limite',
@@ -145,19 +167,25 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                 },
             ],
 
+            [
+                'attribute' => 'homologacao_usuario',
+                'label' => 'Usuário<br>Homologação',
+                'encodeLabel' => false,
+            ],
+            [
+                'attribute' => 'homologacao_data',
+                'label' => 'Data<br>Homologação',
+                'encodeLabel' => false,
+                'format' => ['date', 'php:d/m/Y'],
+                'hAlign' => 'center',
+                'filter' => DatePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'homologacao_data',
+                    'type' => DatePicker::TYPE_COMPONENT_APPEND,
+                    'pluginOptions' => ['autoclose' => true, 'format' => 'yyyy-mm-dd'],
+                ]),
+            ],
 
-            // 'homologacao_usuario',
-            // [
-            //     'attribute' => 'homologacao_data',
-            //     'format' => ['date', 'php:d/m/Y'],
-            //     'hAlign' => 'center',
-            //     'filter' => DatePicker::widget([
-            //         'model' => $searchModel,
-            //         'attribute' => 'homologacao_data',
-            //         'type' => DatePicker::TYPE_COMPONENT_APPEND,
-            //         'pluginOptions' => ['autoclose' => true, 'format' => 'yyyy-mm-dd'],
-            //     ]),
-            // ],
             [
                 'class' => 'kartik\grid\BooleanColumn',
                 'attribute' => 'status',

@@ -58,7 +58,7 @@ $status = Yii::$app->request->get('status', 1);
         'headerRowOptions' => ['class' => 'table-light text-center align-middle'],
         'filterRowOptions' => ['class' => 'table-light'],
         'containerOptions' => ['class' => 'table-responsive'],
-        'tableOptions' => ['class' => 'table table-striped table-hover align-middle'],
+        'tableOptions' => ['class' => 'table table-bordered table-hover table-sm'],
         'containerOptions' => ['class' => 'table-responsive shadow-sm rounded'],
         'summary' => 'Mostrando <strong>{begin}-{end}</strong> de <strong>{totalCount}</strong> itens',
         'panel' => [

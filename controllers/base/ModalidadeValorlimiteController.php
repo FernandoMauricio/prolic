@@ -41,23 +41,23 @@ class ModalidadeValorlimiteController extends Controller
      */
     public function actionIndex()
     {
-        // VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-        $session = Yii::$app->session;
-        if ($session['sess_codunidade'] != 6) {
-            return $this->render('/site/acesso-negado');
-        }
-
+        $searchModel = new ModalidadeValorlimiteSearch();
         $params = Yii::$app->request->queryParams;
 
-        // Redireciona para a aba "Ativos" se não houver status informado
-        if (!isset($params['status'])) {
-            return $this->redirect(['index', 'status' => 1]);
-        }
+        $status = Yii::$app->request->get('status', 1);
+        $anoFiltro = Yii::$app->request->get('ano', 'corrente');
 
-        // Aplica o status ao filtro do searchModel
-        $searchModel = new ModalidadeValorlimiteSearch();
-        if (isset($params['status'])) {
-            $params['ModalidadeValorlimiteSearch']['status'] = $params['status'];
+        $params['ModalidadeValorlimiteSearch']['status'] = $status;
+
+        if ($status == 1 && $anoFiltro === 'anteriores') {
+            $params['ModalidadeValorlimiteSearch']['ano_menor_que'] = date('Y');
+        } elseif ($status == 1 && $anoFiltro === 'corrente') {
+            $anoAtualId = \app\models\base\Ano::find()
+                ->select('id')
+                ->where(['an_ano' => date('Y')])
+                ->scalar();
+
+            $params['ModalidadeValorlimiteSearch']['ano_id'] = $anoAtualId;
         }
 
         $dataProvider = $searchModel->search($params);
@@ -67,6 +67,7 @@ class ModalidadeValorlimiteController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+
 
     public function actionHomologar($id)
     {

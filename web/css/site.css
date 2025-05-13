@@ -258,3 +258,12 @@ a.desc:after {
 .breadcrumb a:hover {
   text-decoration: underline;
 }
+
+.table-sm th,
+.table-sm td {
+    font-size: 0.85rem;
+    /* ou até 0.8rem */
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+    vertical-align: middle;
+}

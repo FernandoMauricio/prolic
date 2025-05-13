@@ -1,48 +1,12 @@
 <?php
 
 use yii\helpers\Html;
+use yii\web\JqueryAsset;
 use yii\web\View;
 
+$this->registerJsFile('@web/js/valores-cards.js', ['depends' => [JqueryAsset::class]]);
+$this->registerJsFile('@web/js/alertas.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ?>
-<style>
-    /* 1) Reduce o tamanho do número e aumenta um pouco o peso */
-    .card .card-body h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        line-height: 1.1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: unset;
-        /* garantido */
-    }
-
-    .card .card-body h2.texto-ajustado {
-        font-size: 1.0rem !important;
-    }
-
-    /* 2) Ajusta o subtítulo para ficar proporcional ao novo tamanho */
-    .card .card-body h6.card-subtitle {
-        font-size: 1rem;
-        margin-bottom: .5rem;
-    }
-
-    /* 3) Default para subtítulos nos cards brancos */
-    .card .card-body .card-subtitle {
-        color: #6c757d;
-        /* cinza bootstrap */
-    }
-
-    /* 4) Força subtítulo branco nos cards coloridos (saldo) */
-    #card-saldo.text-bg-success .card-subtitle,
-    #card-saldo.text-bg-danger .card-subtitle {
-        color: rgba(255, 255, 255, 0.85) !important;
-    }
-
-    /* 5) Pequeno padding extra para harmonizar o espaço */
-    .card .card-body {
-        padding: 1.25rem;
-    }
-</style>
 
 <?= $form->field($model, 'valor_limite')
     ->hiddenInput(['id' => 'processolicitatorio-valor_limite'])
@@ -56,53 +20,11 @@ use yii\web\View;
     ->hiddenInput(['id' => 'processolicitatorio-valor_saldo'])
     ->label(false) ?>
 
-<div class="row g-3 mb-4">
-    <!-- Valor Limite -->
-    <div class="col-lg-4" id="card-wrapper-valor-limite">
-        <div class="card shadow-sm text-center" id="card-valor-limite-wrapper">
-            <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">Valor Limite</h6>
-                <h2
-                    id="card-valor-limite"
-                    data-valor="<?= $model->valor_limite ?>"
-                    class="display-4 mb-0">
-                    <?= $model->valor_limite >= 999999999.99
-                        ? '<span class="text-muted fst-italic">(não aplicável)</span>'
-                        : Yii::$app->formatter->asCurrency($model->valor_limite) ?>
-                </h2>
-            </div>
-        </div>
-    </div>
-
-    <!-- Limite Apurado -->
-    <div class="col-lg-4">
-        <div class="card shadow-sm text-center">
-            <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">Limite Apurado</h6>
-                <h2
-                    id="card-limite-apurado"
-                    data-valor="<?= $model->valor_limite_apurado ?>"
-                    class="display-4 mb-0">
-                    <?= Yii::$app->formatter->asCurrency($model->valor_limite_apurado) ?>
-                </h2>
-            </div>
-        </div>
-    </div>
-
-    <!-- Saldo Dinâmico -->
-    <div class="col-lg-4">
-        <div
-            id="card-saldo"
-            class="card shadow-sm text-center">
-            <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">Saldo</h6>
-                <h2 id="card-saldo-valor" class="display-4 mb-0">
-                    <!-- será preenchido por JS -->
-                </h2>
-            </div>
-        </div>
-    </div>
-</div>
+<?= $this->render('/processolicitatorio/processo-licitatorio/_cards-financeiros', [
+    'valorLimite' => $model->valor_limite,
+    'valorLimiteApurado' => $model->valor_limite_apurado,
+    'valorSaldo' => $model->valor_saldo,
+]) ?>
 
 <hr>
 
@@ -118,100 +40,3 @@ use yii\web\View;
         <?= $form->field($model, 'prolic_valorefetivo')->textInput() ?>
     </div>
 </div>
-
-<?php
-$js = <<<'JS'
-(function(){
-  // 1) Funções no escopo global
-  window.formatarMoeda = function(v) {
-    return new Intl.NumberFormat('pt-BR',{
-      style: 'currency',
-      currency: 'BRL'
-    }).format(v);
-  };
-
-  window.calcularValores = function() {
-    // pega os valores dos mini-cards
-    var valorLimite         = parseFloat($('#card-valor-limite').data('valor')) || 0;
-    var semTeto = valorLimite >= 999999999.99;
-    var valorLimiteApurado  = parseFloat($('#card-limite-apurado').data('valor')) || 0;
-
-    // pega os campos de entrada, removendo qualquer máscara
-    var valorEstimado  = parseFloat(
-      $('#processolicitatorio-valorestimado').val().replace(/[^\d\-\.]/g,'')
-    ) || 0;
-    var valorAdicional = parseFloat(
-      $('#processolicitatorio-valoraditivo').val().replace(/[^\d\-\.]/g,'')
-    ) || 0;
-
-    // *** o cálculo do saldo ***
-    var valorSaldo = valorLimite 
-                 - valorLimiteApurado 
-                 - (valorEstimado + valorAdicional);
-
-// Ajusta fonte se o número for muito longo (valor limite, saldo, apurado)
-function ajustarFonteSeNecessario(id) {
-    const texto = $(id).text().trim();
-    if (texto.length > 15) {
-        $(id).addClass('texto-ajustado');
-    } else {
-        $(id).removeClass('texto-ajustado');
-    }
-}
-
-ajustarFonteSeNecessario('#card-valor-limite');
-ajustarFonteSeNecessario('#card-limite-apurado');
-ajustarFonteSeNecessario('#card-saldo-valor');
-
-  // 1) atualiza mini-card
-  if (semTeto) {
-  $('#card-valor-limite').html('<span class="text-muted fst-italic">(não aplicável)</span>');
-
-  $('#card-valor-limite-wrapper')
-    .removeClass('text-bg-success text-bg-danger text-bg-light')
-    .addClass('text-bg-warning');
-
-  $('#card-saldo-valor').html('<span class="text-muted fst-italic">(não aplicável)</span>').addClass('texto-ajustado');
-  $('#card-saldo')
-    .removeClass('text-bg-success text-bg-danger')
-    .addClass('text-bg-warning');
-} else {
-  $('#card-valor-limite-wrapper').removeClass('text-bg-warning');
-  $('#card-saldo-valor').text(formatarMoeda(valorSaldo));
-  $('#card-saldo')
-    .removeClass('text-bg-warning')
-    .toggleClass('text-bg-success', valorSaldo > 0)
-    .toggleClass('text-bg-danger', valorSaldo <= 0);
-}
-
-  // atualiza hidden inputs
-  $('#processolicitatorio-valor_limite').val(valorLimite);
-  $('#processolicitatorio-valor_limite_apurado').val(valorLimiteApurado);
-  $('#processolicitatorio-valor_saldo').val(valorSaldo);
-
-  // dispara client-validation de prolic_valorefetivo
-  $('#processolicitatorio-form').yiiActiveForm('validateAttribute', 'processolicitatorio-prolic_valorefetivo');
-};
-
-// 2) além disso, sempre que o usuário digitar em prolic_valorefetivo:
-$('#processolicitatorio-prolic_valorefetivo').on('input', function(){
-  $('#processolicitatorio-form').yiiActiveForm('validateAttribute', 'processolicitatorio-prolic_valorefetivo');
-});
-
-  // 2) Dispara no carregamento inicial
-  $(function(){
-    window.calcularValores();
-  });
-
-  // 3) Recalcula sempre que o usuário digita em estimado ou aditivo
-  $('#processolicitatorio-valorestimado, #processolicitatorio-valoraditivo')
-    .on('input', window.calcularValores);
-
-  // 4) Recalcula também depois do AJAX do DepDrop
-  //    (caso você esteja usando pluginEvents:depdrop:afterChange, 
-  //     apenas certifique-se de chamar window.calcularValores() lá)
-})();
-JS;
-
-$this->registerJs($js, View::POS_READY);
-?>

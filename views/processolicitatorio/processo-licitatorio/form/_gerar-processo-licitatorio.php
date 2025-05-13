@@ -29,6 +29,7 @@ $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [JqueryAss
 $this->registerCssFile('@web/css/processolicitatorio.css');
 $this->registerJsFile('@web/js/valores-cards.js', ['depends' => [JqueryAsset::class]]);
 $this->registerJsFile('@web/js/saldo-validacao.js', ['depends' => [JqueryAsset::class]]);
+$this->registerJsFile('@web/js/alertas.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 $sumUrl = Url::to(['/processolicitatorio/processo-licitatorio/get-sum-limite']);
 ?>
 
@@ -142,36 +143,12 @@ $sumUrl = Url::to(['/processolicitatorio/processo-licitatorio/get-sum-limite']);
 
         <div id="saldo-alerta-container"></div>
 
-        <div class="row g-3 mb-4">
-            <div class="col-lg-4">
-                <div class="card shadow-sm text-center">
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">Valor Limite</h6>
-                        <h2 id="card-valor-limite" data-valor="<?= $model->valor_limite ?>" class="display-4 mb-0">
-                            <?= Yii::$app->formatter->asCurrency($model->valor_limite) ?>
-                        </h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card shadow-sm text-center">
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">Limite Apurado</h6>
-                        <h2 id="card-limite-apurado" data-valor="<?= $model->valor_limite_apurado ?>" class="display-4 mb-0">
-                            <?= Yii::$app->formatter->asCurrency($model->valor_limite_apurado) ?>
-                        </h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div id="card-saldo" class="card shadow-sm text-center">
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">Saldo</h6>
-                        <h2 id="card-saldo-valor" class="display-4 mb-0"></h2>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?= $this->render('/processolicitatorio/processo-licitatorio/_cards-financeiros', [
+            'valorLimite' => $model->valor_limite,
+            'valorLimiteApurado' => $model->valor_limite_apurado,
+            'valorSaldo' => $model->valor_saldo,
+        ]) ?>
+
     </div>
     <div class="card-footer bg-light d-flex justify-content-end">
         <?= Html::a('<i class="bi bi-x-circle me-1"></i> Cancelar', ['index'], ['class' => 'btn btn-outline-secondary me-2']) ?>
@@ -183,16 +160,3 @@ $sumUrl = Url::to(['/processolicitatorio/processo-licitatorio/get-sum-limite']);
 </div>
 
 <?php ActiveForm::end(); ?>
-
-<script>
-    function exibirAlertaSaldoNegativo(mensagem) {
-        const alertaHtml = `
-        <div class="alert alert-danger d-flex align-items-center shadow-sm fade show shake-erro"
-             role="alert" id="alerta-saldo-negativo">
-            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
-            <div>${mensagem}</div>
-        </div>
-    `;
-        $('#saldo-alerta-container').html(alertaHtml);
-    }
-</script>

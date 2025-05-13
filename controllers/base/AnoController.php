@@ -65,6 +65,30 @@ class AnoController extends Controller
         ]);
     }
 
+    public function actionToggleStatus()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+        if (!$id) {
+            return ['success' => false, 'message' => 'ID ausente'];
+        }
+
+        $model = Ano::findOne($id);
+        if (!$model) {
+            return ['success' => false, 'message' => 'Ano não encontrado'];
+        }
+
+        $model->an_status = !$model->an_status;
+
+        if ($model->save(false)) {
+            return ['success' => true, 'status' => $model->an_status];
+        }
+
+        return ['success' => false, 'message' => 'Erro ao salvar'];
+    }
+
+
     /**
      * Creates a new Ano model.
      * If creation is successful, the browser will be redirected to the 'view' page.

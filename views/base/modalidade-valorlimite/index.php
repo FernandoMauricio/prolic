@@ -34,9 +34,6 @@ if ($status == 1) {
 }
 
 $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
-
-$this->registerJsFile('@web/js/switch-status.js', ['depends' => [\yii\web\JqueryAsset::class]]);
-
 ?>
 
 <div class="modalidade-valorlimite-index">

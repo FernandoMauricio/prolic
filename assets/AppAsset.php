@@ -26,6 +26,7 @@ class AppAsset extends AssetBundle
     public $js = [
         'js/main.js',
         'js/jquery.bootstrap.wizard.js',
+        'js/switch-status.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

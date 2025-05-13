@@ -159,6 +159,16 @@ $dataProvider = new ArrayDataProvider([
             </div>
         </div>
     <?php else: ?>
-        <p class="text-muted fst-italic">Nenhum processo licitatório vinculado a este valor limite.</p>
+        <div class="card shadow-sm border-secondary">
+            <div class="card-header bg-secondary text-white d-flex align-items-center gap-2">
+                <i class="bi bi-list-check"></i>
+                <span>Processos vinculados</span>
+            </div>
+            <div class="card-body text-center text-muted fst-italic py-4">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                Nenhum processo licitatório vinculado a este valor limite.
+            </div>
+        </div>
     <?php endif; ?>
+
 </div>

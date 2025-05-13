@@ -65,6 +65,29 @@ class ArtigoController extends Controller
         }
     }
 
+    public function actionToggleStatus()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+        if (!$id) {
+            return ['success' => false, 'message' => 'ID ausente'];
+        }
+
+        $model = Artigo::findOne($id);
+        if (!$model) {
+            return ['success' => false, 'message' => 'Artigo não encontrado'];
+        }
+
+        $model->art_status = !$model->art_status;
+
+        if ($model->save(false)) {
+            return ['success' => true, 'status' => $model->art_status];
+        }
+
+        return ['success' => false, 'message' => 'Erro ao salvar'];
+    }
+
     public function actionHomologar($id)
     {
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)

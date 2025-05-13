@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\base\CompradorSearch */
@@ -39,7 +40,7 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
             </a>
         </li>
     </ul>
-
+    <?php Pjax::begin(['id' => 'pjax-grid-comprador']); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -61,10 +62,33 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                 'format' => 'raw',
                 'value' => fn($model) => Html::encode($model->comp_descricao),
             ],
+
             [
-                'class' => 'kartik\grid\BooleanColumn',
                 'attribute' => 'comp_status',
-                'vAlign' => 'middle',
+                'format' => 'raw',
+                'label' => 'Ativo',
+                'filter' => [
+                    1 => 'Ativo',
+                    0 => 'Inativo',
+                ],
+                'contentOptions' => ['class' => 'text-center'],
+                'value' => function ($model) {
+                    $id = $model->id;
+                    $switchId = "switch-status-comprador-$id";
+                    return Html::tag(
+                        'div',
+                        Html::checkbox('status', $model->comp_status, [
+                            'class' => 'form-check-input status-switch',
+                            'id' => $switchId,
+                            'role' => 'switch',
+                            'data-id' => $id,
+                            'data-url' => Url::to(['base/comprador/toggle-status']),
+                            'data-container' => '#pjax-grid-comprador',
+                        ]) .
+                            Html::label('', $switchId, ['class' => 'form-check-label']),
+                        ['class' => 'form-check form-switch d-inline-block']
+                    );
+                },
             ],
 
             [
@@ -83,4 +107,5 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
             ],
         ],
     ]); ?>
+    <?php Pjax::end(); ?>
 </div>

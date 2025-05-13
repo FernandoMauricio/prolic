@@ -88,7 +88,6 @@ class AnoController extends Controller
         return ['success' => false, 'message' => 'Erro ao salvar'];
     }
 
-
     /**
      * Creates a new Ano model.
      * If creation is successful, the browser will be redirected to the 'view' page.

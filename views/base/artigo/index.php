@@ -6,6 +6,7 @@ use kartik\grid\GridView;
 use kartik\widgets\DatePicker;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\base\ArtigoSearch */
@@ -47,7 +48,7 @@ $status = Yii::$app->request->get('status', 1);
     $searchModel->art_status = $status;
     $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
     ?>
-
+    <?php Pjax::begin(['id' => 'pjax-grid-artigo']); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -155,9 +156,31 @@ $status = Yii::$app->request->get('status', 1);
                 ])
             ],
             [
-                'class' => 'kartik\grid\BooleanColumn',
                 'attribute' => 'art_status',
-                'vAlign' => 'middle',
+                'format' => 'raw',
+                'label' => 'Ativo',
+                'filter' => [
+                    1 => 'Ativo',
+                    0 => 'Inativo',
+                ],
+                'contentOptions' => ['class' => 'text-center'],
+                'value' => function ($model) {
+                    $id = $model->id;
+                    $switchId = "switch-status-artigo-$id";
+                    return Html::tag(
+                        'div',
+                        Html::checkbox('status', $model->art_status, [
+                            'class' => 'form-check-input status-switch',
+                            'id' => $switchId,
+                            'role' => 'switch',
+                            'data-id' => $id,
+                            'data-url' => Url::to(['base/artigo/toggle-status']),
+                            'data-container' => '#pjax-grid-artigo',
+                        ]) .
+                            Html::label('', $switchId, ['class' => 'form-check-label']),
+                        ['class' => 'form-check form-switch d-inline-block']
+                    );
+                },
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
@@ -188,4 +211,5 @@ $status = Yii::$app->request->get('status', 1);
             ],
         ],
     ]); ?>
+    <?php Pjax::end(); ?>
 </div>

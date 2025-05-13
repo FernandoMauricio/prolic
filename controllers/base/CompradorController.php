@@ -65,6 +65,29 @@ class CompradorController extends Controller
         }
     }
 
+    public function actionToggleStatus()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+        if (!$id) {
+            return ['success' => false, 'message' => 'ID ausente'];
+        }
+
+        $model = Comprador::findOne($id);
+        if (!$model) {
+            return ['success' => false, 'message' => 'Comprador não encontrado'];
+        }
+
+        $model->comp_status = !$model->comp_status;
+
+        if ($model->save(false)) {
+            return ['success' => true, 'status' => $model->comp_status];
+        }
+
+        return ['success' => false, 'message' => 'Erro ao salvar'];
+    }
+
     /**
      * Creates a new Comprador model.
      * If creation is successful, the browser will be redirected to the 'view' page.

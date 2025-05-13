@@ -131,7 +131,7 @@ class ModalidadeValorlimiteController extends Controller
             $model = new ModalidadeValorlimite();
 
             $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
-            $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
+            $ano = Ano::find()->where(['an_status' => 1])->orderBy(['an_ano' => SORT_DESC])->all();
             $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
 
             $model->status = 1; //Ativo

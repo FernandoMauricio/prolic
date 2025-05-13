@@ -57,6 +57,7 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
     {
         return [
             [['modalidade_id', 'ramo_id', 'ano_id', 'valor_limite', 'status', 'tipo_modalidade'], 'required'],
+            [['tipo_modalidade', 'modalidade_id', 'ramo_id', 'ano_id'], 'validarCombinacaoUnica'],
             [['modalidade_id', 'ramo_id', 'ano_id', 'status'], 'integer'],
             [['valor_limite'], 'number'],
             [['homologacao_data'], 'safe'],
@@ -94,6 +95,25 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
             'homologacao_data' => 'Data Homologação',
             'tipo_modalidade' => 'Tipo de Modalidade',
         ];
+    }
+
+    public function validarCombinacaoUnica($attribute, $params)
+    {
+        $query = self::find()->where([
+            'tipo_modalidade' => $this->tipo_modalidade,
+            'modalidade_id'   => $this->modalidade_id,
+            'ramo_id'         => $this->ramo_id,
+            'ano_id'          => $this->ano_id,
+        ]);
+
+        // Se for edição, ignora o próprio registro
+        if (!$this->isNewRecord) {
+            $query->andWhere(['<>', 'id', $this->id]);
+        }
+
+        if ($query->exists()) {
+            $this->addError('tipo_modalidade', 'Já existe um valor limite cadastrado com essa combinação de Tipo de Modalidade, Modalidade, Segmento e Ano.');
+        }
     }
 
     public function getValorApurado()

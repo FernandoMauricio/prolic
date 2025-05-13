@@ -10,7 +10,7 @@ use yii\data\ArrayDataProvider;
 
 $this->title = 'Valor Limite #' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
-$this->params['breadcrumbs'][] = ['label' => 'Valores Limite', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Valor Limite por Modalidade', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $valorLimite = $model->valor_limite;

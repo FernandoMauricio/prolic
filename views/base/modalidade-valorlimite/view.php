@@ -100,16 +100,31 @@ $dataProvider = new ArrayDataProvider([
                 'tipo_modalidade',
                 [
                     'attribute' => 'status',
-                    'value' => $model->status ? 'Ativo' : 'Inativo'
+                    'format' => 'raw',
+                    'value' => Html::tag(
+                        'span',
+                        $model->status ? 'Ativo' : 'Inativo',
+                        [
+                            'class' => 'fw-semibold ' . ($model->status ? 'text-success' : 'text-danger')
+                        ]
+                    ),
                 ],
+
                 [
                     'label' => 'Homologado por',
-                    'value' => $model->homologacao_usuario ?? '(pendente)'
+                    'format' => 'raw',
+                    'value' => $model->homologacao_usuario
+                        ? Html::encode($model->homologacao_usuario)
+                        : Html::tag('span', '(pendente)', ['class' => 'text-danger fst-italic']),
                 ],
                 [
                     'label' => 'Data da Homologação',
-                    'value' => $model->homologacao_data ? Yii::$app->formatter->asDate($model->homologacao_data) : '(pendente)'
+                    'format' => 'raw',
+                    'value' => $model->homologacao_data
+                        ? Yii::$app->formatter->asDate($model->homologacao_data)
+                        : Html::tag('span', '(pendente)', ['class' => 'text-danger fst-italic']),
                 ],
+
             ],
         ]) ?>
     </div>

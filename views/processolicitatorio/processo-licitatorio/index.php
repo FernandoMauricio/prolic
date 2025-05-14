@@ -123,7 +123,7 @@ $gridColumns = require(__DIR__ . '/_gridColumns.php');
                         'pjax' => true,
                         'panel' => [
                             'type' => GridView::TYPE_PRIMARY,
-                            'heading' => '<h5 class="mb-0"><i class="bi bi-clipboard-data-fill me-2"></i>Processos Licitatórios - Ano Atual</h5>',
+                            'heading' => '<h5 class="mb-0"><i class="bi bi-clipboard-data-fill me-2"></i>Processos Licitatórios - Ano Atual (' . date('Y') . ')</h5>',
                         ],
                     ]);
                     Pjax::end();

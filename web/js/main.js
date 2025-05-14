@@ -19,6 +19,7 @@ $(function () {
                         }
                     });
                 }
+                ativarTooltips();
             });
     });
 });
@@ -59,3 +60,14 @@ yii.confirm = function (message, ok, cancel) {
     // to cancel click handler
     return false;
 };
+
+function ativarTooltips() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
+}
+
+// Ativa ao carregar o DOM
+document.addEventListener('DOMContentLoaded', ativarTooltips);
+
+// Reativa após carregamentos via pjax, se usados
+$(document).on('pjax:end', ativarTooltips);

@@ -163,20 +163,18 @@ return [
 
     [
         'attribute' => 'ciclototal',
-        'label' => 'Ciclo<br>Total',
+        'label' => 'Ciclo<br>Total <i class="bi bi-info-circle text-primary ms-1" data-bs-toggle="tooltip" title="Quantidade de dias entre a Data do Processo e a Data da Homologação."></i>',
         'encodeLabel' => false,
         'format' => 'raw',
         'value' => fn($model) => $model->cicloTotal,
-        'width' => '80px',
         'headerOptions' => ['style' => 'text-align: center;']
     ],
     [
         'attribute' => 'ciclocertame',
-        'label' => 'Ciclo<br>Certame',
+        'label' => 'Ciclo<br>Certame <i class="bi bi-info-circle text-primary ms-1" data-bs-toggle="tooltip" title="Quantidade de dias entre a Data do Certame e a Data da Homologação."></i>',
         'encodeLabel' => false,
         'format' => 'raw',
         'value' => fn($model) => $model->cicloCertame,
-        'width' => '80px',
         'headerOptions' => ['style' => 'text-align: center;']
     ],
 

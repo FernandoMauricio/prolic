@@ -98,7 +98,6 @@ return [
                 $itens
             ));
         },
-        'width' => '120px',
         'contentOptions' => ['style' => 'white-space: normal; word-break: break-word;'],
     ],
 

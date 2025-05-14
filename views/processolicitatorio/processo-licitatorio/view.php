@@ -220,9 +220,9 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                     <div class="row g-3">
                         <?php
                         $comp = [
-                            'Cotações'        => $model->prolic_cotacoes,
-                            'Centro de Custo' => $model->prolic_centrocusto,
-                            'Despesa'         => $model->prolic_elementodespesa,
+                            'Cotações'            => $model->prolic_cotacoes,
+                            'Centro de Custo'     => $model->prolic_centrocusto,
+                            'Elemento de Despesa' => $model->prolic_elementodespesa,
                         ];
                         foreach ($comp as $k => $v):
                             $displayComp = ($v !== null && $v !== '') ? $v : '<span class="text-danger fst-italic">(não definido)</span>';

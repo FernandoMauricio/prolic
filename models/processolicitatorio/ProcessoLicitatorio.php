@@ -319,7 +319,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'artigo_id' => 'Artigo',
             'prolic_cotacoes' => 'Cotações',
             'prolic_centrocusto' => 'Centro de Custo',
-            'prolic_elementodespesa' => 'Elemento Despesa',
+            'prolic_elementodespesa' => 'Elemento de Despesa',
             'prolic_valorestimado' => 'Valor Estimado',
             'prolic_valoraditivo' => 'Valor Aditivo',
             'prolic_valorefetivo' => 'Valor Efetivo',

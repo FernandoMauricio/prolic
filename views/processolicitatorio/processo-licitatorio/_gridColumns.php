@@ -17,16 +17,6 @@ use kartik\grid\ActionColumn;
 return [
 
     [
-        'attribute' => 'ano_id',
-        'group' => true,
-        'groupedRow' => true, // mostra o ano como uma linha inteira separadora
-        'groupOddCssClass' => 'kv-grouped-row', // classe Bootstrap opcional
-        'groupEvenCssClass' => 'kv-grouped-row', // mesma coisa aqui
-        'value' => fn($model) => $model->ano->an_ano,
-        'filterType' => GridView::FILTER_SELECT2,
-    ],
-
-    [
         'attribute' => 'prolic_dataprocesso',
         'format'    => ['date', 'php:d/m/Y'],
         'filterType' => GridView::FILTER_DATE,

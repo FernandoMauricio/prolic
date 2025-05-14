@@ -301,20 +301,26 @@ class ProcessoLicitatorioController extends Controller
         return ['success' => false];
     }
 
-    public function actionBuscarRequisicaoOpcao($term = null)
+    public function actionBuscarRequisicaoOpcao($term = '')
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        if (empty($term) || strlen(trim($term)) < 5) {
+        if (strlen($term) < 5) {
             return ['results' => []];
         }
 
-        return [
-            'results' => [[
-                'id' => $term,
-                'text' => $term,
-            ]]
-        ];
+        $dados = WebManagerService::consultarPedidoRequisicao('02', $term);
+
+        if (!empty($dados)) {
+            return [
+                'results' => [[
+                    'id' => $term,
+                    'text' => $term . ' - ' . ($dados['requisitante'] ?? 'Desconhecido')
+                ]]
+            ];
+        }
+
+        return ['results' => []];
     }
 
     /**

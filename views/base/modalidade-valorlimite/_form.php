@@ -23,25 +23,31 @@ use kartik\money\MaskMoney;
 
         <div class="card-body">
             <!-- Bloco explicativo -->
-            <div class="alert alert-info border-start border-4 border-primary" role="alert">
-                <h6 class="fw-bold text-primary mb-2">
-                    <i class="bi bi-info-circle-fill me-1"></i> Art. 7.º — Limites legais por tipo de modalidade:
-                </h6>
+            <div class="alert alert-info border-start border-4 border-primary shadow-sm" role="alert">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="fw-bold text-primary mb-0">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Art. 7.º — Limites legais por tipo de modalidade
+                    </h6>
+                    <a href="/prolic/web/uploads/Resolucao_1270_2024.pdf" target="_blank" class="btn btn-sm btn-outline-danger ms-3">
+                        <i class="bi bi-box-arrow-up-right me-1"></i> Resolução 1270/2024
+                    </a>
+                </div>
                 <ul class="mb-0 small ps-3">
                     <li><strong>I - Obras e serviços de engenharia:</strong>
-                        <ul>
+                        <ul class="mb-2">
                             <li>CONVITE: até <strong>R$ 2.465.000,00</strong></li>
                             <li>CONCORRÊNCIA: acima de <strong>R$ 2.465.000,00</strong></li>
                         </ul>
                     </li>
                     <li><strong>II - Compras e demais serviços:</strong>
-                        <ul>
+                        <ul class="mb-2">
                             <li>CONVITE: até <strong>R$ 826.000,00</strong></li>
                             <li>CONCORRÊNCIA: acima de <strong>R$ 826.000,00</strong></li>
                         </ul>
                     </li>
                     <li><strong>III - Alienações de bens:</strong>
-                        <ul>
+                        <ul class="mb-0">
                             <li>LEILÃO ou CONCORRÊNCIA: acima de <strong>R$ 92.000,00</strong>, dispensável na fase de habilitação</li>
                         </ul>
                     </li>

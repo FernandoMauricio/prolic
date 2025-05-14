@@ -269,6 +269,14 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
 ?>
 
 <div class="mb-3">
+
+    <p class="mb-3 small">
+        Baseado na <strong>Resolução 1270/2024</strong>.
+        <a href="/prolic/web/uploads/Resolucao_1270_2024.pdf" target="_blank" class="ms-2">
+            <i class="bi bi-box-arrow-up-right me-1"></i>Abrir Resolução
+        </a>
+    </p>
+
     <ul class="mb-0 small ps-3">
         <li><strong>I - Obras e serviços de engenharia:</strong>
             <ul>

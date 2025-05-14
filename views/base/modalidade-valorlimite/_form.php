@@ -106,7 +106,7 @@ use kartik\select2\Select2;
                     <div class="alert alert-warning border-start border-4 border-warning shadow-sm mb-4" role="alert">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <h6 class="fw-bold text-warning mb-0">
-                                <i class="bi bi-info-square-fill me-2"></i>
+                                <i class="bi bi-info-circle-fill me-2"></i>
                                 Art. 5.º — Instâncias autorizadoras de despesas
                             </h6>
                             <a href="/prolic/web/uploads/Resolucao_007_2025.pdf" target="_blank" class="btn btn-sm btn-outline-warning ms-3">

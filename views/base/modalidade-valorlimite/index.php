@@ -263,35 +263,58 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
 <?php
 \yii\bootstrap5\Modal::begin([
     'id' => 'modalLimitesLegais',
-    'title' => '<i class="bi bi-info-circle-fill me-2"></i> Art. 7.º — Limites legais por tipo de modalidade',
+    'title' => '<i class="bi bi-info-circle-fill me-2"></i> Referências Legais — Resoluções 007/2025 e 1270/2024',
     'size' => 'modal-lg',
+    'options' => ['class' => 'fade shadow'],
 ]);
 ?>
 
-<div class="mb-3">
-
-    <p class="mb-3 small">
-        Baseado na <strong>Resolução 1270/2024</strong>.
-        <a href="/prolic/web/uploads/Resolucao_1270_2024.pdf" target="_blank" class="ms-2">
-            <i class="bi bi-box-arrow-up-right me-1"></i>Abrir Resolução
+<!-- Bloco explicativo — Resolução 007/2025 -->
+<div class="alert alert-warning border-start border-4 border-warning shadow-sm mb-4" role="alert">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <h6 class="fw-bold text-warning mb-0">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            Art. 5.º — Instâncias autorizadoras de despesas
+        </h6>
+        <a href="/prolic/web/uploads/Resolucao_007_2025.pdf" target="_blank" class="btn btn-sm btn-outline-warning ms-3">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Resolução 007/2025
         </a>
-    </p>
+    </div>
+    <ul class="mb-3 small ps-3">
+        <li><strong>I - Direção da Divisão Administrativa:</strong> até <strong>R$ 92.000,00</strong></li>
+        <li><strong>II - Direção Regional:</strong> de <strong>R$ 92.000,01</strong> até <strong>R$ 826.000,00</strong></li>
+        <li><strong>III - Presidência do Conselho Regional:</strong> a partir de <strong>R$ 826.000,01</strong></li>
+    </ul>
+</div>
 
-    <ul class="mb-0 small ps-3">
+<!-- Bloco explicativo — Resolução 1270/2024 -->
+<div class="alert alert-info border-start border-4 border-primary shadow-sm mb-0" role="alert">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <h6 class="fw-bold text-primary mb-0">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            Art. 6.º e 7.º — Limites legais por tipo de modalidade
+        </h6>
+        <a href="/prolic/web/uploads/Resolucao_1270_2024.pdf" target="_blank" class="btn btn-sm btn-outline-primary ms-3">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Resolução 1270/2024
+        </a>
+    </div>
+
+    <p class="small text-muted mb-2"><strong>Art. 6.º</strong> — Para as modalidades licitatórias, aplicam-se os limites legais:</p>
+    <ul class="mb-3 small ps-3">
         <li><strong>I - Obras e serviços de engenharia:</strong>
-            <ul>
+            <ul class="mb-2">
                 <li>CONVITE: até <strong>R$ 2.465.000,00</strong></li>
                 <li>CONCORRÊNCIA: acima de <strong>R$ 2.465.000,00</strong></li>
             </ul>
         </li>
         <li><strong>II - Compras e demais serviços:</strong>
-            <ul>
+            <ul class="mb-2">
                 <li>CONVITE: até <strong>R$ 826.000,00</strong></li>
                 <li>CONCORRÊNCIA: acima de <strong>R$ 826.000,00</strong></li>
             </ul>
         </li>
         <li><strong>III - Alienações de bens:</strong>
-            <ul>
+            <ul class="mb-0">
                 <li>LEILÃO ou CONCORRÊNCIA: acima de <strong>R$ 92.000,00</strong>, dispensável na fase de habilitação</li>
             </ul>
         </li>

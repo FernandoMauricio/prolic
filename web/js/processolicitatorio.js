@@ -84,7 +84,25 @@ $(document).ready(function () {
 
                 mostrarFeedback(`Requisição ${numero} carregada com sucesso.`, 'success');
             } else {
-                mostrarFeedback(`Falha ao carregar a requisição ${numero}.`, 'danger');
+                const accordionItemErro = `
+                    <div class="accordion-item border-danger" id="accordion-${numero}">
+                        <h2 class="accordion-header" id="headingErro${numero}">
+                            <button class="accordion-button bg-danger bg-opacity-10 text-danger fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseErro${numero}" aria-expanded="true" aria-controls="collapseErro${numero}">
+                                Requisição não encontrada: ${numero}
+                            </button>
+                        </h2>
+                        <div id="collapseErro${numero}" class="accordion-collapse collapse show" aria-labelledby="headingErro${numero}" data-bs-parent="#accordionPreview">
+                            <div class="accordion-body">
+                                <p class="text-danger mb-2">A requisição <strong>${numero}</strong> não foi localizada na API MXM ou está inacessível.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                $(accordionContainer).append(accordionItemErro);
+                requisicoesExibidas.add(numero);
+
+                mostrarFeedback(`Requisição ${numero} não foi encontrada.`, 'warning');
+
             }
         }).fail(function () {
             mostrarFeedback(`Erro ao consultar a requisição ${numero}.`, 'danger');

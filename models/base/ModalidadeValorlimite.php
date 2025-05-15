@@ -150,15 +150,6 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
         }
     }
 
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAno()
-    {
-        return $this->hasOne(Ano::className(), ['id' => 'ano_id']);
-    }
-
     /**
      * @return \yii\db\ActiveQuery
      */

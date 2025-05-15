@@ -353,14 +353,6 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAno()
-    {
-        return $this->hasOne(Ano::className(), ['id' => 'ano_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getArtigo()
     {
         return $this->hasOne(Artigo::className(), ['id' => 'artigo_id']);

@@ -112,13 +112,24 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
             </div>
         </div>
 
-        <!-- Container para preview à direita -->
+        <!-- Coluna Direita: Requisições -->
         <div class="col-lg-5">
-            <div class="card shadow-sm">
-                <div class="card-header bg-light fw-bold"><i class="bi bi-list-ul me-1"></i> Requisições MXM</div>
-                <div class="card-body position-relative" id="requisicao-preview">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white fw-bold d-flex align-items-center">
+                    <i class="bi bi-list-ul me-2 fs-5"></i> Requisições MXM
+                </div>
+                <div class="card-body position-relative p-0">
                     <div id="requisicao-spinner" class="spinner-border text-primary position-absolute top-50 start-50 translate-middle d-none" role="status"></div>
+
+                    <div id="sem-requisicoes" class="text-muted text-center py-4 d-none">
+                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                        Nenhuma requisição carregada.
+                    </div>
+
                     <div class="accordion" id="accordionPreview"></div>
+                </div>
+                <div class="card-footer small text-muted text-end px-3 py-2">
+                    Clique em uma requisição para visualizar os detalhes.
                 </div>
             </div>
         </div>

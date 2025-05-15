@@ -22,6 +22,14 @@ $(document).ready(function () {
         $('body').append(spinnerHTML);
     }
 
+    function atualizarMensagemSemRequisicoes() {
+        if ($('#accordionPreview .accordion-item').length === 0) {
+            $('#sem-requisicoes').removeClass('d-none');
+        } else {
+            $('#sem-requisicoes').addClass('d-none');
+        }
+    }
+
     // Função para remover o spinner
     function removerSpinner() {
         $('body').find('.spinner-overlay').remove();
@@ -88,6 +96,7 @@ $(document).ready(function () {
                     </div>`;
 
                 $(accordionContainer).append(accordionItem);
+                atualizarMensagemSemRequisicoes();
                 requisicoesExibidas.add(numero);
 
                 mostrarFeedback(`Requisição ${numero} carregada com sucesso.`, 'success');
@@ -120,8 +129,6 @@ $(document).ready(function () {
         });
     }
 
-
-
     // Evento de remoção de requisição
     $(document).on('click', '.requisicao-remover', function () {
         const $item = $(this).closest('.requisicao-preview-item');
@@ -134,15 +141,17 @@ $(document).ready(function () {
     $(campoRequisicao).on('select2:clear', function () {
         $(containerPreview).empty();
         requisicoesExibidas.clear();
+        atualizarMensagemSemRequisicoes();
     });
 
     $(campoRequisicao).on('select2:unselect', function (e) {
         const numero = e.params.data.id;
         $(`#accordion-${numero}`).remove(); // Remove o accordion correspondente
         requisicoesExibidas.delete(numero); // Remove do Set de controle
+        atualizarMensagemSemRequisicoes();
         mostrarFeedback(`Requisição ${numero} removida.`, 'info');
     });
-
+    atualizarMensagemSemRequisicoes();
 });
 
 // Função para mostrar feedback com animação

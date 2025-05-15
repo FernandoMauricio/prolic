@@ -30,9 +30,14 @@ $(document).ready(function () {
 
     if (requisicoesValidas.length > 0) {
         adicionarSpinner();
-        requisicoesValidas.forEach(function (numero) {
-            carregarRequisicao(numero);
-        });
+
+        (async function () {
+            for (const numero of requisicoesValidas) {
+                await new Promise(resolve => {
+                    carregarRequisicao(numero, resolve);
+                });
+            }
+        })();
     }
 
     // Usando o evento de seleção no select2
@@ -51,7 +56,7 @@ $(document).ready(function () {
     });
 
     // Função para carregar a requisição
-    function carregarRequisicao(numero) {
+    function carregarRequisicao(numero, callback = () => { }) {
         requisicoesPendentes++;
         adicionarSpinner();
 
@@ -102,15 +107,16 @@ $(document).ready(function () {
                 requisicoesExibidas.add(numero);
 
                 mostrarFeedback(`Requisição ${numero} não foi encontrada.`, 'warning');
-
             }
         }).fail(function () {
             mostrarFeedback(`Erro ao consultar a requisição ${numero}.`, 'danger');
         }).always(function () {
             requisicoesPendentes--;
             if (requisicoesPendentes === 0) removerSpinner();
+            callback(); // Chama o resolve()
         });
     }
+
 
 
     // Evento de remoção de requisição

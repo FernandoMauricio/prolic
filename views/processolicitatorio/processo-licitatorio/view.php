@@ -79,8 +79,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($model->requisicoesCo
 
     <div class="row g-4">
         <!-- Coluna Esquerda: Dados e Seções -->
-        <div class="col-lg-7">
-
+        <div class="col-lg-6">
             <!-- Detalhes do Processo -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light fw-bold"><i class="bi bi-info-circle me-1"></i> Detalhes do Processo</div>
@@ -251,7 +250,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($model->requisicoesCo
         </div>
 
         <!-- Coluna Direita: Requisições -->
-        <div class="col-lg-5">
+        <div class="col-lg-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-light fw-bold"><i class="bi bi-list-ul me-1"></i> Requisições MXM</div>
                 <div class="card-body position-relative" id="requisicao-preview">

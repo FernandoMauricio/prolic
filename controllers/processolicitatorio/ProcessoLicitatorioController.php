@@ -505,7 +505,7 @@ class ProcessoLicitatorioController extends Controller
             ->innerJoinWith('modalidadeValorlimite.modalidade')
             ->where([
                 'modalidade.id' => $model->modalidadeValorlimite->modalidade_id,
-                'ano' => date('Y')
+                'processo_licitatorio.ano' => date('Y'),
             ])->count();
 
         if ($model->modalidade != $_POST['ProcessoLicitatorio']['modalidade']) {

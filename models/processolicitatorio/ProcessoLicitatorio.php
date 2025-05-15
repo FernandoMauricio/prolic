@@ -75,14 +75,14 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [['ano', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_codprocesso'], 'integer'],
             [['prolic_objeto', 'prolic_elementodespesa', 'prolic_motivo'], 'string'],
             [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo', 'valor_limite', 'valor_limite_apurado', 'valor_saldo'], 'number'],
-            [['prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_datacriacao', 'prolic_dataatualizacao', 'prolic_destino', 'prolic_centrocusto', 'modalidade', 'ramo', 'ciclototal', 'ciclocertame', 'prolic_empresa', 'prolic_codmxm '], 'safe'],
+            [['prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_datacriacao', 'prolic_dataatualizacao', 'prolic_destino', 'prolic_centrocusto', 'modalidade', 'ramo', 'ciclototal', 'ciclocertame', 'prolic_empresa', 'prolic_codmxm'], 'safe'],
             [['prolic_usuariocriacao', 'prolic_usuarioatualizacao'], 'string', 'max' => 255],
             [['artigo_id'], 'exist', 'skipOnError' => true, 'targetClass' => Artigo::className(), 'targetAttribute' => ['artigo_id' => 'id']],
             [['comprador_id'], 'exist', 'skipOnError' => true, 'targetClass' => Comprador::className(), 'targetAttribute' => ['comprador_id' => 'id']],
             [['modalidade_valorlimite_id'], 'exist', 'skipOnError' => true, 'targetClass' => ModalidadeValorlimite::className(), 'targetAttribute' => ['modalidade_valorlimite_id' => 'id']],
             [['recursos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Recursos::className(), 'targetAttribute' => ['recursos_id' => 'id']],
             [['situacao_id'], 'exist', 'skipOnError' => true, 'targetClass' => Situacao::className(), 'targetAttribute' => ['situacao_id' => 'id']],
-            ['prolic_codmxm', 'unique', 'on' => 'insert'],
+            ['prolic_codmxm', 'validarRequisicoesUnicas'],
             [
                 'prolic_valorefetivo',
                 'compare',
@@ -107,7 +107,35 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             ],
         ];
     }
+    /**
+     * Valida se as requisições são únicas
+     * @param string $attribute
+     * @param array $params
+     */
+    public function validarRequisicoesUnicas($attribute, $params)
+    {
+        $requisicoes = is_array($this->$attribute)
+            ? $this->$attribute
+            : explode(';', (string)$this->$attribute);
 
+        $requisicoes = array_filter(array_map('trim', $requisicoes));
+
+        foreach ($requisicoes as $requisicao) {
+            $existe = self::find()
+                ->andWhere(['like', 'prolic_codmxm', $requisicao])
+                ->andWhere(['!=', 'id', $this->id])
+                ->exists();
+
+            if ($existe) {
+                $this->addError($attribute, "A requisição <strong>{$requisicao}</strong> já está vinculada a outro processo.");
+                break;
+            }
+        }
+    }
+
+    /**
+     * @return array the behaviors
+     */
     public function getCicloTotal()
     {
         if ($this->prolic_datahomologacao && $this->prolic_dataprocesso) {
@@ -116,19 +144,15 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
         return null;
     }
 
+    /**
+     * @return array the behaviors
+     */
     public function getCicloCertame()
     {
         if ($this->prolic_datahomologacao && $this->prolic_datacertame) {
             return (new \DateTime($this->prolic_datahomologacao))->diff(new \DateTime($this->prolic_datacertame))->days;
         }
         return null;
-    }
-
-    public function scenarios()
-    {
-        $scenarios = parent::scenarios();
-        $scenarios['insert'] = ['prolic_codmxm']; //Scenario Values Only Accepted
-        return $scenarios;
     }
 
     //Busca dados dos valores limites de cada modalidade

@@ -16,7 +16,7 @@ use yii\bootstrap5\Tabs;
 $this->title = 'Processos Licitatórios';
 $this->params['breadcrumbs'][] = $this->title;
 
-// Substituir ano_id por campo direto
+// Substituir ano por campo direto
 $anoAtual = date('Y');
 
 // Clonar os dataProviders com filtros por ano (sem join com tabela Ano)

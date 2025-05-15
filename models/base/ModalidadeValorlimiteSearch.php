@@ -20,7 +20,7 @@ class ModalidadeValorlimiteSearch extends ModalidadeValorlimite
     public function rules()
     {
         return [
-            [['id', 'ano_id', 'status'], 'integer'],
+            [['id', 'ano', 'status'], 'integer'],
             [['modalidade_id', 'ramo_id', 'homologacao_usuario', 'homologacao_data', 'tipo_modalidade', 'ano_menor_que'], 'safe'],
             [['valor_limite'], 'number'],
         ];
@@ -61,13 +61,11 @@ class ModalidadeValorlimiteSearch extends ModalidadeValorlimite
         }
 
         if ($this->ano_menor_que) {
-            $query->andWhere(['<', 'ano.an_ano', $this->ano_menor_que]);
+            $query->andWhere(['<', 'modalidade_valorlimite.ano', $this->ano_menor_que]);
         }
 
         $query->joinWith('modalidade')
-            ->joinWith('ramo')
-            ->joinWith('ano');
-
+            ->joinWith('ramo');
 
         // grid filtering conditions
         $query->andFilterWhere([
@@ -78,7 +76,7 @@ class ModalidadeValorlimiteSearch extends ModalidadeValorlimite
 
         $query->andFilterWhere(['like', 'modalidade.id', $this->modalidade_id])
             ->andFilterWhere(['ramo.id' => $this->ramo_id])
-            ->andFilterWhere(['ano.id' => $this->ano_id])
+            ->andFilterWhere(['modalidade_valorlimite.ano' => $this->ano])
             ->andFilterWhere(['like', 'homologacao_usuario', $this->homologacao_usuario])
             ->andFilterWhere(['like', 'homologacao_data', $this->homologacao_data])
             ->andFilterWhere(['like', 'tipo_modalidade', $this->tipo_modalidade]);

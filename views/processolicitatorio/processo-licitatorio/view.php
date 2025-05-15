@@ -27,7 +27,7 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="fs-3 fw-bold text-primary d-flex align-items-center gap-2 mb-0">
             <i class="bi bi-file-earmark-text fs-2"></i>
-            Acompanhamento de <span class="text-dark"><?= Html::encode($this->title) . '/' . $model->ano->an_ano ?></span>
+            Acompanhamento de <span class="text-dark"><?= Html::encode($this->title) . '/' . $model->ano ?></span>
         </h1>
         <div class="btn-toolbar">
             <?= Html::a('<i class="bi bi-arrow-left"></i>', ['index'], [
@@ -92,8 +92,8 @@ $this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::P
                         <?php
                         // Campos principais
                         $fields = [
-                            'Ano'        => $model->ano->an_ano,
-                            'Código'     => $model->prolic_sequenciamodal . '/' . $model->ano->an_ano,
+                            'Ano'        => $model->ano,
+                            'Código'     => $model->prolic_sequenciamodal . '/' . $model->ano,
                             'Situação'   => Html::tag('span', Html::encode($model->situacao->sit_descricao), ['class' => 'badge bg-success']),
                             'Data Proc.' => Yii::$app->formatter->asDate($model->prolic_dataprocesso, 'php:d/m/Y'),
                             'Recurso'    => $model->recursos->rec_descricao,

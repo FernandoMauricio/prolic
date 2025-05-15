@@ -39,7 +39,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                             <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i> Informações</h6>
                         </div>
                         <div class="card-body">
-                            <?= $this->render('_info', compact('form', 'model', 'ano', 'destinos', 'situacao')) ?>
+                            <?= $this->render('_info', compact('form', 'model', 'destinos', 'situacao')) ?>
                         </div>
                     </div>
 

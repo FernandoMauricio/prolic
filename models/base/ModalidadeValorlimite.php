@@ -11,7 +11,7 @@ use Yii;
  * @property int $id
  * @property int $modalidade_id
  * @property int $ramo_id
- * @property int $ano_id
+ * @property int $ano
  * @property double $valor_limite
  * @property int $status
  * @property string $homologacao_usuario
@@ -56,13 +56,12 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['modalidade_id', 'ramo_id', 'ano_id', 'valor_limite', 'status', 'tipo_modalidade'], 'required'],
-            [['tipo_modalidade', 'modalidade_id', 'ramo_id', 'ano_id'], 'validarCombinacaoUnica'],
-            [['modalidade_id', 'ramo_id', 'ano_id', 'status'], 'integer'],
+            [['modalidade_id', 'ramo_id', 'ano', 'valor_limite', 'status', 'tipo_modalidade'], 'required'],
+            [['tipo_modalidade', 'modalidade_id', 'ramo_id', 'ano'], 'validarCombinacaoUnica'],
+            [['modalidade_id', 'ramo_id', 'ano', 'status'], 'integer'],
             [['valor_limite'], 'number'],
             [['homologacao_data'], 'safe'],
             [['homologacao_usuario', 'tipo_modalidade'], 'string', 'max' => 255],
-            [['ano_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ano::className(), 'targetAttribute' => ['ano_id' => 'id']],
             [['modalidade_id'], 'exist', 'skipOnError' => true, 'targetClass' => Modalidade::className(), 'targetAttribute' => ['modalidade_id' => 'id']],
             [['ramo_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ramo::className(), 'targetAttribute' => ['ramo_id' => 'id']],
         ];
@@ -88,7 +87,7 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
             'id' => 'Cód.',
             'modalidade_id' => 'Modalidade',
             'ramo_id' => 'Segmento',
-            'ano_id' => 'Ano',
+            'ano' => 'Ano',
             'valor_limite' => 'Valor Limite',
             'status' => 'Status',
             'homologacao_usuario' => 'Homologado Por',
@@ -103,7 +102,7 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
             'tipo_modalidade' => $this->tipo_modalidade,
             'modalidade_id'   => $this->modalidade_id,
             'ramo_id'         => $this->ramo_id,
-            'ano_id'          => $this->ano_id,
+            'ano'          => $this->ano,
         ]);
 
         // Se for edição, ignora o próprio registro

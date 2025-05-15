@@ -22,7 +22,7 @@ $processos = $model->getProcessos()->all();
 $dataProvider = new ArrayDataProvider([
     'allModels' => array_map(function ($proc) {
         return [
-            'sequencia' => $proc->prolic_sequenciamodal . '/' . ($proc->ano->an_ano ?? ''),
+            'sequencia' => $proc->prolic_sequenciamodal . '/' . ($proc->ano ?? ''),
             'objeto' => $proc->prolic_objeto ?? '(sem descrição)',
             'estimado' => $proc->prolic_valorestimado ?? 0,
             'aditivo' => $proc->prolic_valoraditivo ?? 0,
@@ -95,7 +95,7 @@ $dataProvider = new ArrayDataProvider([
                 ],
                 [
                     'label' => 'Ano',
-                    'value' => $model->ano->an_ano ?? '(não definido)'
+                    'value' => $model->ano ?? '(não definido)'
                 ],
                 'tipo_modalidade',
                 [

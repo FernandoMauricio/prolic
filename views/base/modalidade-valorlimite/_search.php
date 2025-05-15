@@ -21,7 +21,7 @@ use yii\bootstrap5\ActiveForm;
 
     <?= $form->field($model, 'ramo_id') ?>
 
-    <?= $form->field($model, 'ano_id') ?>
+    <?= $form->field($model, 'ano') ?>
 
     <?= $form->field($model, 'valor_limite') ?>
 

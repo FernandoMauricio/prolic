@@ -9,13 +9,6 @@ use yii\web\JsExpression;
 ?>
 <div class="row g-3">
     <div class="col-lg-4">
-        <?= $form->field($model, 'ano_id')->widget(Select2::class, [
-            'data' => ArrayHelper::map($ano, 'id', 'an_ano'),
-            'options' => ['placeholder' => 'Ano...'],
-            'pluginOptions' => ['allowClear' => true],
-        ]) ?>
-    </div>
-    <div class="col-lg-4">
         <?= $form->field($model, 'prolic_dataprocesso')->widget(DateControl::class, [
             'type' => DateControl::FORMAT_DATE,
             'ajaxConversion' => false,

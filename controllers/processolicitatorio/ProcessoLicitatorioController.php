@@ -346,7 +346,7 @@ class ProcessoLicitatorioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             $ultimo = ProcessoLicitatorio::find()
-                ->where(['ano' => date('Y')])
+                ->andWhere(['processo_licitatorio.ano' => date('Y')])
                 ->max('prolic_codprocesso');
             $model->prolic_codprocesso = ((int)$ultimo) + 1;
 
@@ -355,7 +355,7 @@ class ProcessoLicitatorioController extends Controller
                     ->innerJoinWith(['modalidadeValorlimite', 'modalidadeValorlimite.modalidade'])
                     ->where([
                         'modalidade.id' => $model->modalidadeValorlimite->modalidade_id,
-                        'ano'           => date('Y'),
+                        'processo_licitatorio.ano' => date('Y'),
                     ])
                     ->count('prolic_sequenciamodal');
                 $model->prolic_sequenciamodal = $cont + 1;

@@ -192,7 +192,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     }
 
 
-    public function getUnidades($prolic_destino)
+    public static function getUnidades($prolic_destino)
     {
         // Se for string separada por vírgula, converte para array
         if (is_string($prolic_destino)) {

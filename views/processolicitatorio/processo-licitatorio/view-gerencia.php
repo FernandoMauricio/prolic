@@ -46,8 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'columns' => [
                                 [
-                                    'attribute' => 'ano_id',
-                                    'value' => $model->ano->an_ano,
+                                    'attribute' => 'ano',
                                     'displayOnly' => true,
                                 ],
 
@@ -58,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 [
                                     'attribute' => 'prolic_sequenciamodal',
-                                    'value' => $model->prolic_sequenciamodal . '/' . $model->ano->an_ano,
+                                    'value' => $model->prolic_sequenciamodal . '/' . $model->ano,
                                     'displayOnly' => true
                                 ],
 

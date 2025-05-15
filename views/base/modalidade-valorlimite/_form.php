@@ -30,13 +30,6 @@ use kartik\select2\Select2;
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
-                                <div class="col-md-4">
-                                    <?= $form->field($model, 'ano_id')->widget(Select2::class, [
-                                        'data' => ArrayHelper::map($ano, 'id', 'an_ano'),
-                                        'options' => ['placeholder' => 'Ano de Referência...'],
-                                        'pluginOptions' => ['allowClear' => true],
-                                    ]) ?>
-                                </div>
                                 <div class="col-md-8">
                                     <?= $form->field($model, 'tipo_modalidade')->widget(Select2::class, [
                                         'data' => \app\models\base\ModalidadeValorlimite::getTiposModalidade(),

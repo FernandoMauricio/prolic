@@ -55,7 +55,7 @@ class Observacoes extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getCountObservacoes($id)
+    public static function getCountObservacoes($id)
     {
 
         $model = Observacoes::find()->where(['processo_licitatorio_id' => $id])->count();

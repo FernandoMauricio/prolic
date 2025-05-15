@@ -24,13 +24,6 @@ use yii\web\JsExpression;
             'pluginOptions' => ['allowClear' => true],
         ]) ?>
     </div>
-    <div class="col-lg-8">
-        <?= $form->field($model, 'prolic_destino')->widget(Select2::class, [
-            'data' => ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado'),
-            'options' => ['placeholder' => 'Informe os Demandante(s)...', 'multiple' => true],
-            'pluginOptions' => ['allowClear' => true],
-        ]) ?>
-    </div>
     <div class="col-lg-4">
         <?= $form->field($model, 'prolic_codmxm')->widget(Select2::class, [
             'options' => [
@@ -51,6 +44,13 @@ use yii\web\JsExpression;
                 ],
                 'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
             ],
+        ]) ?>
+    </div>
+    <div class="col-lg-12">
+        <?= $form->field($model, 'prolic_destino')->widget(Select2::class, [
+            'data' => ArrayHelper::map($destinos, 'uni_codunidade', 'uni_nomeabreviado'),
+            'options' => ['placeholder' => 'Informe os Demandante(s)...', 'multiple' => true],
+            'pluginOptions' => ['allowClear' => true],
         ]) ?>
     </div>
 </div>

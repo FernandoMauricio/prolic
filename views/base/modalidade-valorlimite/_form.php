@@ -30,17 +30,14 @@ use kartik\select2\Select2;
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
-                                <div class="col-md-8">
+                                <div class="col-md-7">
                                     <?= $form->field($model, 'tipo_modalidade')->widget(Select2::class, [
                                         'data' => \app\models\base\ModalidadeValorlimite::getTiposModalidade(),
                                         'options' => ['placeholder' => 'Selecione o Tipo...'],
                                         'pluginOptions' => ['allowClear' => true],
                                     ]) ?>
                                 </div>
-                            </div>
-
-                            <div class="row g-3">
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <?= $form->field($model, 'modalidade_id')->widget(Select2::class, [
                                         'data' => ArrayHelper::map($modalidade, 'id', 'mod_descricao'),
                                         'options' => ['placeholder' => 'Selecione a Modalidade...'],
@@ -48,7 +45,10 @@ use kartik\select2\Select2;
                                         'disabled' => !$model->isNewRecord,
                                     ]) ?>
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-12">
                                     <?= $form->field($model, 'ramo_id')->widget(Select2::class, [
                                         'data' => ArrayHelper::map($ramo, 'id', 'ram_descricao'),
                                         'options' => ['placeholder' => 'Selecione o Segmento...'],

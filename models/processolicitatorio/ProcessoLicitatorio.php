@@ -116,22 +116,36 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     {
         $requisicoes = is_array($this->$attribute)
             ? $this->$attribute
-            : explode(';', (string)$this->$attribute);
+            : explode(';', $this->$attribute);
 
         $requisicoes = array_filter(array_map('trim', $requisicoes));
+        $erros = [];
+
+        $meuId = (int)$this->id;
 
         foreach ($requisicoes as $requisicao) {
-            $existe = self::find()
-                ->andWhere(['like', 'prolic_codmxm', $requisicao])
-                ->andWhere(['!=', 'id', $this->id])
-                ->exists();
+            if ($requisicao === '') continue;
 
-            if ($existe) {
-                $this->addError($attribute, "A requisição <strong>{$requisicao}</strong> já está vinculada a outro processo.");
-                break;
+            $query = self::find()
+                ->andWhere(['IS NOT', 'prolic_codmxm', null])
+                ->andWhere(['like', new \yii\db\Expression("CONCAT(';', prolic_codmxm, ';')"), ";{$requisicao};"]);
+
+            if ($meuId > 0) {
+                $query->andWhere(['!=', 'id', $meuId]);
+            }
+
+            if ($query->exists()) {
+                $erros[] = $requisicao;
             }
         }
+
+        if (!empty($erros)) {
+            $lista = implode(', ', $erros);
+            $this->addError($attribute, "A(s) requisição(ões) {$lista} já está(ão) vinculada(s) a outro processo.");
+        }
     }
+
+
 
     /**
      * @return array the behaviors

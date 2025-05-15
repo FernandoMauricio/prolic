@@ -63,71 +63,107 @@ $(document).ready(function () {
         adicionarSpinner(numero);
         mostrarFeedback(`Carregando requisição ${numero}...`, 'info');
 
-        carregarRequisicao(numero);
+        if (requisicoesPendentes === 0) {
+            adicionarSpinner(numero);
+        } else {
+            atualizarSpinnerMensagem(`Carregando Requisição MXM...<br><span class="text-warning fs-4">${numero}</span>`);
+        }
     });
+
+    // Atualiza o texto do spinner dinamicamente
+    function atualizarSpinnerMensagem(mensagem) {
+        $('.spinner-overlay .text-white').html(mensagem);
+    }
 
     // Função para carregar a requisição
     function carregarRequisicao(numero, callback = () => { }) {
         requisicoesPendentes++;
         adicionarSpinner(numero);
+        atualizarSpinnerMensagem(`Carregando Requisição MXM...<br><span class="text-warning fs-4">${numero}</span>`);
 
         $.getJSON("/prolic/web/index.php?r=processolicitatorio/processo-licitatorio/buscar-requisicao", {
             codigoEmpresa: '02',
-            numeroRequisicao: numero
+            numeroRequisicao: numero,
+            id: $('#processolicitatorio-id').val()
         }, function (response) {
+            if (response.jaUtilizada) {
+                mostrarFeedback(`Requisição ${numero} já está vinculada a outro processo.`, 'warning');
+
+                // Remove apenas a requisição inválida do Select2
+                const selected = $(campoRequisicao).val() || [];
+                const atualizadas = selected.filter(v => v !== numero);
+                $(campoRequisicao).val(atualizadas).trigger('change.select2');
+
+                requisicoesExibidas.delete(numero);
+                callback();
+                return;
+            }
+
             if (response.success && response.html) {
                 const htmlComRemocao = `
-                    <div class="requisicao-preview-item" data-id="${numero}">
-                        ${response.html}
-                    </div>`;
+                <div class="requisicao-preview-item" data-id="${numero}">
+                    ${response.html}
+                </div>`;
 
                 const accordionItem = `
-                    <div class="accordion-item" id="accordion-${numero}">
-                        <h2 class="accordion-header" id="heading${numero}">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${numero}" aria-expanded="true" aria-controls="collapse${numero}">
-                                Requisição: ${numero}
-                            </button>
-                        </h2>
-                        <div id="collapse${numero}" class="accordion-collapse collapse show" aria-labelledby="heading${numero}" data-bs-parent="#accordionPreview">
-                            <div class="accordion-body">
-                                ${htmlComRemocao}
-                            </div>
+                <div class="accordion-item" id="accordion-${numero}">
+                    <h2 class="accordion-header" id="heading${numero}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${numero}" aria-expanded="true" aria-controls="collapse${numero}">
+                            Requisição: ${numero}
+                        </button>
+                    </h2>
+                    <div id="collapse${numero}" class="accordion-collapse collapse show" aria-labelledby="heading${numero}" data-bs-parent="#accordionPreview">
+                        <div class="accordion-body">
+                            ${htmlComRemocao}
                         </div>
-                    </div>`;
+                    </div>
+                </div>`;
 
                 $(accordionContainer).append(accordionItem);
                 atualizarMensagemSemRequisicoes();
                 requisicoesExibidas.add(numero);
 
+                // Adiciona ao Select2 se não existir
+                if ($(campoRequisicao).find(`option[value="${numero}"]`).length === 0) {
+                    const newOption = new Option(numero, numero, true, true);
+                    $(campoRequisicao).append(newOption).trigger('change');
+                } else {
+                    const valoresAtuais = $(campoRequisicao).val() || [];
+                    if (!valoresAtuais.includes(numero)) {
+                        valoresAtuais.push(numero);
+                    }
+                    $(campoRequisicao).val(valoresAtuais).trigger('change');
+                }
+
                 mostrarFeedback(`Requisição ${numero} carregada com sucesso.`, 'success');
             } else {
                 const accordionItemErro = `
-                    <div class="accordion-item border-danger" id="accordion-${numero}">
-                        <h2 class="accordion-header" id="headingErro${numero}">
-                            <button class="accordion-button bg-danger bg-opacity-10 text-danger fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseErro${numero}" aria-expanded="true" aria-controls="collapseErro${numero}">
-                                Requisição não encontrada: ${numero}
-                            </button>
-                        </h2>
-                        <div id="collapseErro${numero}" class="accordion-collapse collapse show" aria-labelledby="headingErro${numero}" data-bs-parent="#accordionPreview">
-                            <div class="accordion-body">
-                                <p class="text-danger mb-2">A requisição <strong>${numero}</strong> não foi localizada na API MXM ou está inacessível.</p>
-                            </div>
+                <div class="accordion-item border-danger" id="accordion-${numero}">
+                    <h2 class="accordion-header" id="headingErro${numero}">
+                        <button class="accordion-button bg-danger bg-opacity-10 text-danger fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseErro${numero}" aria-expanded="true" aria-controls="collapseErro${numero}">
+                            Requisição não encontrada: ${numero}
+                        </button>
+                    </h2>
+                    <div id="collapseErro${numero}" class="accordion-collapse collapse show" aria-labelledby="headingErro${numero}" data-bs-parent="#accordionPreview">
+                        <div class="accordion-body">
+                            <p class="text-danger mb-2">A requisição <strong>${numero}</strong> não foi localizada na API MXM ou está inacessível.</p>
                         </div>
                     </div>
-                `;
+                </div>`;
                 $(accordionContainer).append(accordionItemErro);
-                requisicoesExibidas.add(numero);
-
                 mostrarFeedback(`Requisição ${numero} não foi encontrada.`, 'warning');
             }
         }).fail(function () {
             mostrarFeedback(`Erro ao consultar a requisição ${numero}.`, 'danger');
         }).always(function () {
             requisicoesPendentes--;
-            if (requisicoesPendentes === 0) removerSpinner();
-            callback(); // Chama o resolve()
+            if (requisicoesPendentes === 0) {
+                setTimeout(removerSpinner, 500); // atraso leve para leitura da mensagem
+            }
+            callback(); // Chama o resolve() do loop
         });
     }
+
 
     // Evento de remoção de requisição
     $(document).on('click', '.requisicao-remover', function () {
@@ -146,7 +182,7 @@ $(document).ready(function () {
 
     $(campoRequisicao).on('select2:unselect', function (e) {
         const numero = e.params.data.id;
-        $(`#accordion-${numero}`).remove(); // Remove o accordion correspondente
+        $(`#accordion - ${numero}`).remove(); // Remove o accordion correspondente
         requisicoesExibidas.delete(numero); // Remove do Set de controle
         atualizarMensagemSemRequisicoes();
         mostrarFeedback(`Requisição ${numero} removida.`, 'info');
@@ -157,11 +193,16 @@ $(document).ready(function () {
 // Função para mostrar feedback com animação
 function mostrarFeedback(mensagem, tipo) {
     const $alerta = $('#requisicao-feedback');
+
     $alerta
+        .stop(true, true) // cancela animações pendentes
+        .removeClass('d-none')
         .removeClass()
         .addClass('alert alert-' + tipo)
         .html('<strong>' + mensagem + '</strong>')
         .fadeIn(200)
         .delay(3000)
-        .fadeOut(400);
-}
+        .fadeOut(400, function () {
+            $alerta.addClass('d-none');
+        });
+};

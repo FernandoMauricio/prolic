@@ -23,6 +23,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
     ]); ?>
 
     <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
+    <?= Html::activeHiddenInput($model, 'id') ?>
 
     <!-- Linha para o formulário e a requisição -->
     <div class="row g-3">
@@ -113,7 +114,9 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
         </div>
 
         <!-- Coluna Direita: Requisições -->
-        <div class="col-lg-6">
+        <div class="col-lg-6 position-relative">
+            <!-- Feedback dentro do escopo local -->
+            <div id="requisicao-feedback" class="alert d-none position-absolute top-0 start-50 translate-middle-x mt-2 z-1051 shadow"></div>
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white fw-bold d-flex align-items-center">
                     <i class="bi bi-list-ul me-2 fs-5"></i> Requisições MXM

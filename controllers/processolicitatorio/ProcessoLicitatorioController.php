@@ -288,9 +288,28 @@ class ProcessoLicitatorioController extends Controller
 
     public function actionBuscarRequisicao($codigoEmpresa, $numeroRequisicao)
     {
-        $dados = WebManagerService::consultarPedidoRequisicao($codigoEmpresa, $numeroRequisicao);
-
         Yii::$app->response->format = Response::FORMAT_JSON;
+
+        // ID atual, se estiver sendo passado (para exclusão do próprio registro)
+        $meuId = Yii::$app->request->get('id');
+
+        $query = ProcessoLicitatorio::find()
+            ->andWhere(['IS NOT', 'prolic_codmxm', null])
+            ->andWhere(['like', new \yii\db\Expression("CONCAT(';', prolic_codmxm, ';')"), ";{$numeroRequisicao};"]);
+
+        if (!empty($meuId)) {
+            $query->andWhere(['!=', 'id', (int)$meuId]);
+        }
+
+        if ($query->exists()) {
+            return [
+                'success' => false,
+                'jaUtilizada' => true,
+                'mensagem' => "A requisição {$numeroRequisicao} já está vinculada a outro processo.",
+            ];
+        }
+
+        $dados = WebManagerService::consultarPedidoRequisicao($codigoEmpresa, $numeroRequisicao);
 
         if (!empty($dados)) {
             $html = $this->renderPartial('form/_requisicao-preview', ['dados' => $dados]);
@@ -299,6 +318,7 @@ class ProcessoLicitatorioController extends Controller
 
         return ['success' => false];
     }
+
 
     public function actionBuscarRequisicaoOpcao($term = '')
     {
@@ -435,11 +455,7 @@ class ProcessoLicitatorioController extends Controller
             $model->prolic_codmxm = explode(';', $model->prolic_codmxm);
         }
 
-        // Blindagem total com limpeza e reindexação
-        $model->prolic_codmxm = array_values(
-            array_filter(array_map('trim', (array) $model->prolic_codmxm), fn($v) => $v !== '')
-        );
-
+        $model->prolic_codmxm = $this->formatarRequisicoesParaSalvar($model->prolic_codmxm);
 
         return $this->render('update', array_merge(
             [
@@ -447,6 +463,15 @@ class ProcessoLicitatorioController extends Controller
             ],
             $dadosAuxiliares
         ));
+    }
+
+    private function formatarRequisicoesParaSalvar($lista): string
+    {
+        $itens = is_array($lista) ? $lista : explode(';', (string) $lista);
+
+        $filtrados = array_filter(array_map('trim', $itens), fn($v) => $v !== '');
+
+        return ';' . implode(';', $filtrados) . ';';
     }
 
     private function carregarDadosAuxiliares()

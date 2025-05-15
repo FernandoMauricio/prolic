@@ -24,7 +24,6 @@ echo NavX::widget([
             'label' => '<i class="bi bi-gear-fill me-1"></i> Administração',
             'items' => [
                 ['label' => '<i class="bi bi-sliders"></i> <strong>Parâmetros</strong>', 'items' => [
-                    ['label' => '<i class="bi bi-calendar2-week"></i> Ano', 'url' => ['/base/ano/index']],
                     ['label' => '<i class="bi bi-journal-text"></i> Artigo', 'url' => ['/base/artigo/index']],
                     ['label' => '<i class="bi bi-person"></i> Comprador', 'url' => ['/base/comprador/index']],
                     ['label' => '<i class="bi bi-tag-fill"></i> Modalidade', 'url' => ['/base/modalidade/index']],

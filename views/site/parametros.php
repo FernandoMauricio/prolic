@@ -2,7 +2,6 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
-use yii\widgets\Breadcrumbs;
 
 $this->title = 'Parâmetros do Sistema';
 $this->params['breadcrumbs'][] = $this->title;
@@ -18,12 +17,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php
         $parametros = [
-            ['icon' => 'calendar2-week', 'label' => 'Ano', 'url' => ['/base/ano/index']],
             ['icon' => 'journal-text', 'label' => 'Artigo', 'url' => ['/base/artigo/index']],
-            ['icon' => 'buildings', 'label' => 'Empresa', 'url' => ['/base/empresa/index']],
             ['icon' => 'person', 'label' => 'Comprador', 'url' => ['/base/comprador/index']],
             ['icon' => 'tag-fill', 'label' => 'Modalidade', 'url' => ['/base/modalidade/index']],
-            ['icon' => 'tags', 'label' => 'Valor Limite', 'url' => ['/base/modalidade-valorlimite/index']],
+            ['icon' => 'graph-up-arrow', 'label' => 'Valor Limite', 'url' => ['/base/modalidade-valorlimite/index']],
             ['icon' => 'diagram-2', 'label' => 'Segmento', 'url' => ['/base/ramo/index']],
             ['icon' => 'lightning-charge-fill', 'label' => 'Recursos', 'url' => ['/base/recursos/index']],
         ];

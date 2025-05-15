@@ -4,7 +4,6 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap5\ActiveForm;
 use kartik\select2\Select2;
-use app\models\base\Ano;
 use app\models\base\Unidades;
 
 /* @var $this yii\web\View */
@@ -26,10 +25,13 @@ use app\models\base\Unidades;
 
     <div class="col-md-3">
         <?php
-        $ano = Ano::find()->where(['an_status' => 1])->orderBy('an_ano')->all();
-        $data_ano = ArrayHelper::map($ano, 'id', 'an_ano');
-        echo $form->field($model, 'ano_id')->widget(Select2::classname(), [
-            'data' =>  $data_ano,
+        $anos = array_combine(
+            range(date('Y') - 5, date('Y') + 1),
+            range(date('Y') - 5, date('Y') + 1)
+        );
+
+        echo $form->field($model, 'ano')->widget(Select2::classname(), [
+            'data' =>  $anos,
             'options' => ['placeholder' => 'Selecione o Ano...'],
             'pluginOptions' => ['allowClear' => true],
         ]);

@@ -3,22 +3,18 @@
 namespace app\models\processolicitatorio;
 
 use Yii;
-use app\models\base\Ano;
 use app\models\base\Artigo;
 use app\models\base\Comprador;
 use app\models\base\ModalidadeValorlimite;
 use app\models\base\Recursos;
 use app\models\base\Situacao;
-use app\models\base\Unidades;
-use app\models\base\Centrocusto;
 use app\models\base\Empresa;
-use yii\db\Expression;
 
 /**
  * This is the model class for table "processo_licitatorio".
  *
  * @property int $id
- * @property int $ano_id
+ * @property int $ano
  * @property string $prolic_objeto
  * @property string|null $prolic_codmxm
  * @property string|null $prolic_destino
@@ -45,7 +41,6 @@ use yii\db\Expression;
  * @property string $prolic_dataatualizacao
  *
  * @property Observacoes[] $observacoes
- * @property Ano $ano
  * @property Artigo $artigo
  * @property Comprador $comprador
  * @property ModalidadeValorlimite $modalidadeValorlimite
@@ -76,13 +71,12 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ano_id', 'prolic_objeto', 'prolic_codmxm', 'prolic_destino', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_centrocusto'], 'required'],
-            [['ano_id', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_codprocesso'], 'integer'],
+            [['ano', 'prolic_objeto', 'prolic_codmxm', 'prolic_destino', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_centrocusto'], 'required'],
+            [['ano', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_codprocesso'], 'integer'],
             [['prolic_objeto', 'prolic_elementodespesa', 'prolic_motivo'], 'string'],
             [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo', 'valor_limite', 'valor_limite_apurado', 'valor_saldo'], 'number'],
             [['prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_datacriacao', 'prolic_dataatualizacao', 'prolic_destino', 'prolic_centrocusto', 'modalidade', 'ramo', 'ciclototal', 'ciclocertame', 'prolic_empresa', 'prolic_codmxm '], 'safe'],
             [['prolic_usuariocriacao', 'prolic_usuarioatualizacao'], 'string', 'max' => 255],
-            [['ano_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ano::className(), 'targetAttribute' => ['ano_id' => 'id']],
             [['artigo_id'], 'exist', 'skipOnError' => true, 'targetClass' => Artigo::className(), 'targetAttribute' => ['artigo_id' => 'id']],
             [['comprador_id'], 'exist', 'skipOnError' => true, 'targetClass' => Comprador::className(), 'targetAttribute' => ['comprador_id' => 'id']],
             [['modalidade_valorlimite_id'], 'exist', 'skipOnError' => true, 'targetClass' => ModalidadeValorlimite::className(), 'targetAttribute' => ['modalidade_valorlimite_id' => 'id']],
@@ -141,10 +135,10 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
     public static function getLimiteSubCat($cat_id, $ramo_id = null)
     {
         $query = ModalidadeValorlimite::find()
-            ->joinWith(['ramo', 'ano'], false, 'INNER JOIN')
+            ->joinWith('ramo', false, 'INNER JOIN')
             ->where(['modalidade_id' => $cat_id])
             ->andWhere(['IS NOT', 'homologacao_usuario', null])
-            ->andWhere(['ano.an_ano' => date('Y')]);
+            ->andWhere(['modalidade_valorlimite.ano' => date('Y')]);
 
         if ($ramo_id) {
             $query->andWhere(['ramo_id' => $ramo_id]);
@@ -310,7 +304,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'id' => 'Cód.',
             'prolic_codprocesso' => 'Nº Processo',
             'prolic_dataprocesso' => 'Data Processo',
-            'ano_id' => 'Ano',
+            'ano' => 'Ano',
             'prolic_objeto' => 'Objeto',
             'prolic_codmxm' => 'Requisição MXM',
             'prolic_destino' => 'Demandante(s)',

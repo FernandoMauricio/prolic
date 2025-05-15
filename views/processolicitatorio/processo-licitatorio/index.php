@@ -8,7 +8,6 @@ use yii\helpers\Url;
 use yii\bootstrap5\Modal;
 use yii\bootstrap5\Accordion;
 use yii\bootstrap5\Tabs;
-use app\models\base\Ano;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\processolicitatorio\ProcessoLicitatorioSearch */
@@ -17,15 +16,15 @@ use app\models\base\Ano;
 $this->title = 'Processos Licitatórios';
 $this->params['breadcrumbs'][] = $this->title;
 
-// Obter o ID do ano atual com base no campo an_ano
-$anoAtualId = Ano::find()->select('id')->where(['an_ano' => date('Y')])->scalar();
+// Substituir ano_id por campo direto
+$anoAtual = date('Y');
 
-// Clonar os dataProviders com filtros por ano
+// Clonar os dataProviders com filtros por ano (sem join com tabela Ano)
 $dataProviderAnoAtual = clone $dataProvider;
-$dataProviderAnoAtual->query->andWhere(['processo_licitatorio.ano_id' => $anoAtualId]);
+$dataProviderAnoAtual->query->andWhere(['processo_licitatorio.ano' => $anoAtual]);
 
 $dataProviderAnteriores = clone $dataProvider;
-$dataProviderAnteriores->query->andWhere(['<', 'processo_licitatorio.ano_id', $anoAtualId]);
+$dataProviderAnteriores->query->andWhere(['<', 'processo_licitatorio.ano', $anoAtual]);
 
 $gridColumns = require(__DIR__ . '/_gridColumns.php');
 ?>
@@ -100,10 +99,10 @@ $gridColumns = require(__DIR__ . '/_gridColumns.php');
     <?= Tabs::widget([
         'items' => [
             [
-                'label' => '<i class="bi bi-calendar3"></i> Ano Atual (' . date('Y') . ')',
+                'label' => '<i class="bi bi-calendar3"></i> Ano Atual (' . $anoAtual . ')',
                 'encode' => false,
                 'active' => true,
-                'content' => (function () use ($dataProviderAnoAtual, $searchModel, $gridColumns) {
+                'content' => (function () use ($dataProviderAnoAtual, $searchModel, $gridColumns, $anoAtual) {
                     ob_start();
                     Pjax::begin(['id' => 'pjax-ano-atual']);
                     echo GridView::widget([
@@ -123,7 +122,7 @@ $gridColumns = require(__DIR__ . '/_gridColumns.php');
                         'pjax' => true,
                         'panel' => [
                             'type' => GridView::TYPE_PRIMARY,
-                            'heading' => '<h5 class="mb-0"><i class="bi bi-clipboard-data-fill me-2"></i>Processos Licitatórios - Ano Atual (' . date('Y') . ')</h5>',
+                            'heading' => '<h5 class="mb-0"><i class="bi bi-clipboard-data-fill me-2"></i>Processos Licitatórios - Ano Atual (' . $anoAtual . ')</h5>',
                         ],
                     ]);
                     Pjax::end();

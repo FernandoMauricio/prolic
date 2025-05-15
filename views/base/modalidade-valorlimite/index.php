@@ -7,7 +7,6 @@ use kartik\grid\GridView;
 use kartik\widgets\DatePicker;
 use yii\widgets\Pjax;
 use app\models\base\Modalidade;
-use app\models\base\Ano;
 use app\models\base\Ramo;
 
 $this->title = 'Valor Limite por Modalidade';
@@ -21,15 +20,9 @@ $searchModel->status = $status;
 
 if ($status == 1) {
     if ($anoFiltro === 'corrente') {
-        $searchModel->ano_id = \app\models\base\Ano::find()
-            ->select('id')
-            ->where(['an_ano' => date('Y')])
-            ->scalar(); // só um valor
+        $searchModel->ano = date('Y');
     } elseif ($anoFiltro === 'anteriores') {
-        $searchModel->ano_id = \app\models\base\Ano::find()
-            ->select('id')
-            ->where(['<', 'an_ano', date('Y')])
-            ->column(); // array com vários
+        $searchModel->ano_menor_que = date('Y');
     }
 }
 

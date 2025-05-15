@@ -4,16 +4,11 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
-use kartik\editable\Editable;
-use yii\bootstrap5\Modal;
 use kartik\widgets\DatePicker;
 use yii\helpers\StringHelper;
 
-use app\models\base\Ano;
 use app\models\base\ModalidadeValorlimite;
 use app\models\base\Comprador;
-use app\models\base\Artigo;
 use app\models\base\Situacao;
 use app\models\base\Modalidade;
 
@@ -34,18 +29,21 @@ $this->params['breadcrumbs'][] = $this->title;
 
     $gridColumns = [
         [
-            'attribute' => 'ano_id',
+            'attribute' => 'ano',
             'width' => '5%',
-            'value' => function ($model, $key, $index, $widget) {
-                return $model->ano->an_ano;
+            'value' => function ($model) {
+                return $model->ano;
             },
             'filterType' => GridView::FILTER_SELECT2,
-            'filter' => ArrayHelper::map(Ano::find()->orderBy('id')->asArray()->all(), 'id', 'an_ano'),
+            'filter' => array_combine(
+                range(date('Y') - 5, date('Y') + 1),
+                range(date('Y') - 5, date('Y') + 1)
+            ),
             'filterWidgetOptions' => [
                 'pluginOptions' => ['allowClear' => true],
             ],
             'filterInputOptions' => ['placeholder' => 'Ano...'],
-            'group' => true,  // enable grouping
+            'group' => true,
         ],
 
         [

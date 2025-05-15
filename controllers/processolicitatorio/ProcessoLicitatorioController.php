@@ -3,7 +3,6 @@
 namespace app\controllers\processolicitatorio;
 
 use Yii;
-use app\models\base\Ano;
 use app\models\base\Ramo;
 use app\models\base\ModalidadeValorlimite;
 use app\models\base\Unidades;
@@ -334,49 +333,44 @@ class ProcessoLicitatorioController extends Controller
             return $this->AccessoAdministrador();
         }
 
-        $model    = new ProcessoLicitatorio();
+        $model = new ProcessoLicitatorio();
         $dadosAuxiliares = $this->carregarDadosAuxiliares();
 
-        // seta data/usuário de criação
         $model->prolic_datacriacao    = date('Y-m-d');
         $model->prolic_usuariocriacao = $session['sess_nomeusuario'];
         $model->situacao_id = 1; // Em elaboração
-        $model->ano_id = 8; // ano corrente
+        $model->ano = date('Y'); // ano corrente
         $model->prolic_valorestimado = 0;
         $model->prolic_valoraditivo = 0;
         $model->prolic_valorefetivo = 0;
 
         if ($model->load(Yii::$app->request->post())) {
-            // número do processo: próximo dentro do ano corrente
             $ultimo = ProcessoLicitatorio::find()
-                ->innerJoinWith('ano')
-                ->where(['ano.an_ano' => date('Y')])
+                ->where(['ano' => date('Y')])
                 ->max('prolic_codprocesso');
             $model->prolic_codprocesso = ((int)$ultimo) + 1;
 
-            // sequência da modalidade no ano
             if (isset($model->modalidadeValorlimite->modalidade_id)) {
                 $cont = ProcessoLicitatorio::find()
-                    ->innerJoinWith(['modalidadeValorlimite', 'modalidadeValorlimite.modalidade', 'ano'])
+                    ->innerJoinWith(['modalidadeValorlimite', 'modalidadeValorlimite.modalidade'])
                     ->where([
                         'modalidade.id' => $model->modalidadeValorlimite->modalidade_id,
-                        'ano.an_ano'    => date('Y'),
+                        'ano'           => date('Y'),
                     ])
                     ->count('prolic_sequenciamodal');
                 $model->prolic_sequenciamodal = $cont + 1;
             }
 
-            // salva sem precisar dos outros campos ainda
             $model->save(false);
 
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
                 return ['redirect' => Url::to(['update', 'id' => $model->id])];
             }
+
             return $this->redirect(['update', 'id' => $model->id]);
         }
 
-        // fallback se alguém acessar create direto
         return $this->renderAjax('create', array_merge(
             ['model' => $model],
             $dadosAuxiliares
@@ -458,11 +452,6 @@ class ProcessoLicitatorioController extends Controller
     private function carregarDadosAuxiliares()
     {
         return [
-            'ano' => Ano::find()
-                ->where(['an_status' => 1])
-                ->orderBy(['an_ano' => SORT_DESC])
-                ->all(),
-
             'ramo' => Ramo::find()
                 ->where(['ram_status' => 1])
                 ->orderBy(['ram_descricao' => SORT_DESC])
@@ -514,10 +503,9 @@ class ProcessoLicitatorioController extends Controller
         $incremento = ProcessoLicitatorio::find()
             ->innerJoinWith('modalidadeValorlimite')
             ->innerJoinWith('modalidadeValorlimite.modalidade')
-            ->innerJoinWith('ano')
             ->where([
                 'modalidade.id' => $model->modalidadeValorlimite->modalidade_id,
-                'ano.an_ano' => date('Y')
+                'ano' => date('Y')
             ])->count();
 
         if ($model->modalidade != $_POST['ProcessoLicitatorio']['modalidade']) {

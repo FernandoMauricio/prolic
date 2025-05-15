@@ -4,14 +4,12 @@ namespace app\controllers\base;
 
 use Yii;
 use app\models\base\Modalidade;
-use app\models\base\Ano;
 use app\models\base\Ramo;
 use app\models\base\ModalidadeValorlimite;
 use app\models\base\ModalidadeValorlimiteSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\helpers\Json;
 
 /**
  * ModalidadeValorlimiteController implements the CRUD actions for ModalidadeValorlimite model.
@@ -52,12 +50,7 @@ class ModalidadeValorlimiteController extends Controller
         if ($status == 1 && $anoFiltro === 'anteriores') {
             $params['ModalidadeValorlimiteSearch']['ano_menor_que'] = date('Y');
         } elseif ($status == 1 && $anoFiltro === 'corrente') {
-            $anoAtualId = \app\models\base\Ano::find()
-                ->select('id')
-                ->where(['an_ano' => date('Y')])
-                ->scalar();
-
-            $params['ModalidadeValorlimiteSearch']['ano_id'] = $anoAtualId;
+            $params['ModalidadeValorlimiteSearch']['ano'] = date('Y');
         }
 
         $dataProvider = $searchModel->search($params);
@@ -65,6 +58,8 @@ class ModalidadeValorlimiteController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'status' => $status,
+            'anoFiltro' => $anoFiltro,
         ]);
     }
 
@@ -150,10 +145,11 @@ class ModalidadeValorlimiteController extends Controller
             $model = new ModalidadeValorlimite();
 
             $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
-            $ano = Ano::find()->where(['an_status' => 1])->orderBy(['an_ano' => SORT_DESC])->all();
             $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
 
+            $model->ano = date('Y');
             $model->status = 1; //Ativo
+
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
                 $tipo = $model->verificarTipoModalidade();
                 Yii::$app->session->setFlash('success', "Modalidade criada: <strong>$tipo</strong>");
@@ -163,7 +159,6 @@ class ModalidadeValorlimiteController extends Controller
             return $this->render('create', [
                 'model' => $model,
                 'modalidade' => $modalidade,
-                'ano' => $ano,
                 'ramo' => $ramo,
             ]);
         }

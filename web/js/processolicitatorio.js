@@ -7,11 +7,15 @@ $(document).ready(function () {
     const requisicoesExibidas = new Set();
 
     // Função para adicionar o spinner
-    function adicionarSpinner() {
+    function adicionarSpinner(numero) {
         const spinnerHTML = `
-            <div class="spinner-overlay">
-                <div class="spinner-border text-light" role="status">
+            <div class="spinner-overlay position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column justify-content-center align-items-center z-1050">
+                <div class="spinner-border text-light mb-3" style="width: 3rem; height: 3rem;" role="status">
                     <span class="visually-hidden">Carregando...</span>
+                </div>
+                <div class="text-white fw-bold fs-5 text-center">
+                    Carregando Requisição MXM...<br>
+                    <span class="text-warning fs-4">${numero}</span>
                 </div>
             </div>
         `;
@@ -29,8 +33,6 @@ $(document).ready(function () {
     });
 
     if (requisicoesValidas.length > 0) {
-        adicionarSpinner();
-
         (async function () {
             for (const numero of requisicoesValidas) {
                 await new Promise(resolve => {
@@ -39,6 +41,7 @@ $(document).ready(function () {
             }
         })();
     }
+
 
     // Usando o evento de seleção no select2
     $(campoRequisicao).on('select2:select', function (e) {
@@ -58,7 +61,7 @@ $(document).ready(function () {
     // Função para carregar a requisição
     function carregarRequisicao(numero, callback = () => { }) {
         requisicoesPendentes++;
-        adicionarSpinner();
+        adicionarSpinner(numero);
 
         $.getJSON("/prolic/web/index.php?r=processolicitatorio/processo-licitatorio/buscar-requisicao", {
             codigoEmpresa: '02',

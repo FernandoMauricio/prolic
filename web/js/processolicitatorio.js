@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let requisicoesPendentes = 0;
     const campoRequisicao = '#processolicitatorio-prolic_codmxm';
     const containerPreview = '#requisicao-preview';
     const accordionContainer = '#accordionPreview';
@@ -51,21 +52,21 @@ $(document).ready(function () {
 
     // Função para carregar a requisição
     function carregarRequisicao(numero) {
+        requisicoesPendentes++;
+        adicionarSpinner();
+
         $.getJSON("/prolic/web/index.php?r=processolicitatorio/processo-licitatorio/buscar-requisicao", {
             codigoEmpresa: '02',
             numeroRequisicao: numero
         }, function (response) {
-            removerSpinner(); // Remove o spinner após o carregamento
-
             if (response.success && response.html) {
                 const htmlComRemocao = `
-                <div class="requisicao-preview-item" data-id="${numero}">
-                    ${response.html}
-                </div>`;
+                    <div class="requisicao-preview-item" data-id="${numero}">
+                        ${response.html}
+                    </div>`;
 
-                // Adiciona a requisição no accordion
                 const accordionItem = `
-                    <div class="accordion-item">
+                    <div class="accordion-item" id="accordion-${numero}">
                         <h2 class="accordion-header" id="heading${numero}">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${numero}" aria-expanded="true" aria-controls="collapse${numero}">
                                 Requisição: ${numero}
@@ -76,8 +77,8 @@ $(document).ready(function () {
                                 ${htmlComRemocao}
                             </div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
+
                 $(accordionContainer).append(accordionItem);
                 requisicoesExibidas.add(numero);
 
@@ -86,10 +87,13 @@ $(document).ready(function () {
                 mostrarFeedback(`Falha ao carregar a requisição ${numero}.`, 'danger');
             }
         }).fail(function () {
-            removerSpinner();
             mostrarFeedback(`Erro ao consultar a requisição ${numero}.`, 'danger');
+        }).always(function () {
+            requisicoesPendentes--;
+            if (requisicoesPendentes === 0) removerSpinner();
         });
     }
+
 
     // Evento de remoção de requisição
     $(document).on('click', '.requisicao-remover', function () {
@@ -104,6 +108,14 @@ $(document).ready(function () {
         $(containerPreview).empty();
         requisicoesExibidas.clear();
     });
+
+    $(campoRequisicao).on('select2:unselect', function (e) {
+        const numero = e.params.data.id;
+        $(`#accordion-${numero}`).remove(); // Remove o accordion correspondente
+        requisicoesExibidas.delete(numero); // Remove do Set de controle
+        mostrarFeedback(`Requisição ${numero} removida.`, 'info');
+    });
+
 });
 
 // Função para mostrar feedback com animação

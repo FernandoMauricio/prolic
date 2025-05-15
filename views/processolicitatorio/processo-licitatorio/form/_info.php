@@ -31,7 +31,7 @@ use yii\web\JsExpression;
                 'multiple' => true,
                 'placeholder' => 'Digite o número da requisição...',
             ],
-            'data' =>  array_combine($model->prolic_codmxm, $model->prolic_codmxm),
+            'data' => array_combine($model->requisicoesCodmxm, $model->requisicoesCodmxm),
             'pluginOptions' => [
                 'allowClear' => true,
                 'minimumInputLength' => 5,

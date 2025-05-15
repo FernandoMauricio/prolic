@@ -191,6 +191,15 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
         return $data;
     }
 
+    public function getRequisicoesCodmxm(): array
+    {
+        return array_values(
+            array_filter(
+                array_map('trim', is_array($this->prolic_codmxm) ? $this->prolic_codmxm : explode(';', (string) $this->prolic_codmxm)),
+                fn($v) => $v !== ''
+            )
+        );
+    }
 
     public static function getUnidades($prolic_destino)
     {

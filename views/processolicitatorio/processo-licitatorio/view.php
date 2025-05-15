@@ -16,10 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 // Estilos e scripts
 $this->registerCssFile('@web/css/requisicao-preview.css', ['depends' => [\yii\bootstrap5\BootstrapAsset::class]]);
 $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::class]]);
-$cods = is_array($model->prolic_codmxm)
-    ? $model->prolic_codmxm
-    : (strlen($model->prolic_codmxm) ? explode(';', $model->prolic_codmxm) : []);
-$this->registerJs('var requisicoesSalvas = ' . json_encode($cods) . ';', View::POS_HEAD);
+$this->registerJs('var requisicoesSalvas = ' . json_encode($model->requisicoesCodmxm) . ';', View::POS_HEAD);
 ?>
 
 <div class="processo-licitatorio-view container py-4">

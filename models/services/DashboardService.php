@@ -46,10 +46,12 @@ class DashboardService
     {
         return ProcessoLicitatorio::find()
             ->select(['ano' => new Expression('YEAR(prolic_dataprocesso)')])
+            ->where(['IS NOT', 'prolic_dataprocesso', null])
             ->distinct()
             ->orderBy(['ano' => SORT_DESC])
             ->column();
     }
+
 
     public static function getDistribuicaoPorModalidade(FiltroDashboardForm $filtro): array
     {

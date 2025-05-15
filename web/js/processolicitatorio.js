@@ -40,6 +40,7 @@ $(document).ready(function () {
         return numero && numero.trim() !== '';
     });
 
+    // Verifica se há requisições válidas
     if (requisicoesValidas.length > 0) {
         (async function () {
             for (const numero of requisicoesValidas) {
@@ -50,7 +51,6 @@ $(document).ready(function () {
         })();
     }
 
-
     // Usando o evento de seleção no select2
     $(campoRequisicao).on('select2:select', function (e) {
         const numero = e.params.data.id;
@@ -60,7 +60,7 @@ $(document).ready(function () {
             return;
         }
 
-        adicionarSpinner();
+        adicionarSpinner(numero);
         mostrarFeedback(`Carregando requisição ${numero}...`, 'info');
 
         carregarRequisicao(numero);

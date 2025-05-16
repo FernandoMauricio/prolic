@@ -77,7 +77,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                     <!-- Seção 'Datas' -->
                     <div class="mb-4 border">
                         <div class="card-header bg-soft-custom text-white border-bottom">
-                            <h6 class="mb-0"><i class="bi bi-calendar-check me-2"></i> Datas e Situação</h6>
+                            <h6 class="mb-0"><i class="bi bi-calendar-check me-2"></i> Datas</h6>
                         </div>
                         <div class="card-body">
                             <?= $this->render('_datas', compact('form', 'model')) ?>

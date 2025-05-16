@@ -19,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 // Substituir ano por campo direto
 $anoAtual = date('Y');
 
+
 // Clonar os dataProviders com filtros por ano (sem join com tabela Ano)
 $dataProviderAnoAtual = clone $dataProvider;
 $dataProviderAnoAtual->query->andWhere(['processo_licitatorio.ano' => $anoAtual]);
@@ -30,7 +31,6 @@ $gridColumns = require(__DIR__ . '/_gridColumns.php');
 ?>
 
 <div class="processo-licitatorio-index">
-
     <h1 class="fs-3 fw-bold text-primary d-flex align-items-center gap-2 mb-4">
         <i class="bi bi-journal-text text-primary fs-2"></i>
         Acompanhamento de <span class="text-dark">Processos Licitatórios</span>

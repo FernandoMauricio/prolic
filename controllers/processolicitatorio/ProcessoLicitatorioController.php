@@ -368,7 +368,6 @@ class ProcessoLicitatorioController extends Controller
         $model->situacao_id = 1; // Em elaboração
         $model->ano = date('Y'); // ano corrente
         $model->prolic_valorestimado = 0;
-        $model->prolic_valoraditivo = 0;
         $model->prolic_valorefetivo = 0;
 
         if ($model->load(Yii::$app->request->post())) {

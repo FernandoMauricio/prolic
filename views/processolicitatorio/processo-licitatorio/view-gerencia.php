@@ -199,17 +199,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'columns' => [
                                 [
-                                    'attribute' => 'prolic_valoraditivo',
-                                    'label' => 'Valor Aditivo (R$)',
-                                    'format' => ['decimal', 2],
-                                    'inputContainer' => ['class' => 'col-sm-6'],
-                                ],
-                            ],
-                        ],
-
-                        [
-                            'columns' => [
-                                [
                                     'attribute' => 'prolic_valorefetivo',
                                     'label' => 'Valor Efetivo (R$)',
                                     'format' => ['decimal', 2],

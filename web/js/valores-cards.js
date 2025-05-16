@@ -18,11 +18,10 @@
         var tetoIlimitado = vl >= 999999999.99;
 
         var ve = parseFloat($('#processolicitatorio-valorestimado').val()?.replace(/[^\d\-.]/g, '') || 0);
-        var va2 = parseFloat($('#processolicitatorio-valoraditivo').val()?.replace(/[^\d\-.]/g, '') || 0);
         var efetivo = parseFloat($('#processolicitatorio-prolic_valorefetivo').val()?.replace(/[^\d\-.]/g, '') || 0);
 
         // valor total realmente utilizado
-        var valorUtilizado = efetivo > 0 ? efetivo : ve + va2;
+        var valorUtilizado = efetivo > 0 ? efetivo : ve;
 
         // saldo atualizado
         var saldo = vl - va - valorUtilizado;
@@ -75,7 +74,7 @@
         calcularValores(false); // não mostra alerta ao abrir
 
         // Ativa o cálculo em tempo real nos inputs
-        $(document).on('input', '#processolicitatorio-valorestimado, #processolicitatorio-valoraditivo, #processolicitatorio-prolic_valorefetivo', function () {
+        $(document).on('input', '#processolicitatorio-valorestimado, #processolicitatorio-prolic_valorefetivo', function () {
             window.calcularValores();
         });
     });

@@ -119,7 +119,7 @@ class ModalidadeValorlimite extends \yii\db\ActiveRecord
     {
         return (float) \app\models\processolicitatorio\ProcessoLicitatorio::find()
             ->where(['modalidade_valorlimite_id' => $this->id])
-            ->select(['soma' => new \yii\db\Expression('SUM(IFNULL(prolic_valorestimado, 0) + IFNULL(prolic_valoraditivo, 0))')])
+            ->select(['soma' => new \yii\db\Expression('SUM(IFNULL(prolic_valorestimado, 0))')])
             ->scalar();
     }
 

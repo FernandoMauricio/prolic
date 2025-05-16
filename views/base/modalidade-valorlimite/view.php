@@ -25,8 +25,7 @@ $dataProvider = new ArrayDataProvider([
             'sequencia' => $proc->prolic_sequenciamodal . '/' . ($proc->ano ?? ''),
             'objeto' => $proc->prolic_objeto ?? '(sem descrição)',
             'estimado' => $proc->prolic_valorestimado ?? 0,
-            'aditivo' => $proc->prolic_valoraditivo ?? 0,
-            'total' => ($proc->prolic_valorestimado ?? 0) + ($proc->prolic_valoraditivo ?? 0),
+            'total' => ($proc->prolic_valorestimado ?? 0),
         ];
     }, $processos),
     'pagination' => false,
@@ -143,10 +142,6 @@ $dataProvider = new ArrayDataProvider([
                         ['attribute' => 'objeto', 'label' => 'Objeto'],
                         [
                             'attribute' => 'estimado',
-                            'format' => ['currency'],
-                        ],
-                        [
-                            'attribute' => 'aditivo',
                             'format' => ['currency'],
                         ],
                         [

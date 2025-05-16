@@ -34,9 +34,6 @@ $this->registerJsFile('@web/js/alertas.js', ['depends' => [\yii\web\JqueryAsset:
         <?= $form->field($model, 'prolic_valorestimado')->textInput(['id' => 'processolicitatorio-valorestimado']) ?>
     </div>
     <div class="col-lg-4">
-        <?= $form->field($model, 'prolic_valoraditivo')->textInput(['id' => 'processolicitatorio-valoraditivo']) ?>
-    </div>
-    <div class="col-lg-4">
         <?= $form->field($model, 'prolic_valorefetivo')->textInput(['id' => 'processolicitatorio-prolic_valorefetivo']) ?>
 
         <!-- Aqui dentro da mesma coluna -->

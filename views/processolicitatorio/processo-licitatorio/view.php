@@ -176,7 +176,6 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                         <?php
                         $fin = [
                             'Estimado' => $model->prolic_valorestimado,
-                            'Aditivo'  => $model->prolic_valoraditivo,
                             'Efetivo'  => $model->prolic_valorefetivo,
                         ];
                         foreach ($fin as $k => $v):

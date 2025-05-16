@@ -20,7 +20,7 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
         return [
             [['id', 'ano', 'prolic_codmxm', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'situacao_id', 'prolic_codprocesso'], 'integer'],
             [['prolic_objeto', 'prolic_destino', 'prolic_centrocusto', 'prolic_elementodespesa', 'prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_motivo', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_usuarioatualizacao', 'prolic_dataatualizacao', 'modalidade', 'comprador_id', 'prolic_empresa'], 'safe'],
-            [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo'], 'number'],
+            [['prolic_valorestimado', 'prolic_valorefetivo'], 'number'],
         ];
     }
 
@@ -85,7 +85,6 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
             'artigo_id' => $this->artigo_id,
             'prolic_cotacoes' => $this->prolic_cotacoes,
             'prolic_valorestimado' => $this->prolic_valorestimado,
-            'prolic_valoraditivo' => $this->prolic_valoraditivo,
             'prolic_valorefetivo' => $this->prolic_valorefetivo,
             'recursos_id' => $this->recursos_id,
             'prolic_datacertame' => $this->prolic_datacertame,

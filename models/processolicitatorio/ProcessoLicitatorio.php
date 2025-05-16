@@ -25,7 +25,6 @@ use app\models\base\Empresa;
  * @property string|null $prolic_centrocusto
  * @property string $prolic_elementodespesa
  * @property double $prolic_valorestimado
- * @property double $prolic_valoraditivo
  * @property double $prolic_valorefetivo
  * @property int $recursos_id
  * @property int $comprador_id
@@ -74,7 +73,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [['ano', 'prolic_objeto', 'prolic_codmxm', 'prolic_destino', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_usuariocriacao', 'prolic_datacriacao', 'prolic_centrocusto'], 'required'],
             [['ano', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_codprocesso'], 'integer'],
             [['prolic_objeto', 'prolic_elementodespesa', 'prolic_motivo'], 'string'],
-            [['prolic_valorestimado', 'prolic_valoraditivo', 'prolic_valorefetivo', 'valor_limite', 'valor_limite_apurado', 'valor_saldo'], 'number'],
+            [['prolic_valorestimado', 'prolic_valorefetivo', 'valor_limite', 'valor_limite_apurado', 'valor_saldo'], 'number'],
             [['prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_datacriacao', 'prolic_dataatualizacao', 'prolic_destino', 'prolic_centrocusto', 'modalidade', 'ramo', 'ciclototal', 'ciclocertame', 'prolic_empresa', 'prolic_codmxm'], 'safe'],
             [['prolic_usuariocriacao', 'prolic_usuarioatualizacao'], 'string', 'max' => 255],
             [['artigo_id'], 'exist', 'skipOnError' => true, 'targetClass' => Artigo::className(), 'targetAttribute' => ['artigo_id' => 'id']],
@@ -208,14 +207,14 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
                     prolic_valorefetivo < prolic_valorestimado,
                     prolic_valorefetivo,
                     prolic_valorestimado
-                ) + IFNULL(prolic_valoraditivo, 0)
+                )
             ), 2) AS valor_limite_apurado',
                 'ROUND(modalidade_valorlimite.valor_limite - sum(
                 IF(
                     prolic_valorefetivo < prolic_valorestimado,
                     prolic_valorefetivo,
                     prolic_valorestimado
-                ) + IFNULL(prolic_valoraditivo, 0)
+                )
             ), 2) AS valor_saldo',
             ])
             ->asArray()
@@ -374,7 +373,6 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'prolic_centrocusto' => 'Centro de Custo',
             'prolic_elementodespesa' => 'Elemento de Despesa',
             'prolic_valorestimado' => 'Valor Estimado',
-            'prolic_valoraditivo' => 'Valor Aditivo',
             'prolic_valorefetivo' => 'Valor Efetivo',
             'recursos_id' => 'Recursos',
             'comprador_id' => 'Comprador',

@@ -242,7 +242,6 @@ class ProcessoLicitatorioController extends Controller
         if ($session['sess_codunidade'] != 6) {
             return $this->AccessoAdministrador();
         }
-        $model = $this->findModel($id);
 
         return $this->render('view', [
             'model' => $this->findModel($id),
@@ -290,12 +289,19 @@ class ProcessoLicitatorioController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        // ID atual, se estiver sendo passado (para exclusão do próprio registro)
         $meuId = Yii::$app->request->get('id');
 
+        // Sanitiza o número (previne injeção acidental de ; ou espaços)
+        $numeroSanitizado = trim($numeroRequisicao);
+
+        if (!$numeroSanitizado) {
+            return ['success' => false, 'mensagem' => 'Número de requisição inválido.'];
+        }
+
+        // Verifica se já está em uso por outro processo
         $query = ProcessoLicitatorio::find()
             ->andWhere(['IS NOT', 'prolic_codmxm', null])
-            ->andWhere(['like', new \yii\db\Expression("CONCAT(';', prolic_codmxm, ';')"), ";{$numeroRequisicao};"]);
+            ->andWhere(['like', new \yii\db\Expression("CONCAT(';', prolic_codmxm, ';')"), ";{$numeroSanitizado};"]);
 
         if (!empty($meuId)) {
             $query->andWhere(['!=', 'id', (int)$meuId]);
@@ -305,18 +311,19 @@ class ProcessoLicitatorioController extends Controller
             return [
                 'success' => false,
                 'jaUtilizada' => true,
-                'mensagem' => "A requisição {$numeroRequisicao} já está vinculada a outro processo.",
+                'mensagem' => "A requisição {$numeroSanitizado} já está vinculada a outro processo.",
             ];
         }
 
-        $dados = WebManagerService::consultarPedidoRequisicao($codigoEmpresa, $numeroRequisicao);
+        // Consulta externa
+        $dados = WebManagerService::consultarPedidoRequisicao($codigoEmpresa, $numeroSanitizado);
 
         if (!empty($dados)) {
             $html = $this->renderPartial('form/_requisicao-preview', ['dados' => $dados]);
-            return ['success' => true, 'html' => $html, 'numeroRequisicao' => $numeroRequisicao];
+            return ['success' => true, 'html' => $html, 'numeroRequisicao' => $numeroSanitizado];
         }
 
-        return ['success' => false];
+        return ['success' => false, 'mensagem' => "Requisição {$numeroSanitizado} não encontrada na API."];
     }
 
 

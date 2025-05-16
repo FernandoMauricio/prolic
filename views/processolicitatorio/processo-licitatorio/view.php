@@ -17,6 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
 $this->registerCssFile('@web/css/requisicao-preview.css', ['depends' => [\yii\bootstrap5\BootstrapAsset::class]]);
 $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 $this->registerJs('var requisicoesSalvas = ' . json_encode($model->requisicoesCodmxm) . ';', View::POS_HEAD);
+$this->registerJs('carregarRequisicoesSalvas();', View::POS_READY);
+$this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
 ?>
 
 <div class="processo-licitatorio-view container py-4">

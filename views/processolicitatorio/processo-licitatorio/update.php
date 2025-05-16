@@ -15,7 +15,10 @@ $this->title = 'Atualizar Processo Licitatório: ' . $model->id . '';
 $this->params['breadcrumbs'][] = ['label' => 'Processo Licitatórios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Atualizar';
+
+$this->registerJs('var processoId = ' . (int) $model->id . ';', \yii\web\View::POS_HEAD);
 ?>
+
 
 <div class="processo-licitatorio-update">
 

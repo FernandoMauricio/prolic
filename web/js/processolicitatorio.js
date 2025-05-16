@@ -84,7 +84,7 @@ $(document).ready(function () {
         $.getJSON("/prolic/web/index.php?r=processolicitatorio/processo-licitatorio/buscar-requisicao", {
             codigoEmpresa: '02',
             numeroRequisicao: numero,
-            id: $('#processolicitatorio-id').val()
+            id: typeof processoId !== 'undefined' ? processoId : null
         }, function (response) {
             if (response.jaUtilizada) {
                 mostrarFeedback(`Requisição ${numero} já está vinculada a outro processo.`, 'warning');
@@ -189,6 +189,26 @@ $(document).ready(function () {
     });
     atualizarMensagemSemRequisicoes();
 });
+
+function carregarRequisicoesSalvas() {
+    if (typeof requisicoesSalvas === 'undefined') return;
+
+    const requisicoesValidas = requisicoesSalvas.filter(function (numero) {
+        return numero && numero.trim() !== '';
+    });
+
+    if (requisicoesValidas.length > 0) {
+        (async function () {
+            for (const numero of requisicoesValidas) {
+                await new Promise(resolve => {
+                    carregarRequisicao(numero, resolve);
+                });
+            }
+        })();
+    } else {
+        $('#sem-requisicoes').removeClass('d-none');
+    }
+}
 
 // Função para mostrar feedback com animação
 function mostrarFeedback(mensagem, tipo) {

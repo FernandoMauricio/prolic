@@ -433,6 +433,11 @@ class ProcessoLicitatorioController extends Controller
         // Carregamento dos dados auxiliares da view
         $dadosAuxiliares = $this->carregarDadosAuxiliares();
 
+        //Atualiza automaticamente as empresas antifas e salva no formato correto
+        if (Yii::$app->request->isGet) {
+            $model->prolic_empresa = $this->atualizarEmpresasViaApi((array) $model->prolic_empresa);
+        }
+
         // Pré-processamento dos campos múltiplos
         $model->prolic_dataatualizacao = date('Y-m-d');
         $model->prolic_usuarioatualizacao = $session['sess_nomeusuario'];
@@ -448,10 +453,9 @@ class ProcessoLicitatorioController extends Controller
             // Ao salvar, converte os arrays de volta para strings
             $model->prolic_destino = implode(',', $model->prolic_destino);
             $model->prolic_centrocusto = implode(',', $model->prolic_centrocusto);
-            $model->prolic_empresa = $this->formatarEmpresasParaSalvar($model->prolic_empresa);
             $model->prolic_codmxm = implode(';', array_filter(array_map('trim', (array) $model->prolic_codmxm), fn($v) => $v !== ''));
-
             $model->prolic_codmxm = $this->formatarRequisicoesParaSalvar($model->prolic_codmxm);
+            $model->prolic_empresa = $this->formatarEmpresasParaSalvar($model->prolic_empresa);
 
             if ($model->validate()) {
                 $model->save();
@@ -471,6 +475,39 @@ class ProcessoLicitatorioController extends Controller
             ],
             $dadosAuxiliares
         ));
+    }
+
+    private function atualizarEmpresasViaApi(array $empresas): array
+    {
+        $empresasAtualizadas = [];
+        $houveAtualizacao = false;
+
+        foreach ($empresas as $empresa) {
+            $empresa = trim($empresa);
+
+            // Procura um CNPJ com ou sem máscara em qualquer parte da string
+            if (preg_match('/\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}/', $empresa, $matches)) {
+                $cnpjLimpo = preg_replace('/\D/', '', $matches[0]);
+
+                $dadosApi = WebManagerService::consultarFornecedor($cnpjLimpo);
+
+                if ($dadosApi && isset($dadosApi['razaoSocial'])) {
+                    $cnpjFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $cnpjLimpo);
+                    $empresasAtualizadas[] = "$cnpjFormatado - " . $dadosApi['razaoSocial'];
+                    $houveAtualizacao = true;
+                    continue;
+                }
+            }
+
+            // Mantém como está se não atualizou
+            $empresasAtualizadas[] = $empresa;
+        }
+
+        if ($houveAtualizacao) {
+            Yii::$app->session->setFlash('empresaAtualizadaViaApi', true);
+        }
+
+        return array_unique($empresasAtualizadas);
     }
 
     private function formatarRequisicoesParaSalvar($lista): string

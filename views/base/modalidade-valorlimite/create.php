@@ -9,7 +9,7 @@ use yii\helpers\Html;
 $this->title = 'Novo Valor Limite';
 $this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 
-$this->params['breadcrumbs'][] = ['label' => 'Valor Limite - Modalidade', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Valores por Modalidade', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="modalidade-valorlimite-create">

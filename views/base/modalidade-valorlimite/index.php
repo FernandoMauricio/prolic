@@ -9,7 +9,7 @@ use yii\widgets\Pjax;
 use app\models\base\Modalidade;
 use app\models\base\Ramo;
 
-$this->title = 'Valor Limite por Modalidade';
+$this->title = 'Valores por Modalidade';
 $this->params['breadcrumbs'][] = ['label' => 'Parâmetros do Sistema', 'url' => ['/site/parametros']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -207,9 +207,9 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
 
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {homologar} {delete}',
+                'template' => '{view} {update} {homologar} {delete}',
                 'header' => 'Ações',
-                'contentOptions' => ['class' => 'text-center', 'width' => '130px'],
+                'contentOptions' => ['class' => 'text-center', 'width' => '170px'],
                 'buttons' => [
                     'view' => function ($url, $model) {
                         return Html::a('<i class="bi bi-eye-fill"></i>', $url, [
@@ -217,9 +217,15 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                             'title' => 'Visualizar Valor Limite',
                         ]);
                     },
+                    'update' => function ($url, $model) {
+                        return Html::a('<i class="bi bi-pencil-fill"></i>', $url, [
+                            'class' => 'btn btn-outline-secondary btn-sm',
+                            'title' => 'Editar Valor Limite',
+                        ]);
+                    },
                     'homologar' => function ($url, $model) {
                         if (!empty($model->homologacao_usuario) || !empty($model->homologacao_data)) {
-                            return ''; // já homologado
+                            return '';
                         }
 
                         return Html::a('<i class="bi bi-patch-check-fill"></i>', $url, [
@@ -233,7 +239,7 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                     },
                     'delete' => function ($url, $model) {
                         if ($model->getProcessos()->exists()) {
-                            return ''; // não pode excluir se tiver processo
+                            return '';
                         }
 
                         return Html::a('<i class="bi bi-trash3"></i>', $url, [
@@ -247,6 +253,7 @@ $panelType = $status == 1 ? GridView::TYPE_SUCCESS : GridView::TYPE_DANGER;
                     },
                 ],
             ],
+
 
         ],
     ]); ?>

@@ -33,10 +33,14 @@ use kartik\select2\Select2;
                                 <div class="col-md-7">
                                     <?= $form->field($model, 'tipo_modalidade')->widget(Select2::class, [
                                         'data' => \app\models\base\ModalidadeValorlimite::getTiposModalidade(),
-                                        'options' => ['placeholder' => 'Selecione o Tipo...'],
+                                        'options' => [
+                                            'placeholder' => 'Selecione o Tipo...',
+                                            'disabled' => !empty($model->tipo_modalidade),
+                                        ],
                                         'pluginOptions' => ['allowClear' => true],
                                     ]) ?>
                                 </div>
+
                                 <div class="col-md-5">
                                     <?= $form->field($model, 'modalidade_id')->widget(Select2::class, [
                                         'data' => ArrayHelper::map($modalidade, 'id', 'mod_descricao'),

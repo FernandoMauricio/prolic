@@ -164,6 +164,25 @@ class ModalidadeValorlimiteController extends Controller
         }
     }
 
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
+        $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Valor limite atualizado com sucesso!');
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+            'modalidade' => $modalidade,
+            'ramo' => $ramo,
+        ]);
+    }
+
     /**
      * Deletes an existing ModalidadeValorlimite model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

@@ -202,9 +202,21 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             ->andWhere(['NOT IN', 'processo_licitatorio.id', [$processo]])  // Excluir o processo atual
             ->andWhere(['!=', 'situacao_id', 7])  // Excluir processos cancelados
             ->select([
-                'ROUND(modalidade_valorlimite.valor_limite, 0) AS valor_limite',
-                'ROUND(sum(prolic_valorestimado + IFNULL(prolic_valoraditivo, 0)), 0) AS valor_limite_apurado',
-                'ROUND(modalidade_valorlimite.valor_limite - sum(prolic_valorestimado + IFNULL(prolic_valoraditivo, 0)), 0) AS valor_saldo'
+                'ROUND(modalidade_valorlimite.valor_limite, 2) AS valor_limite',
+                'ROUND(sum(
+                IF(
+                    prolic_valorefetivo < prolic_valorestimado,
+                    prolic_valorefetivo,
+                    prolic_valorestimado
+                ) + IFNULL(prolic_valoraditivo, 0)
+            ), 2) AS valor_limite_apurado',
+                'ROUND(modalidade_valorlimite.valor_limite - sum(
+                IF(
+                    prolic_valorefetivo < prolic_valorestimado,
+                    prolic_valorefetivo,
+                    prolic_valorestimado
+                ) + IFNULL(prolic_valoraditivo, 0)
+            ), 2) AS valor_saldo',
             ])
             ->asArray()
             ->one();

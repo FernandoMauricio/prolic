@@ -19,7 +19,13 @@
 
         var ve = parseFloat($('#processolicitatorio-valorestimado').val()?.replace(/[^\d\-.]/g, '') || 0);
         var va2 = parseFloat($('#processolicitatorio-valoraditivo').val()?.replace(/[^\d\-.]/g, '') || 0);
-        var saldo = vl - va - (ve + va2);
+        var efetivo = parseFloat($('#processolicitatorio-prolic_valorefetivo').val()?.replace(/[^\d\-.]/g, '') || 0);
+
+        // valor total realmente utilizado
+        var valorUtilizado = efetivo > 0 ? efetivo : ve + va2;
+
+        // saldo atualizado
+        var saldo = vl - va - valorUtilizado;
 
         if (tetoIlimitado) {
             $('#card-valor-limite').html('<span class="text-muted fst-italic">(não aplicável)</span>');
@@ -46,6 +52,18 @@
         $('#processolicitatorio-valor_limite_apurado').val(va);
         $('#processolicitatorio-valor_saldo').val(saldo);
 
+        // Economia: diferença entre estimado e efetivo
+        const economia = ve > 0 && efetivo > 0 && efetivo < ve ? ve - efetivo : 0;
+
+        const economiaEl = $('#economia-info');
+        if (economia > 0) {
+            economiaEl
+                .html('<i class="bi bi-cash-coin me-1"></i> Economia estimada: <strong>' + formatarMoeda(economia) + '</strong>')
+                .fadeIn(200);
+        } else {
+            economiaEl.stop(true, true).hide().html('');
+        }
+
         if (mostrarAlerta && saldo <= 0 && !tetoIlimitado) {
             exibirAlertaSaldoNegativo('O <strong>valor apurado</strong> não pode ser igual ou superior ao <strong>limite disponível</strong>.');
         } else {
@@ -57,7 +75,7 @@
         calcularValores(false); // não mostra alerta ao abrir
 
         // Ativa o cálculo em tempo real nos inputs
-        $(document).on('input', '#processolicitatorio-valorestimado, #processolicitatorio-valoraditivo', function () {
+        $(document).on('input', '#processolicitatorio-valorestimado, #processolicitatorio-valoraditivo, #processolicitatorio-prolic_valorefetivo', function () {
             window.calcularValores();
         });
     });

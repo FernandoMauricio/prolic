@@ -30,16 +30,11 @@ $this->registerJsFile('@web/js/alertas.js', ['depends' => [\yii\web\JqueryAsset:
 
 <!-- Campos que serão salvos no banco (inalterados) -->
 <div class="row g-3">
-    <div class="col-lg-4">
+    <div class="col-lg-6">
         <?= $form->field($model, 'prolic_valorestimado')->textInput(['id' => 'processolicitatorio-valorestimado']) ?>
     </div>
-    <div class="col-lg-4">
+    <div class="col-lg-6">
         <?= $form->field($model, 'prolic_valorefetivo')->textInput(['id' => 'processolicitatorio-prolic_valorefetivo']) ?>
-
-        <!-- Aqui dentro da mesma coluna -->
-        <div id="economia-info"
-            class="badge bg-light text-success border border-success fw-semibold d-inline-block mt-2"
-            style="display: none;"></div>
+        <div id="economia-info" class="badge bg-light text-success border border-success fw-semibold d-inline-block mt-2" style="display: none;"></div>
     </div>
-
 </div>

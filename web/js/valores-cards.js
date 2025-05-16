@@ -52,16 +52,16 @@
         $('#processolicitatorio-valor_saldo').val(saldo);
 
         // Economia: diferença entre estimado e efetivo
-        const economia = ve > 0 && efetivo > 0 && efetivo < ve ? ve - efetivo : 0;
-
         const economiaEl = $('#economia-info');
-        if (economia > 0) {
+        if (ve > 0 && efetivo > 0 && efetivo < ve) {
+            const economia = ve - efetivo;
             economiaEl
                 .html('<i class="bi bi-cash-coin me-1"></i> Economia estimada: <strong>' + formatarMoeda(economia) + '</strong>')
                 .fadeIn(200);
         } else {
             economiaEl.stop(true, true).hide().html('');
         }
+
 
         if (mostrarAlerta && saldo <= 0 && !tetoIlimitado) {
             exibirAlertaSaldoNegativo('O <strong>valor apurado</strong> não pode ser igual ou superior ao <strong>limite disponível</strong>.');

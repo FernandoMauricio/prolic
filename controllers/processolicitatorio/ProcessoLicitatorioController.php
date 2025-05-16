@@ -451,6 +451,8 @@ class ProcessoLicitatorioController extends Controller
             $model->prolic_empresa = $this->formatarEmpresasParaSalvar($model->prolic_empresa);
             $model->prolic_codmxm = implode(';', array_filter(array_map('trim', (array) $model->prolic_codmxm), fn($v) => $v !== ''));
 
+            $model->prolic_codmxm = $this->formatarRequisicoesParaSalvar($model->prolic_codmxm);
+
             if ($model->validate()) {
                 $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -461,7 +463,7 @@ class ProcessoLicitatorioController extends Controller
             $model->prolic_codmxm = explode(';', $model->prolic_codmxm);
         }
 
-        $model->prolic_codmxm = $this->formatarRequisicoesParaSalvar($model->prolic_codmxm);
+        $model->prolic_codmxm = $model->getRequisicoesCodmxm();
 
         return $this->render('update', array_merge(
             [

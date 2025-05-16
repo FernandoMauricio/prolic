@@ -447,7 +447,6 @@ class ProcessoLicitatorioController extends Controller
         $model->prolic_codmxm = is_array($model->prolic_codmxm) ? array_map('trim', $model->prolic_codmxm) : (is_string($model->prolic_codmxm) ? array_map('trim', explode(';', $model->prolic_codmxm)) : []);
 
         if ($model->load(Yii::$app->request->post())) {
-            Yii::error('POST prolic_codmxm: ' . var_export($model->prolic_codmxm, true), 'postDebug');
             $this->ajustarSequenciaModalidade($model);
 
             // Ao salvar, converte os arrays de volta para strings
@@ -482,29 +481,36 @@ class ProcessoLicitatorioController extends Controller
         $empresasAtualizadas = [];
         $houveAtualizacao = false;
 
-        foreach ($empresas as $empresa) {
-            $empresa = trim($empresa);
+        foreach ($empresas as $empresaOriginal) {
+            $empresa = trim($empresaOriginal);
+            $docLimpo = preg_replace('/\D/', '', $empresa);
 
-            // Procura um CNPJ com ou sem máscara em qualquer parte da string
-            if (preg_match('/\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}/', $empresa, $matches)) {
-                $cnpjLimpo = preg_replace('/\D/', '', $matches[0]);
-
-                $dadosApi = WebManagerService::consultarFornecedor($cnpjLimpo);
+            if (strlen($docLimpo) === 14) {
+                $dadosApi = WebManagerService::consultarFornecedor($docLimpo);
 
                 if ($dadosApi && isset($dadosApi['razaoSocial'])) {
-                    $cnpjFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $cnpjLimpo);
-                    $empresasAtualizadas[] = "$cnpjFormatado - " . $dadosApi['razaoSocial'];
-                    $houveAtualizacao = true;
+                    $cnpjFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $docLimpo);
+                    $empresaFormatada = $cnpjFormatado . ' - ' . $dadosApi['razaoSocial'];
+
+                    // ✅ Só atualiza se for diferente da original
+                    if (trim($empresaOriginal) !== $empresaFormatada) {
+                        $houveAtualizacao = true;
+                        Yii::info("Empresa atualizada: '$empresaOriginal' => '$empresaFormatada'", __METHOD__);
+                    }
+
+                    $empresasAtualizadas[] = $empresaFormatada;
                     continue;
                 }
             }
 
-            // Mantém como está se não atualizou
-            $empresasAtualizadas[] = $empresa;
+            $empresasAtualizadas[] = $empresaOriginal;
         }
 
         if ($houveAtualizacao) {
+            Yii::info('Flash empresaAtualizadaViaApi definido como TRUE', __METHOD__);
             Yii::$app->session->setFlash('empresaAtualizadaViaApi', true);
+        } else {
+            Yii::info('Nenhuma empresa atualizada via API — flash não será definido.', __METHOD__);
         }
 
         return array_unique($empresasAtualizadas);

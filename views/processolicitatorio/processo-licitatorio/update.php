@@ -18,8 +18,7 @@ $this->params['breadcrumbs'][] = 'Atualizar';
 
 $this->registerJs('var processoId = ' . (int) $model->id . ';', \yii\web\View::POS_HEAD);
 ?>
-
-<?php if (Yii::$app->session->getFlash('empresaAtualizadaViaApi') === true): ?>
+<?php if (Yii::$app->session->hasFlash('empresaAtualizadaViaApi')): ?>
     <div class="alert alert-warning border-start border-4 border-warning d-flex align-items-center gap-2" role="alert">
         <i class="bi bi-exclamation-triangle-fill fs-4 text-warning"></i>
         <div>

@@ -17,12 +17,23 @@ class ReqcompraRcoController extends Controller
 {
     public function actionIndex()
     {
-        $searchModel = new ReqcompraRcoSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $path = Yii::getAlias('@runtime/cache/requisicoes.json');
+
+        if (!file_exists($path)) {
+            throw new \yii\web\NotFoundHttpException('Cache ainda não gerado.');
+        }
+
+        $requisicoes = json_decode(file_get_contents($path), true);
+
+        $dataProvider = new \yii\data\ArrayDataProvider([
+            'allModels' => $requisicoes,
+            'pagination' => ['pageSize' => 50],
+            'sort' => ['attributes' => ['RCO_NUMERO', 'RCO_DATA']],
+        ]);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'searchModel' => null,
         ]);
     }
 

@@ -55,28 +55,69 @@ $(document).ready(function () {
                     $(campoRequisicao).val(atualizadas).trigger('change.select2');
                     requisicoesExibidas.delete(numero);
                 } else if (response.success && response.html) {
+                    const encontrado = response.encontrada === true;
+                    const corClasse = encontrado ? 'border-success bg-success-subtle' : 'border-danger bg-warning-subtle';
+                    const textoClasse = encontrado ? 'text-success' : 'text-danger';
+                    const icone = encontrado ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
+                    const titulo = encontrado
+                        ? `<i class="bi ${icone} me-2"></i> Requisição: ${numero}`
+                        : `<i class="bi ${icone} me-2"></i> Requisição: ${numero} (não localizada)`;
+
                     const htmlComRemocao = `<div class="requisicao-preview-item" data-id="${numero}">${response.html}</div>`;
+
                     const accordionItem = `
-                    <div class="accordion-item" id="accordion-${numero}">
-                        <h2 class="accordion-header" id="heading${numero}">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${numero}" aria-expanded="true" aria-controls="collapse${numero}">
-                                Requisição: ${numero}
-                            </button>
-                        </h2>
-                        <div id="collapse${numero}" class="accordion-collapse collapse show" aria-labelledby="heading${numero}" data-bs-parent="#accordionPreview">
-                            <div class="accordion-body">${htmlComRemocao}</div>
-                        </div>
-                    </div>`;
+                        <div class="accordion-item ${corClasse}" id="accordion-${numero}">
+                            <h2 class="accordion-header" id="heading${numero}">
+                                <button class="accordion-button ${textoClasse}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${numero}" aria-expanded="true" aria-controls="collapse${numero}">
+                                    ${titulo}
+                                </button>
+                            </h2>
+                            <div id="collapse${numero}" class="accordion-collapse collapse show" aria-labelledby="heading${numero}" data-bs-parent="#accordionPreview">
+                                <div class="accordion-body">${htmlComRemocao}</div>
+                            </div>
+                        </div>`;
+
                     $(accordionContainer).append(accordionItem);
                     atualizarMensagemSemRequisicoes();
                     requisicoesExibidas.add(numero);
-                    mostrarFeedback(`Requisição ${numero} carregada com sucesso.`, 'success');
+
+                    const feedbackMensagem = encontrado
+                        ? `Requisição ${numero} carregada com sucesso.`
+                        : `Requisição ${numero} adicionada manualmente (não localizada).`;
+                    mostrarFeedback(feedbackMensagem, encontrado ? 'success' : 'warning');
                 } else {
-                    mostrarFeedback(`Requisição ${numero} não foi encontrada.`, 'warning');
+                    requisicoesExibidas.add(numero);
+
+                    const corClasse = 'border-warning bg-warning-subtle';
+                    const textoClasse = 'text-warning';
+                    const icone = 'bi-exclamation-triangle-fill';
+                    const titulo = `<i class="bi ${icone} me-2"></i> Requisição: ${numero} <span class="fw-normal">(não localizada)</span>`;
+
+                    const accordionItem = `
+                        <div class="accordion-item ${corClasse}" id="accordion-${numero}">
+                            <h2 class="accordion-header" id="heading${numero}">
+                                <button class="accordion-button ${textoClasse}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${numero}" aria-expanded="true" aria-controls="collapse${numero}">
+                                    ${titulo}
+                                </button>
+                            </h2>
+                            <div id="collapse${numero}" class="accordion-collapse collapse show" aria-labelledby="heading${numero}" data-bs-parent="#accordionPreview">
+                                <div class="accordion-body">
+                                    <div class="alert alert-warning small mb-0">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Esta requisição não foi localizada na API, mas foi adicionada manualmente.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+
+                    $(accordionContainer).append(accordionItem);
+                    atualizarMensagemSemRequisicoes();
+                    mostrarFeedback(`Requisição ${numero} não foi encontrada e foi adicionada manualmente.`, 'warning');
                 }
             })
             .fail(function () {
-                mostrarFeedback(`Erro ao consultar a requisição ${numero}.`, 'danger');
+                requisicoesExibidas.add(numero);
+                mostrarFeedback(`Não foi possível consultar a requisição ${numero} devido a um problema técnico. Tente novamente mais tarde.`, 'danger');
             })
             .always(function () {
                 requisicoesPendentes--;

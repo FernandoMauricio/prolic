@@ -2,7 +2,19 @@
 
 use yii\bootstrap5\Html;
 
-/** @var array $dados */
+/** @var array|null $dados */
+/** @var string|null $numero */
+
+$isNaoEncontrada = empty($dados);
+
+if ($isNaoEncontrada) {
+    echo Html::tag(
+        'div',
+        '<i class="bi bi-exclamation-circle-fill me-2"></i> A requisição <strong>' . Html::encode($numero) . '</strong> não foi localizada na API externa, mas poderá ser utilizada.',
+        ['class' => 'alert alert-warning']
+    );
+    return;
+}
 
 // Total geral com base na quantidade atendida
 $totalGeral = array_sum(array_map(function ($item) {
@@ -74,7 +86,6 @@ $totalGeral = array_sum(array_map(function ($item) {
                         $valorUnit = (float) str_replace(',', '.', $item['ValorUnitario'] ?? 0);
                         $totalItem = $quantidadeAtendida * $valorUnit;
 
-                        // Definição de ícone e cor de status
                         if ($quantidadeAtendida == 0) {
                             $icone = 'bi-x-circle-fill';
                             $cor = 'text-danger';
@@ -95,9 +106,7 @@ $totalGeral = array_sum(array_map(function ($item) {
                         <tr class="<?= $rowClass ?>">
                             <td><?= $index + 1 ?></td>
                             <td><?= Html::encode($item['CodigoItem'] ?? '-') ?></td>
-                            <td class="text-center">
-                                <i class="bi <?= $icone ?> <?= $cor ?>" title="<?= $title ?>"></i>
-                            </td>
+                            <td><i class="bi <?= $icone ?> <?= $cor ?>" title="<?= $title ?>"></i></td>
                             <td class="text-start"><?= Html::encode($item['Descricao'] ?? '-') ?></td>
                             <td class="text-end"><?= number_format($quantidadePedida, 0, ',', '.') ?></td>
                             <td class="text-end"><?= number_format($quantidadeAtendida, 0, ',', '.') ?></td>

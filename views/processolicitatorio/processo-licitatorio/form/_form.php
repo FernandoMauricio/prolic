@@ -118,8 +118,10 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
             <!-- Feedback dentro do escopo local -->
             <div id="requisicao-feedback" class="alert d-none position-absolute top-0 start-50 translate-middle-x mt-2 z-1051 shadow"></div>
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white fw-bold d-flex align-items-center">
-                    <i class="bi bi-list-ul me-2 fs-5"></i> Requisições MXM
+                <div class="card-header bg-primary text-white fw-bold d-flex align-items-center"
+                    title="Somente requisições que já possuem pedido de compra serão exibidas">
+                    <i class="bi bi-file-earmark-text me-2 fs-5"></i>
+                    Integração MXM: Requisições e Pedidos
                 </div>
                 <div class="card-body position-relative p-0">
                     <div id="requisicao-spinner" class="spinner-border text-primary position-absolute top-50 start-50 translate-middle d-none" role="status"></div>
@@ -128,11 +130,18 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                         <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                         Nenhuma requisição carregada.
                     </div>
-
                     <div class="accordion" id="accordionPreview"></div>
                 </div>
-                <div class="card-footer small text-muted text-end px-3 py-2">
-                    Clique em uma requisição para visualizar os detalhes.
+                <div class="card-footer small text-muted px-3 py-2">
+                    <div class="d-flex justify-content-between flex-wrap">
+                        <div>
+                            <i class="bi bi-info-circle me-1"></i>
+                            <strong>Apenas requisições que já possuem pedido de compra</strong> serão exibidas acima.
+                        </div>
+                        <div class="text-end ms-auto">
+                            Clique em uma requisição para visualizar os detalhes.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

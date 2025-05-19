@@ -320,12 +320,12 @@ class ProcessoLicitatorioController extends Controller
 
         if (!empty($dados)) {
             $html = $this->renderPartial('form/_requisicao-preview', ['dados' => $dados]);
-            return ['success' => true, 'html' => $html, 'numeroRequisicao' => $numeroSanitizado];
+            return ['success' => true, 'html' => $html, 'numeroRequisicao' => $numeroSanitizado, 'encontrada' => true];
         }
 
-        return ['success' => false, 'mensagem' => "Requisição {$numeroSanitizado} não encontrada na API."];
+        $html = $this->renderPartial('form/_requisicao-preview', ['dados' => null, 'numero' => $numeroSanitizado]);
+        return ['success' => true, 'html' => $html, 'numeroRequisicao' => $numeroSanitizado, 'encontrada' => false];
     }
-
 
     public function actionBuscarRequisicaoOpcao($term = '')
     {
@@ -346,7 +346,12 @@ class ProcessoLicitatorioController extends Controller
             ];
         }
 
-        return ['results' => []];
+        return [
+            'results' => [[
+                'id' => $term,
+                'text' => $term . ' - Requisição não encontrada'
+            ]]
+        ];
     }
 
     /**

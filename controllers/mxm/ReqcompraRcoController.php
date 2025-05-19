@@ -5,79 +5,79 @@ namespace app\controllers\mxm;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use app\models\cache\RequisicaoCache;
 use yii\data\ArrayDataProvider;
 
 class ReqcompraRcoController extends Controller
 {
-    private function carregarCache()
+    /**
+     * Lê o cache e transforma em uma lista de modelos RequisicaoCache.
+     * @return RequisicaoCache[]
+     * @throws \Exception
+     */
+    private function carregarTodasRequisicoes(): array
     {
         $caminho = Yii::getAlias('@runtime/cache/requisicoes-cache.json');
+
         if (!file_exists($caminho)) {
             throw new \Exception('Arquivo de cache de requisições não encontrado.');
         }
 
-        $dados = json_decode(file_get_contents($caminho), true);
+        $dadosBrutos = json_decode(file_get_contents($caminho), true);
 
-        if (!is_array($dados)) {
+        if (!is_array($dadosBrutos)) {
             throw new \Exception('Formato inválido no arquivo de cache.');
         }
 
-        return $dados;
+        return array_map(fn($row) => new RequisicaoCache($row), $dadosBrutos);
     }
 
+    /**
+     * Lista filtrada de requisições.
+     */
     public function actionIndex()
     {
-        $dados = json_decode(file_get_contents(Yii::getAlias('@runtime/cache/requisicoes-cache.json')), true);
+        $termo = Yii::$app->request->get('q');
+        $modelos = [];
 
-        $query = array_filter($dados, function ($item) {
-            $req = $item['requisicao'] ?? [];
+        foreach ($this->carregarTodasRequisicoes() as $modelo) {
+            if (
+                !$termo ||
+                stripos($modelo->getNumero(), $termo) !== false ||
+                stripos($modelo->getRequisitante(), $termo) !== false
+            ) {
+                $modelos[] = $modelo;
+            }
+        }
 
-            $busca = Yii::$app->request->get('q');
-
-            if (!$busca) return true;
-
-            return stripos($req['RCO_NUMERO'] ?? '', $busca) !== false
-                || stripos($req['RCO_REQUISITANTE'] ?? '', $busca) !== false
-                || stripos($req['RCO_OBS'] ?? '', $busca) !== false;
-        });
-
-        $provider = new \yii\data\ArrayDataProvider([
-            'allModels' => $query,
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $modelos,
             'pagination' => ['pageSize' => 20],
             'sort' => [
                 'attributes' => [
-                    'RCO_NUMERO' => [
-                        'asc' => ['requisicao.RCO_NUMERO' => SORT_ASC],
-                        'desc' => ['requisicao.RCO_NUMERO' => SORT_DESC],
-                    ],
-                    'RCO_DATA' => [
-                        'asc' => ['requisicao.RCO_DATA' => SORT_ASC],
-                        'desc' => ['requisicao.RCO_DATA' => SORT_DESC],
-                    ],
-                    'RCO_REQUISITANTE' => [
-                        'asc' => ['requisicao.RCO_REQUISITANTE' => SORT_ASC],
-                        'desc' => ['requisicao.RCO_REQUISITANTE' => SORT_DESC],
-                    ],
+                    'requisicao.RCO_NUMERO',
+                    'requisicao.RCO_DATA',
+                    'requisicao.RCO_REQUISITANTE'
                 ]
-            ],
+            ]
         ]);
 
         return $this->render('index', [
-            'dataProvider' => $provider,
-            'searchTerm' => Yii::$app->request->get('q'),
+            'dataProvider' => $dataProvider,
+            'searchTerm' => $termo,
         ]);
     }
 
-
+    /**
+     * Detalhes de uma requisição específica.
+     */
     public function actionView($id)
     {
-        $dados = $this->carregarCache();
-
-        foreach ($dados as $registro) {
-            if ($registro['requisicao']['RCO_NUMERO'] === $id) {
+        foreach ($this->carregarTodasRequisicoes() as $modelo) {
+            if ($modelo->getNumero() === $id) {
                 return $this->render('view', [
-                    'model' => $registro['requisicao'],
-                    'itens' => $registro['itens'],
+                    'model' => $modelo,
+                    'itens' => $modelo->itens,
                 ]);
             }
         }

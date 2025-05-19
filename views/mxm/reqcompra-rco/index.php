@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
+use app\models\cache\RequisicaoCache;
 
 $this->title = 'Requisições de Compra';
 ?>
@@ -19,45 +20,37 @@ $this->title = 'Requisições de Compra';
     <?= Html::endForm() ?>
 </div>
 
-
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         [
             'attribute' => 'RCO_NUMERO',
             'label' => 'Número',
-            'value' => fn($model) => $model['requisicao']['RCO_NUMERO'] ?? '(n/d)',
+            'value' => fn($model) => $model->getNumero(),
         ],
         [
-            'attribute' => 'RCO_DATA',
             'label' => 'Data',
-            'value' => fn($model) => $model['requisicao']['RCO_DATA'] ?? '(n/d)',
+            'value' => fn($model) => $model->getDataFormatada(),
         ],
         [
-            'attribute' => 'RCO_EMPRESA',
             'label' => 'Empresa',
-            'value' => fn($model) => $model['requisicao']['RCO_EMPRESA'] ?? '(n/d)',
+            'value' => fn($model) => $model->get('RCO_EMPRESA'),
         ],
         [
-            'attribute' => 'RCO_TIPO',
             'label' => 'Tipo',
-            'value' => fn($model) => $model['requisicao']['RCO_TIPO'] ?? '(n/d)',
+            'value' => fn($model) => $model->get('RCO_TIPO'),
         ],
         [
-            'attribute' => 'RCO_REQUISITANTE',
             'label' => 'Requisitante',
-            'value' => fn($model) => $model['requisicao']['RCO_REQUISITANTE'] ?? '(n/d)',
+            'value' => fn($model) => $model->getRequisitante(),
         ],
         [
-            'attribute' => 'RCO_MOEDA',
             'label' => 'Moeda',
-            'value' => fn($model) => $model['requisicao']['RCO_MOEDA'] ?? '(n/d)',
+            'value' => fn($model) => $model->get('RCO_MOEDA'),
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'urlCreator' => function ($action, $model, $key, $index) {
-                return ['view', 'id' => $model['requisicao']['RCO_NUMERO']];
-            },
+            'urlCreator' => fn($action, $model, $key, $index) => ['view', 'id' => $model->getNumero()],
         ],
     ],
-]); ?>
+]) ?>

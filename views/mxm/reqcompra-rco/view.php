@@ -4,19 +4,18 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
-use app\helpers\UtfHelper;
+use app\models\RequisicaoCache;
 
+/** @var yii\web\View $this */
+/** @var RequisicaoCache $model */
 
-/* @var $this yii\web\View */
-/* @var $model app\models\mxm\ReqcompraRco */
-/* @var $itens array */
+$this->title = 'Requisição nº ' . $model->getNumero();
 
-$this->title = 'Requisição nº ' . $model['RCO_NUMERO'];
 $this->params['breadcrumbs'][] = ['label' => 'Requisições', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $itensProvider = new ArrayDataProvider([
-    'allModels' => isset($itens) && is_array($itens) ? $itens : [],
+    'allModels' => $model->getItens(),
     'pagination' => false,
 ]);
 ?>
@@ -37,17 +36,48 @@ $itensProvider = new ArrayDataProvider([
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
-                    'RCO_NUMERO',
-                    'RCO_DATA:date',
-                    'RCO_EMPRESA',
-                    'RCO_TIPO',
-                    'RCO_SETOR',
-                    'RCO_REQUISITANTE',
-                    'RCO_OBS',
-                    'RCO_JUSTIFICATIVA',
-                    'RCO_DTLIMITERECEBIMENTOITENS:date',
+                    [
+                        'label' => 'Número',
+                        'value' => $model->getNumero(),
+                    ],
+                    [
+                        'label' => 'Data',
+                        'value' => $model->getDataFormatada(),
+                    ],
+                    [
+                        'label' => 'Empresa',
+                        'value' => $model->get('RCO_EMPRESA'),
+                    ],
+                    [
+                        'label' => 'Tipo',
+                        'value' => $model->get('RCO_TIPO'),
+                    ],
+                    [
+                        'label' => 'Setor',
+                        'value' => $model->get('RCO_SETOR'),
+                    ],
+                    [
+                        'label' => 'Requisitante',
+                        'value' => $model->getRequisitante(),
+                    ],
+                    [
+                        'label' => 'Observação',
+                        'value' => $model->get('RCO_OBS'),
+                    ],
+                    [
+                        'label' => 'Justificativa',
+                        'value' => $model->get('RCO_JUSTIFICATIVA'),
+                    ],
+                    [
+                        'label' => 'Data Limite Recebimento',
+                        'value' => function () use ($model) {
+                            $data = $model->get('RCO_DTLIMITERECEBIMENTOITENS');
+                            return $data ? Yii::$app->formatter->asDate($data, 'php:d/m/Y') : '(não definida)';
+                        },
+                    ],
                 ],
             ]) ?>
+
         </div>
     </div>
 
@@ -78,7 +108,7 @@ $itensProvider = new ArrayDataProvider([
                     ],
                     'IPC_OBS:ntext',
                 ],
-            ]); ?>
+            ]) ?>
         </div>
     </div>
 

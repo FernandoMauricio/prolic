@@ -99,15 +99,13 @@ $(document).ready(function () {
                 mostrarFeedback(`Não foi possível consultar a requisição ${numero} devido a um problema técnico.`, 'danger');
             })
             .always(function () {
-                requisicoesPendentes--;
-                if (requisicoesPendentes <= 0) {
-                    setTimeout(removerSpinner, 500);
-                    requisicoesPendentes = 0;
+                requisicoesPendentes = Math.max(0, requisicoesPendentes - 1);
+                if (requisicoesPendentes === 0) {
+                    removerSpinner();
                 }
                 callback();
             });
     }
-
 
     function atualizarSpinnerMensagem(mensagem) {
         $('.spinner-overlay .text-white').html(mensagem);

@@ -341,7 +341,17 @@ class ProcessoLicitatorioController extends Controller
             return ['results' => []];
         }
 
-        $dados = WebManagerService::consultarPedidoRequisicao('02', $term);
+        try {
+            $dados = WebManagerService::consultarPedidoRequisicao('02', $term);
+        } catch (\Throwable $e) {
+            Yii::error("Erro ao buscar requisição para autocomplete: " . $e->getMessage(), __METHOD__);
+            return [
+                'results' => [[
+                    'id' => $term,
+                    'text' => $term . ' - (erro ao consultar API)'
+                ]]
+            ];
+        }
 
         if (!empty($dados)) {
             return [

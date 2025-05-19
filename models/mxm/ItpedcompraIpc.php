@@ -52,12 +52,12 @@ class ItpedcompraIpc extends \yii\db\ActiveRecord
 
     public function afterFind()
     {
-        foreach ($this->attributes as $key => $value) {
-            if (is_string($value)) {
-                $this->$key = mb_convert_encoding($value, 'UTF-8', 'Windows-1252');
+        parent::afterFind();
+        foreach ($this->attributes as $k => $v) {
+            if (is_string($v)) {
+                $this->$k = mb_convert_encoding($v, 'UTF-8', 'Windows-1252');
             }
         }
-        parent::afterFind();
     }
 
     /**

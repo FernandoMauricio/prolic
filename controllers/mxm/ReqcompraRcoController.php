@@ -39,6 +39,15 @@ class ReqcompraRcoController extends Controller
             ->asArray()
             ->all();
 
+        // Converte campos ISO para UTF-8 manualmente
+        array_walk($itens, function (&$item) {
+            foreach ($item as $key => $value) {
+                if (is_string($value)) {
+                    $item[$key] = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+                }
+            }
+        });
+
         return $this->render('view', [
             'model' => $model,
             'itens' => $itens,

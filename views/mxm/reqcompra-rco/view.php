@@ -11,12 +11,12 @@ use app\helpers\UtfHelper;
 /* @var $model app\models\mxm\ReqcompraRco */
 /* @var $itens array */
 
-$this->title = 'Requisição nº ' . $model->RCO_NUMERO;
+$this->title = 'Requisição nº ' . $model['RCO_NUMERO'];
 $this->params['breadcrumbs'][] = ['label' => 'Requisições', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-$provider = new ArrayDataProvider([
-    'allModels' => $itens,
+$itensProvider = new ArrayDataProvider([
+    'allModels' => isset($itens) && is_array($itens) ? $itens : [],
     'pagination' => false,
 ]);
 ?>
@@ -57,7 +57,7 @@ $provider = new ArrayDataProvider([
         </div>
         <div class="card-body p-0">
             <?= GridView::widget([
-                'dataProvider' => $provider,
+                'dataProvider' => $itensProvider,
                 'summary' => false,
                 'tableOptions' => ['class' => 'table table-bordered table-hover'],
                 'columns' => [

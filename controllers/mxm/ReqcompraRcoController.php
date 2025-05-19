@@ -2,75 +2,86 @@
 
 namespace app\controllers\mxm;
 
-use app\models\mxm\ItpedcompraIpc;
 use Yii;
-use app\models\mxm\ReqcompraRco;
-use app\models\mxm\ReqcompraRcoSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\data\ArrayDataProvider;
 
-/**
- * ReqcompraRcoController implements the CRUD actions for ReqcompraRco model.
- * Aqui focamos apenas em `index` e `view` por ser uma tabela grande do Oracle (leitura).
- */
 class ReqcompraRcoController extends Controller
 {
-    public function actionIndex()
+    private function carregarCache()
     {
-        $path = Yii::getAlias('@runtime/cache/requisicoes.json');
-
-        if (!file_exists($path)) {
-            throw new \yii\web\NotFoundHttpException('Cache ainda não gerado.');
+        $caminho = Yii::getAlias('@runtime/cache/requisicoes-cache.json');
+        if (!file_exists($caminho)) {
+            throw new \Exception('Arquivo de cache de requisições não encontrado.');
         }
 
-        $requisicoes = json_decode(file_get_contents($path), true);
+        $dados = json_decode(file_get_contents($caminho), true);
 
-        $dataProvider = new \yii\data\ArrayDataProvider([
-            'allModels' => $requisicoes,
-            'pagination' => ['pageSize' => 50],
-            'sort' => ['attributes' => ['RCO_NUMERO', 'RCO_DATA']],
+        if (!is_array($dados)) {
+            throw new \Exception('Formato inválido no arquivo de cache.');
+        }
+
+        return $dados;
+    }
+
+    public function actionIndex()
+    {
+        $dados = json_decode(file_get_contents(Yii::getAlias('@runtime/cache/requisicoes-cache.json')), true);
+
+        $query = array_filter($dados, function ($item) {
+            $req = $item['requisicao'] ?? [];
+
+            $busca = Yii::$app->request->get('q');
+
+            if (!$busca) return true;
+
+            return stripos($req['RCO_NUMERO'] ?? '', $busca) !== false
+                || stripos($req['RCO_REQUISITANTE'] ?? '', $busca) !== false
+                || stripos($req['RCO_OBS'] ?? '', $busca) !== false;
+        });
+
+        $provider = new \yii\data\ArrayDataProvider([
+            'allModels' => $query,
+            'pagination' => ['pageSize' => 20],
+            'sort' => [
+                'attributes' => [
+                    'RCO_NUMERO' => [
+                        'asc' => ['requisicao.RCO_NUMERO' => SORT_ASC],
+                        'desc' => ['requisicao.RCO_NUMERO' => SORT_DESC],
+                    ],
+                    'RCO_DATA' => [
+                        'asc' => ['requisicao.RCO_DATA' => SORT_ASC],
+                        'desc' => ['requisicao.RCO_DATA' => SORT_DESC],
+                    ],
+                    'RCO_REQUISITANTE' => [
+                        'asc' => ['requisicao.RCO_REQUISITANTE' => SORT_ASC],
+                        'desc' => ['requisicao.RCO_REQUISITANTE' => SORT_DESC],
+                    ],
+                ]
+            ],
         ]);
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'searchModel' => null,
+            'dataProvider' => $provider,
+            'searchTerm' => Yii::$app->request->get('q'),
         ]);
     }
+
 
     public function actionView($id)
     {
-        $model = ReqcompraRco::findOne($id);
+        $dados = $this->carregarCache();
 
-        $itens = ItpedcompraIpc::find()
-            ->where([
-                'IPC_REQUISIC' => $model->RCO_NUMERO,
-                'IPC_CDEMPRESA' => $model->RCO_EMPRESA
-            ])
-            ->orderBy(['IPC_NUMITEM' => SORT_ASC])
-            ->asArray()
-            ->all();
-
-        // Converte campos ISO para UTF-8 manualmente
-        array_walk($itens, function (&$item) {
-            foreach ($item as $key => $value) {
-                if (is_string($value)) {
-                    $item[$key] = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
-                }
+        foreach ($dados as $registro) {
+            if ($registro['requisicao']['RCO_NUMERO'] === $id) {
+                return $this->render('view', [
+                    'model' => $registro['requisicao'],
+                    'itens' => $registro['itens'],
+                ]);
             }
-        });
-
-        return $this->render('view', [
-            'model' => $model,
-            'itens' => $itens,
-        ]);
-    }
-
-    protected function findModel($id)
-    {
-        if (($model = ReqcompraRco::findOne(['RCO_NUMERO' => $id])) !== null) {
-            return $model;
         }
 
-        throw new NotFoundHttpException('Requisição não encontrada.');
+        throw new NotFoundHttpException("Requisição {$id} não encontrada no cache.");
     }
 }

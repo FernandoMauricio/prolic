@@ -315,15 +315,21 @@ class ProcessoLicitatorioController extends Controller
             ];
         }
 
-        // Consulta externa
-        $dados = WebManagerService::consultarPedidoRequisicao($codigoEmpresa, $numeroSanitizado);
+        try {
+            $dados = WebManagerService::consultarPedidoRequisicao($codigoEmpresa, $numeroSanitizado);
+        } catch (\Throwable $e) {
+            Yii::error("Erro ao consultar a API da MXM: " . $e->getMessage(), __METHOD__);
+            $dados = null;
+        }
 
         if (!empty($dados)) {
-            $html = $this->renderPartial('form/_requisicao-preview', ['dados' => $dados]);
+            $html = $this->renderAjax('form/_requisicao-preview', ['dados' => $dados]);
+            header('Content-Type: application/json; charset=UTF-8');
             return ['success' => true, 'html' => $html, 'numeroRequisicao' => $numeroSanitizado, 'encontrada' => true];
         }
 
-        $html = $this->renderPartial('form/_requisicao-preview', ['dados' => null, 'numero' => $numeroSanitizado]);
+        $html = $this->renderAjax('form/_requisicao-preview', ['dados' => null, 'numero' => $numeroSanitizado]);
+        header('Content-Type: application/json; charset=UTF-8');
         return ['success' => true, 'html' => $html, 'numeroRequisicao' => $numeroSanitizado, 'encontrada' => false];
     }
 

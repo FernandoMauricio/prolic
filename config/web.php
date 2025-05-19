@@ -5,6 +5,7 @@ use kartik\datecontrol\Module;
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $db_base = require __DIR__ . '/db_base.php';
+$db_oracle = require(__DIR__ . '/db_oracle.php');
 
 $config = [
     'id' => 'basic',
@@ -111,6 +112,7 @@ $config = [
         ],
         'db' => $db,
         'db_base' => $db_base,
+        'db_oracle' => $db_oracle,
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

@@ -26,7 +26,7 @@ class ReqcompraRcoSearch extends ReqcompraRco
 
     public function search($params)
     {
-        $query = ReqcompraRco::find();
+        $query = ReqcompraRco::find()->where(['in', 'RCO_TIPO', ['RDSV', 'RDMC']]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

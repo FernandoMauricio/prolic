@@ -2,6 +2,7 @@
 
 namespace app\controllers\mxm;
 
+use app\models\mxm\ItpedcompraIpc;
 use Yii;
 use app\models\mxm\ReqcompraRco;
 use app\models\mxm\ReqcompraRcoSearch;
@@ -27,8 +28,20 @@ class ReqcompraRcoController extends Controller
 
     public function actionView($id)
     {
+        $model = ReqcompraRco::findOne($id);
+
+        $itens = ItpedcompraIpc::find()
+            ->where([
+                'IPC_REQUISIC' => $model->RCO_NUMERO,
+                'IPC_CDEMPRESA' => $model->RCO_EMPRESA
+            ])
+            ->orderBy(['IPC_NUMITEM' => SORT_ASC])
+            ->asArray()
+            ->all();
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'itens' => $itens,
         ]);
     }
 

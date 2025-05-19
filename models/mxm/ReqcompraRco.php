@@ -116,4 +116,19 @@ class ReqcompraRco extends ActiveRecord
             'RCO_VBEXIGEPESPRE' => 'Exige Pesquisa de Preço',
         ];
     }
+
+    public function afterFind()
+    {
+        foreach ($this->attributes as $key => $value) {
+            if (is_string($value)) {
+                $this->$key = mb_convert_encoding($value, 'UTF-8', 'Windows-1252');
+            }
+        }
+        parent::afterFind();
+    }
+
+    public function getItens()
+    {
+        return $this->hasMany(ItpedcompraIpc::class, ['IPC_REQUISIC' => 'RCO_NUMERO']);
+    }
 }

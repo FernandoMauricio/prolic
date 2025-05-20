@@ -31,7 +31,8 @@
         "kartik-v/yii2-export": "dev-master",
         "vlucas/phpdotenv": "^5.6",
         "yiisoft/yii2-httpclient": "*",
-        "kartik-v/yii2-bootstrap5-dropdown": "@dev"
+        "kartik-v/yii2-bootstrap5-dropdown": "@dev",
+        "phpoffice/phpspreadsheet": "^1.29"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

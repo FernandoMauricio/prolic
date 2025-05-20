@@ -7,6 +7,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use app\models\cache\RequisicaoCache;
 use yii\data\ArrayDataProvider;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ReqcompraRcoController extends Controller
 {
@@ -30,6 +32,60 @@ class ReqcompraRcoController extends Controller
         }
 
         return array_map(fn($row) => new RequisicaoCache($row), $dadosBrutos);
+    }
+
+
+    public function actionExportarItens($id)
+    {
+        foreach ($this->carregarTodasRequisicoes() as $modelo) {
+            if ($modelo->getNumero() === $id) {
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+
+                // Cabeçalhos
+                $sheet->fromArray([
+                    'Item',
+                    'Descrição',
+                    'Especificação Técnica',
+                    'UN',
+                    'Qtd. Pedida',
+                    'Qtd. Atendida',
+                    'Preço',
+                    'Desconto',
+                    '% Desc.',
+                    'Preço s/ Impostos',
+                    'Entrega Prevista'
+                ], null, 'A1');
+
+                $linha = 2;
+                foreach ($modelo->itens as $item) {
+                    $sheet->fromArray([
+                        $item['IPC_ITEM'],
+                        $item['IPC_DESCRICAO'],
+                        $item['IPC_TXESPTECNICAMAPA'],
+                        $item['IPC_UNIDADE'],
+                        $item['IPC_QTD'],
+                        $item['IPC_QTDATEND'],
+                        $item['IPC_PRECO'],
+                        $item['IPC_VLDESCONTO'],
+                        $item['IPC_PERCDESC'] . '%',
+                        $item['IPC_PRECOSEMIMP'],
+                        Yii::$app->formatter->asDate($item['IPC_DTPARAENT'], 'php:d/m/Y'),
+                    ], null, 'A' . $linha++);
+                }
+
+                $filename = 'itens-requisicao-' . $modelo->getNumero() . '.xlsx';
+                $writer = new Xlsx($spreadsheet);
+
+                // Enviar para o navegador
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header("Content-Disposition: attachment; filename=\"$filename\"");
+                $writer->save('php://output');
+                exit;
+            }
+        }
+
+        throw new NotFoundHttpException("Requisição {$id} não encontrada.");
     }
 
     public static function buscarAprovadoresSimples($NUMERO)

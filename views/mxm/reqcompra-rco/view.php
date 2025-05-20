@@ -84,7 +84,15 @@ $itensProvider = new ArrayDataProvider([
                     ],
                     [
                         'attribute' => 'IPC_QTD',
-                        'label' => 'QTD',
+                        'label' => 'QTD<br>Pedida',
+                        'encodeLabel' => false,
+                        'format' => ['decimal', 2],
+                        'contentOptions' => ['class' => 'text-end'],
+                    ],
+                    [
+                        'attribute' => 'IPC_QTDATEND',
+                        'label' => 'QTD<br>Atendida',
+                        'encodeLabel' => false,
                         'format' => ['decimal', 2],
                         'contentOptions' => ['class' => 'text-end'],
                     ],
@@ -119,7 +127,10 @@ $itensProvider = new ArrayDataProvider([
                         'encodeLabel' => false,
                         'format' => ['date', 'php:d/m/Y'],
                     ],
-                    'IPC_OBS:ntext',
+                    [
+                        'attribute' => 'IPC_MAPA',
+                        'label' => 'Mapa',
+                    ],
                 ],
             ]) ?>
         </div>

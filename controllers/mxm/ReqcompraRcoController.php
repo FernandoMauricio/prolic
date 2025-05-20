@@ -124,45 +124,6 @@ class ReqcompraRcoController extends Controller
         }, $linhas);
     }
 
-    public static function buscarAprovadoresPorItem($numero)
-    {
-        $sql = <<<SQL
-            SELECT
-                rair.RAIR_NUMITEM AS item,
-                TRIM(mxu.MXU_NOME) AS aprovador,
-                TRIM(mxu.MXU_EMAIL) AS email,
-                laa.LAA_DTAPROVACAO AS data_aprovacao,
-                laa.LAA_JUSTIFICATIVA AS justificativa,
-                CASE laa.LAA_STATUS
-                    WHEN 1 THEN 'Aprovado'
-                    WHEN 3 THEN 'Reprovado'
-                    WHEN 2 THEN 'Cancelado'
-                    ELSE 'Pendente'
-                END AS status
-            FROM RELAPROVIREQ_RAIR rair
-            JOIN LINHAAPROVLOC_LAA laa ON rair.RAIR_SQAPROVACAO = laa.LAA_SQAPROVACAO
-            LEFT JOIN MXS_USUARIO_MXU mxu ON laa.LAA_APROVADOR = mxu.MXU_USUARIO
-            WHERE TRIM(rair.RAIR_NUMEROREQ) = :numero
-            ORDER BY rair.RAIR_NUMITEM, laa.LAA_SEQUENCIA
-        SQL;
-
-        $linhas = Yii::$app->db_oracle->createCommand($sql, [':numero' => $numero])->queryAll();
-
-        $resultado = [];
-        foreach ($linhas as $linha) {
-            $itemIndex = (int)($linha['ITEM'] ?? 0); // ← Em caixa alta
-
-            $resultado[$itemIndex][] = [
-                'aprovador'      => trim($linha['APROVADOR'] ?? ''),
-                'data_aprovacao' => $linha['DATA_APROVACAO'] ?? null,
-                'justificativa'  => $linha['JUSTIFICATIVA'] ?? null,
-                'status'         => $linha['STATUS'] ?? 'Pendente',
-            ];
-        }
-
-        return $resultado;
-    }
-
     /**
      * Lista filtrada de requisições.
      */
@@ -207,7 +168,6 @@ class ReqcompraRcoController extends Controller
         foreach ($this->carregarTodasRequisicoes() as $modelo) {
             if ($modelo->getNumero() === $id) {
 
-                $aprovadoresPorItem = self::buscarAprovadoresPorItem($modelo->getNumero());
                 $aprovacoes = self::buscarAprovadoresSimples($modelo->getNumero());
 
                 $aprovacoesUnicas = [];
@@ -224,7 +184,6 @@ class ReqcompraRcoController extends Controller
                 return $this->render('view', [
                     'model' => $modelo,
                     'itens' => $modelo->itens,
-                    'aprovadoresPorItem' => $aprovadoresPorItem,
                     'aprovacoes' => $aprovacoes,
                 ]);
             }

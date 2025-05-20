@@ -16,7 +16,7 @@ class CacheController extends Controller
         try {
             $requisicoes = Yii::$app->db_oracle->createCommand("
             SELECT * FROM REQCOMPRA_RCO
-            WHERE RCO_TIPO IN ('RDSV', 'RDMC')
+            WHERE RCO_TIPO IN ('RDSV', 'RDMC', 'RDBM')
             AND RCO_DATA >= ADD_MONTHS(SYSDATE, -36)
             ORDER BY RCO_DATA DESC
             ")->queryAll();

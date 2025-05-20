@@ -38,6 +38,13 @@ class RequisicaoCache extends Model
             : '(não definida)';
     }
 
+    public function getDataMovFormatada()
+    {
+        return isset($this->requisicao['RCO_DTMOV'])
+            ? \Yii::$app->formatter->asDate($this->requisicao['RCO_DTMOV'], 'php:d/m/Y')
+            : '(não definida)';
+    }
+
     public function getItens()
     {
         return $this->itens ?? [];

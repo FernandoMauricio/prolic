@@ -34,6 +34,7 @@ echo NavX::widget([
                 '<li class="dropdown-divider"></li>',
                 '<li class="dropdown-header text-muted">Área do Administrador</li>',
                 ['label' => '<i class="bi bi-clipboard-data"></i> Processos Licitatórios', 'url' => ['/processolicitatorio/processo-licitatorio/index']],
+                ['label' => '<i class="bi bi-file-text"></i> Consulta das Requisições', 'url' => ['/mxm/reqcompra-rco/index']],
                 ['label' => '<i class="bi bi-calendar3"></i> Agenda de Compromissos', 'url' => ['/processolicitatorio/agenda/index']],
                 ['label' => '<i class="bi bi-bar-chart-line-fill"></i> Acompanhamento', 'url' => ['/processolicitatorio/dashboard/index']],
             ],

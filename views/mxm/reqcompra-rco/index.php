@@ -35,6 +35,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => fn($model) => $model->getDataFormatada(),
         ],
         [
+            'label' => 'Tipo',
+            'value' => fn($model) => $model->get('RCO_TIPO'),
+        ],
+        [
             'label' => 'Setor',
             'value' => fn($model) => $model->get('RCO_SETOR'),
         ],

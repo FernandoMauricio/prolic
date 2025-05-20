@@ -50,7 +50,7 @@ class ReqcompraRcoController extends Controller
             JOIN LINHAAPROVLOC_LAA LAA ON RAIR.RAIR_SQAPROVACAO = LAA.LAA_SQAPROVACAO
             LEFT JOIN MXS_USUARIO_MXU MXU ON LAA.LAA_APROVADOR = MXU.MXU_USUARIO
             WHERE RAIR.RAIR_NUMEROREQ = :NUMERO
-            ORDER BY RAIR.RAIR_NUMITEM, LAA.LAA_SQITEMAPROVACAO
+            ORDER BY LAA.LAA_SQITEMAPROVACAO, LAA.LAA_DTAPROVACAO
         SQL;
 
         $linhas = Yii::$app->db_oracle
@@ -154,6 +154,16 @@ class ReqcompraRcoController extends Controller
                 $aprovadoresPorItem = self::buscarAprovadoresPorItem($modelo->getNumero());
                 $aprovacoes = self::buscarAprovadoresSimples($modelo->getNumero());
 
+                $aprovacoesUnicas = [];
+                $chaves = [];
+
+                foreach ($aprovacoes as $aprov) {
+                    $chave = ($aprov['ordem'] ?? '-') . '|' . ($aprov['aprovador'] ?? '');
+                    if (!in_array($chave, $chaves)) {
+                        $chaves[] = $chave;
+                        $aprovacoesUnicas[] = $aprov;
+                    }
+                }
 
                 return $this->render('view', [
                     'model' => $modelo,

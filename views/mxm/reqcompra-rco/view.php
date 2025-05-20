@@ -14,6 +14,24 @@ $itensProvider = new ArrayDataProvider([
     'allModels' => $model->itens,
     'pagination' => false,
 ]);
+
+$aprovacoesUnicas = [];
+$chaves = [];
+foreach ($aprovacoes as $aprov) {
+    $chave = ($aprov['ordem'] ?? '-') . '|' . ($aprov['aprovador'] ?? '');
+    if (!in_array($chave, $chaves)) {
+        $chaves[] = $chave;
+        $aprovacoesUnicas[] = $aprov;
+    }
+}
+
+$aprovacoesVisiveis = array_filter($aprovacoesUnicas, function ($aprov) {
+    return !(
+        ($aprov['aprovador'] ?? '') === '(não atribuído)' &&
+        empty($aprov['data_aprovacao']) &&
+        ($aprov['status'] ?? '') === 'Pendente'
+    );
+});
 ?>
 
 <div class="reqcompra-rco-view container-xxl">
@@ -54,7 +72,7 @@ $itensProvider = new ArrayDataProvider([
     </div>
 
     <!-- Aprovadores -->
-    <?php if (!empty($aprovacoes)): ?>
+    <?php if (!empty($aprovacoesVisiveis)): ?>
         <div class="card border-start border-4 border-success mt-4 shadow-sm">
             <div class="card-header bg-light fw-semibold text-success">
                 <i class="bi bi-people-fill me-2"></i> Aprovadores da Requisição
@@ -67,15 +85,17 @@ $itensProvider = new ArrayDataProvider([
                             <th>Aprovador</th>
                             <th>Data</th>
                             <th>Status</th>
+                            <th>Justificativa</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($aprovacoes as $aprov): ?>
+                        <?php foreach ($aprovacoesVisiveis as $aprov): ?>
                             <?php
                             $status = $aprov['status'] ?? 'Desconhecido';
                             $nome = $aprov['aprovador'] ?? '(não atribuído)';
                             $data = $aprov['data_aprovacao'] ?? null;
-                            $ordem = $aprov['nivel'] ?? $aprov['ordem'] ?? '-';
+                            $justificativa = $aprov['justificativa'] ?? '-';
+                            $ordem = $aprov['ordem'] ?? '-';
 
                             $badgeClass = 'bg-secondary';
                             if ($status === 'Aprovado') $badgeClass = 'bg-success';
@@ -93,6 +113,7 @@ $itensProvider = new ArrayDataProvider([
                                         <?= Html::encode($status) ?>
                                     </span>
                                 </td>
+                                <td><?= Html::encode($justificativa) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

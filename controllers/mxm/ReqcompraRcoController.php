@@ -39,7 +39,6 @@ class ReqcompraRcoController extends Controller
                 RAIR.RAIR_NUMITEM AS ITEM,
                 TRIM(MXU.MXU_NOME) AS APROVADOR,
                 LAA.LAA_DTAPROVACAO AS DATA_APROVACAO,
-                LAA.LAA_JUSTIFICATIVA AS JUSTIFICATIVA,
                 LAA.LAA_SQITEMAPROVACAO AS ORDEM,
                 CASE LAA.LAA_STATUS
                     WHEN 1 THEN 'Aprovado'
@@ -64,7 +63,6 @@ class ReqcompraRcoController extends Controller
                 'ordem'           => $linha['ORDEM'] ?? '-',
                 'aprovador'       => $linha['APROVADOR'] ?? '(não atribuído)',
                 'data_aprovacao'  => $linha['DATA_APROVACAO'] ?? null,
-                'justificativa'   => $linha['JUSTIFICATIVA'] ?? '-',
                 'status'          => $linha['STATUS'] ?? 'Desconhecido',
             ];
         }, $linhas);

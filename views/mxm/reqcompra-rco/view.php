@@ -67,7 +67,6 @@ $itensProvider = new ArrayDataProvider([
                             <th>Aprovador</th>
                             <th>Data</th>
                             <th>Status</th>
-                            <th>Justificativa</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,7 +75,6 @@ $itensProvider = new ArrayDataProvider([
                             $status = $aprov['status'] ?? 'Desconhecido';
                             $nome = $aprov['aprovador'] ?? '(não atribuído)';
                             $data = $aprov['data_aprovacao'] ?? null;
-                            $justificativa = $aprov['justificativa'] ?? '-';
                             $ordem = $aprov['nivel'] ?? $aprov['ordem'] ?? '-';
 
                             $badgeClass = 'bg-secondary';
@@ -95,7 +93,6 @@ $itensProvider = new ArrayDataProvider([
                                         <?= Html::encode($status) ?>
                                     </span>
                                 </td>
-                                <td><?= Html::encode($justificativa) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

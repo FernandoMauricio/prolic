@@ -17,7 +17,7 @@ if (empty($requisicoes)): ?>
                         <small><?= Html::encode($req->getRequisitante()) ?> — <?= Html::encode($req->getDataFormatada()) ?></small>
                     </div>
                     <div>
-                        <?= $req->getStatusBadge() ?>
+                        <?= $req->getStatusBadgeHtml() ?>
                     </div>
                 </div>
                 <div class="mt-2 small text-muted"><?= Html::encode($req->get('RCO_JUSTIFICATIVA')) ?></div>

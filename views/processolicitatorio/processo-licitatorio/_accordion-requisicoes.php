@@ -15,7 +15,7 @@ use yii\helpers\Html;
                             data-bs-target="#collapse-<?= $i ?>" aria-expanded="false"
                             aria-controls="collapse-<?= $i ?>">
                             Requisição nº <?= Html::encode($req->getNumero()) ?>
-                            <span class="ms-3"><?= $req->getStatusBadge() ?></span>
+                            <?= $req->getStatusBadgeHtml() ?>
                         </button>
                     </h2>
                     <div id="collapse-<?= $i ?>" class="accordion-collapse collapse"

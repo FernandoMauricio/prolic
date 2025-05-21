@@ -13,7 +13,7 @@ class CacheController extends Controller
     {
         $this->stdout("Iniciando exportação de requisições individuais...\n");
 
-        $basePath = Yii::getAlias('@runtime/cache/requisicoes');
+        $basePath = Yii::getAlias('@runtime/cache/_requisicoes');
         if (!is_dir($basePath)) {
             mkdir($basePath, 0777, true);
         }
@@ -49,7 +49,7 @@ class CacheController extends Controller
             }
 
             // Gera o índice simples de requisições
-            file_put_contents("$basePath/requisicoes-index.json", json_encode($index, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            file_put_contents("$basePath/_requisicoes-index.json", json_encode($index, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
             $this->stdout("Exportação concluída. Total: " . count($index) . " arquivos.\n");
         } catch (\Throwable $e) {
             $this->stderr("Erro ao gerar cache: " . $e->getMessage() . "\n");

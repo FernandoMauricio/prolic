@@ -4,6 +4,7 @@ namespace app\models\cache;
 
 use yii\base\Model;
 use app\models\api\WebManagerService;
+use yii\bootstrap5\Html;
 
 class RequisicaoCache extends Model
 {
@@ -56,26 +57,29 @@ class RequisicaoCache extends Model
         return $status;
     }
 
-
-    public function getStatusBadge(): string
+    public function getStatusBadgeHtml(): string
     {
-        $status = $this->getStatusOnline() ?? 'Indisponível';
+        $status = trim($this->getStatusOnline() ?? 'Indefinido');
+        $badgeClass = 'bg-secondary';
+        $icon = '<i class="bi bi-question-circle me-1"></i>';
 
-        $class = 'bg-secondary';
-        if (stripos($status, 'aprovado') !== false) {
-            $class = 'bg-success';
+        if (stripos($status, 'aprovado') !== false || stripos($status, 'totalmente atendido') !== false) {
+            $badgeClass = 'bg-success';
+            $icon = '<i class="bi bi-check-circle-fill me-1"></i>';
+        } elseif (stripos($status, 'em aprovação') !== false) {
+            $badgeClass = 'bg-warning text-dark';
+            $icon = '<i class="bi bi-hourglass-split me-1"></i>';
         } elseif (stripos($status, 'reprovado') !== false) {
-            $class = 'bg-danger';
-        } elseif (
-            stripos($status, 'pendente') !== false ||
-            stripos($status, 'aguard') !== false ||
-            stripos($status, 'em análise') !== false ||
-            stripos($status, 'em aprovação') !== false
-        ) {
-            $class = 'bg-warning text-dark';
+            $badgeClass = 'bg-danger';
+            $icon = '<i class="bi bi-x-circle-fill me-1"></i>';
+        } elseif (stripos($status, 'pendente') !== false || stripos($status, 'aguard') !== false) {
+            $badgeClass = 'bg-warning text-dark';
+            $icon = '<i class="bi bi-clock-fill me-1"></i>';
         }
 
-        return \yii\helpers\Html::tag('span', $status, ['class' => "badge $class px-3 py-2"]);
+        return Html::tag('span', $icon . Html::encode($status), [
+            'class' => "badge {$badgeClass} px-2 py-1 ms-3"
+        ]);
     }
 
     public function getItens()

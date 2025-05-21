@@ -2,6 +2,7 @@
 
 namespace app\controllers\mxm;
 
+use app\models\api\WebManagerService;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -9,6 +10,8 @@ use app\models\cache\RequisicaoCache;
 use yii\data\ArrayDataProvider;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use yii\web\Response;
+use yii\helpers\Json;
 
 class ReqcompraRcoController extends Controller
 {
@@ -132,7 +135,7 @@ class ReqcompraRcoController extends Controller
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $modelos,
-            'pagination' => ['pageSize' => 3],
+            'pagination' => ['pageSize' => 10],
             'sort' => [
                 'attributes' => [
                     'requisicao.RCO_NUMERO',
@@ -178,5 +181,37 @@ class ReqcompraRcoController extends Controller
         }
 
         throw new NotFoundHttpException("Requisição {$id} não encontrada no cache.");
+    }
+
+    public function actionStatusRequisicaoAjax($numero)
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        try {
+            $status = \app\models\api\WebManagerService::consultarStatusRequisicao($numero) ?? 'Indisponível';
+
+            return [
+                'statusHtml' => $this->renderPartial('@app/views/partials/_badge-status.php', ['status' => $status])
+            ];
+        } catch (\Throwable $e) {
+            Yii::error("Erro ao consultar status da requisição {$numero}: " . $e->getMessage(), __METHOD__);
+            return [
+                'statusHtml' => '<span class="badge bg-danger px-2 py-1">Erro</span>'
+            ];
+        }
+    }
+
+    public function actionPainel()
+    {
+        $modelos = $this->carregarTodasRequisicoes();
+
+        $dataProvider = new \yii\data\ArrayDataProvider([
+            'allModels' => $modelos,
+            'pagination' => ['pageSize' => 20],
+        ]);
+
+        return $this->render('painel', [
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }

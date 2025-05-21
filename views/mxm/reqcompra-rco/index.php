@@ -3,10 +3,15 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use app\models\cache\RequisicaoCache;
+use yii\widgets\Pjax;
+
 
 $this->title = 'Consulta das Requisições';
 
 $this->params['breadcrumbs'][] = $this->title;
+
+
+
 ?>
 
 <h1><?= Html::encode($this->title) ?></h1>
@@ -22,6 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= Html::endForm() ?>
 </div>
 
+<?php Pjax::begin(['id' => 'grid-requisicoes', 'timeout' => 5000, 'enablePushState' => false]); ?>
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
@@ -57,10 +63,13 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'label' => 'Status (API)',
             'format' => 'raw',
-            'value' => fn(RequisicaoCache $model) => $model->getStatusBadge(),
+            'value' => fn(RequisicaoCache $model) => Html::tag('span', 'Carregando...', [
+                'class' => 'badge bg-secondary px-2 py-1 requisicao-status',
+                'data-numero' => $model->getNumero()
+            ]),
             'contentOptions' => ['class' => 'text-center'],
-            'headerOptions' => ['class' => 'text-center'],
         ],
+
         [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{view}',
@@ -78,3 +87,22 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ],
 ]) ?>
+<?php Pjax::end(); ?>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.requisicao-status').forEach(span => {
+            const numero = span.dataset.numero;
+            fetch(`index.php?r=mxm/reqcompra-rco/status-requisicao-ajax&numero=${numero}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data?.statusHtml) {
+                        span.outerHTML = data.statusHtml;
+                    }
+                })
+                .catch(() => {
+                    span.outerHTML = '<span class="badge bg-danger px-2 py-1">Erro</span>';
+                });
+        });
+    });
+</script>

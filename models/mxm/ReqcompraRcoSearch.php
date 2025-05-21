@@ -31,7 +31,7 @@ class ReqcompraRcoSearch extends ReqcompraRco
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 5,
+                'pageSize' => 10,
             ],
             'sort' => [
                 'defaultOrder' => ['RCO_DATA' => SORT_DESC],

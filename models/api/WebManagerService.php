@@ -82,6 +82,43 @@ class WebManagerService
         ];
     }
 
+    public static function consultarStatusRequisicao(string $CodigoRequisicao): ?string
+    {
+        $client = new \yii\httpclient\Client([
+            'transport' => 'yii\httpclient\CurlTransport',
+        ]);
+
+        $url = rtrim($_ENV['MXM_BASE_URL'], '/') . '/webmanager/api/InterfaceDaRequisicaoDeCompra/ObterStatusRequisicao';
+
+        try {
+            $response = $client->createRequest()
+                ->setMethod('POST')
+                ->setUrl($url)
+                ->setFormat(\yii\httpclient\Client::FORMAT_JSON)
+                ->setData([
+                    'AutheticationToken' => self::buildAuthPayload(),
+                    'Data' => [
+                        'CodigoRequisicao' => $CodigoRequisicao
+                    ]
+                ])
+                ->addHeaders([
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ])
+                ->send();
+
+            if ($response->isOk && !empty($response->data['Data']['StatusRequisicao'])) {
+                return $response->data['Data']['StatusRequisicao'];
+            }
+
+            Yii::warning("Status da requisição {$CodigoRequisicao} não retornado corretamente", __METHOD__);
+        } catch (\Throwable $e) {
+            Yii::error("Erro na API de status da requisição: " . $e->getMessage(), __METHOD__);
+        }
+
+        return null;
+    }
+
     public static function consultarPedidoRequisicao(string $codigoEmpresa, string $numeroRequisicao): array
     {
         $client = new Client([

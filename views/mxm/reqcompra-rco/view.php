@@ -71,6 +71,7 @@ function getStatusIcon($status)
                     'Tipo' =>  $model->get('RCO_TIPO'),
                     'Setor' => $model->get('RCO_SETOR'),
                     'Requisitante' => $model->getRequisitante(),
+                    'Status (via API)' => $model->getStatusBadge(),
                     'Observação' => $model->get('RCO_OBS'),
                     'Justificativa' => $model->get('RCO_JUSTIFICATIVA'),
                 ] as $label => $value
@@ -79,7 +80,11 @@ function getStatusIcon($status)
                     <div class="border-bottom pb-2">
                         <div class="fw-semibold small text-muted"><?= $label ?></div>
                         <div class="text-dark">
-                            <?= is_string($value) ? Html::encode($value) : $value ?>
+                            <?php if (strip_tags($value) !== $value): ?>
+                                <?= $value ?>
+                            <?php else: ?>
+                                <?= Html::encode($value) ?>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

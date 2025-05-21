@@ -159,7 +159,6 @@ function getStatusIcon($status)
                     ['class' => 'yii\\grid\\SerialColumn'],
                     ['attribute' => 'IRC_ITEM', 'label' => 'Item'],
                     ['attribute' => 'IRC_DESCRICAO', 'label' => 'Descrição'],
-                    ['attribute' => 'IRC_DESCRICAO', 'label' => 'Especificação Técnica'], // ou outro campo se houver
                     ['attribute' => 'IRC_UNIDADE', 'label' => 'UN'],
                     [
                         'attribute' => 'IRC_QTDPEDIDA',

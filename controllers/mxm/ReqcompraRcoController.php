@@ -46,15 +46,9 @@ class ReqcompraRcoController extends Controller
                 $sheet->fromArray([
                     'Item',
                     'Descrição',
-                    'Especificação Técnica',
                     'UN',
                     'Qtd. Pedida',
-                    'Qtd. Atendida',
-                    'Preço',
-                    'Desconto',
-                    '% Desc.',
-                    'Preço s/ Impostos',
-                    'Entrega Prevista'
+                    'Valor',
                 ], null, 'A1');
 
                 $linha = 2;

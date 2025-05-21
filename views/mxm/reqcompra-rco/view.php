@@ -5,6 +5,7 @@ use yii\widgets\DetailView;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
 use app\models\cache\RequisicaoCache;
+use yii\bootstrap5\Modal;
 
 $this->title = 'Requisição';
 $this->params['breadcrumbs'][] = ['label' => 'Consulta das Requisições', 'url' => ['index']];
@@ -70,7 +71,6 @@ function getStatusIcon($status)
                     'Setor' => $model->get('RCO_SETOR'),
                     'Requisitante' => $model->getRequisitante(),
                     'Status (via API)' => $model->getStatusBadge(),
-                    'Observação' => $model->get('RCO_OBS'),
                 ] as $label => $value
             ): ?>
                 <div class="col">
@@ -87,16 +87,49 @@ function getStatusIcon($status)
                 </div>
             <?php endforeach; ?>
 
+            <div class="col">
+                <div class="border-bottom pb-2">
+                    <div class="fw-semibold small text-muted d-flex justify-content-between">
+                        Observação
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#modalObservacao" class="small text-decoration-none"><i class="bi bi-eye"></i> Visualizar completa</a>
+                    </div>
+                    <div class="text-dark text-truncate" style="max-width: 100%;">
+                        <?= Html::encode(substr($model->get('RCO_OBS'), 0, 180)) ?>...
+                    </div>
+                </div>
+            </div>
+
             <div class="col-12">
                 <div class="border-bottom pb-2">
-                    <div class="fw-semibold small text-muted">Justificativa</div>
-                    <div class="text-dark">
-                        <?= Html::encode($model->get('RCO_JUSTIFICATIVA')) ?>
+                    <div class="fw-semibold small text-muted d-flex justify-content-between">
+                        Justificativa
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#modalJustificativa" class="small text-decoration-none"><i class="bi bi-eye"></i> Visualizar completa</a>
+                    </div>
+                    <div class="text-dark text-truncate" style="max-width: 100%;">
+                        <?= Html::encode(substr($model->get('RCO_JUSTIFICATIVA'), 0, 180)) ?>...
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <?php Modal::begin([
+        'id' => 'modalJustificativa',
+        'title' => '<i class="bi bi-align-start"></i> Justificativa Completa',
+        'size' => Modal::SIZE_LARGE,
+        'options' => ['tabindex' => false],
+    ]); ?>
+    <p><?= nl2br(Html::encode($model->get('RCO_JUSTIFICATIVA'))) ?></p>
+    <?php Modal::end(); ?>
+
+    <?php Modal::begin([
+        'id' => 'modalObservacao',
+        'title' => '<i class="bi bi-align-start"></i> Observação Completa',
+        'size' => Modal::SIZE_LARGE,
+        'options' => ['tabindex' => false],
+    ]); ?>
+    <p><?= nl2br(Html::encode($model->get('RCO_OBS'))) ?></p>
+    <?php Modal::end(); ?>
 
     <?php if (!empty($aprovacoesVisiveis)): ?>
         <div class="card border-start border-4 border-success mt-4 shadow-sm">

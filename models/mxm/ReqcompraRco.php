@@ -129,6 +129,6 @@ class ReqcompraRco extends ActiveRecord
 
     public function getItens()
     {
-        return $this->hasMany(ItpedcompraIpc::class, ['IPC_REQUISIC' => 'RCO_NUMERO']);
+        return $this->hasMany(ItpedcompraIpc::class, ['IRC_REQUISIC' => 'RCO_NUMERO']);
     }
 }

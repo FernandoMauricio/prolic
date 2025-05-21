@@ -25,13 +25,11 @@ class CacheController extends Controller
 
             foreach ($requisicoes as $requisicao) {
                 $itens = Yii::$app->db_oracle->createCommand("
-                    SELECT * FROM ITPEDCOMPRA_IPC
-                    WHERE IPC_REQUISIC = :numero
-                    AND IPC_CDEMPRESA = :empresa
-                    ORDER BY IPC_NUMITEM
+                    SELECT * FROM IREQCOMPRA_IRC
+                    WHERE IRC_NUMERO = :numero
+                    ORDER BY IRC_ITEM
                 ", [
                     ':numero' => $requisicao['RCO_NUMERO'],
-                    ':empresa' => $requisicao['RCO_EMPRESA'],
                 ])->queryAll();
 
                 $dados[] = [

@@ -36,8 +36,8 @@ $aprovacoesVisiveis = array_filter($aprovacoesUnicas, function ($aprov) {
 // Calcular total geral
 $total = 0;
 foreach ($model->itens as $item) {
-    $qtd = floatval($item['IPC_QTD'] ?? 0);
-    $preco = floatval($item['IPC_PRECO'] ?? 0);
+    $qtd = floatval($item['IRC_QTDPEDIDA'] ?? 0);
+    $preco = floatval($item['IRC_VALOR'] ?? 0);
     $total += $qtd * $preco;
 }
 function getStatusIcon($status)
@@ -157,32 +157,30 @@ function getStatusIcon($status)
                 'tableOptions' => ['class' => 'table table-sm table-hover table-striped table-bordered align-middle mb-0'],
                 'columns' => [
                     ['class' => 'yii\\grid\\SerialColumn'],
-                    ['attribute' => 'IPC_ITEM', 'label' => 'Item'],
-                    ['attribute' => 'IPC_DESCRICAO', 'label' => 'Descrição'],
-                    ['attribute' => 'IPC_TXESPTECNICAMAPA', 'label' => 'Especificação Técnica'],
-                    ['attribute' => 'IPC_UNIDADE', 'label' => 'UN'],
+                    ['attribute' => 'IRC_ITEM', 'label' => 'Item'],
+                    ['attribute' => 'IRC_DESCRICAO', 'label' => 'Descrição'],
+                    ['attribute' => 'IRC_DESCRICAO', 'label' => 'Especificação Técnica'], // ou outro campo se houver
+                    ['attribute' => 'IRC_UNIDADE', 'label' => 'UN'],
                     [
-                        'attribute' => 'IPC_QTD',
+                        'attribute' => 'IRC_QTDPEDIDA',
                         'label' => 'QTD<br>Pedida',
                         'encodeLabel' => false,
                         'format' => ['decimal', 2],
                         'contentOptions' => ['class' => 'text-end']
                     ],
                     [
-                        'attribute' => 'IPC_QTDATEND',
-                        'label' => 'QTD<br>Atendida',
-                        'encodeLabel' => false,
-                        'format' => ['decimal', 2],
+                        'attribute' => 'IRC_VALOR',
+                        'label' => 'Preço',
+                        'format' => ['currency'],
                         'contentOptions' => ['class' => 'text-end']
                     ],
-                    ['attribute' => 'IPC_PRECO', 'label' => 'Preço', 'format' => ['currency'], 'contentOptions' => ['class' => 'text-end']],
-                    ['attribute' => 'IPC_VLDESCONTO', 'label' => 'Desconto', 'format' => ['currency'], 'contentOptions' => ['class' => 'text-end']],
-                    ['attribute' => 'IPC_PERCDESC', 'label' => '% Desconto', 'value' => function ($item) {
-                        return $item['IPC_PERCDESC'] . '%';
-                    }, 'contentOptions' => ['class' => 'text-end']],
-                    ['attribute' => 'IPC_PRECOSEMIMP', 'label' => 'Preço <br>s/ Impostos', 'encodeLabel' => false, 'format' => ['currency'], 'contentOptions' => ['class' => 'text-end']],
-                    ['attribute' => 'IPC_DTPARAENT', 'label' => 'Entrega <br> Prevista', 'encodeLabel' => false, 'format' => ['date', 'php:d/m/Y']],
-                ],
+                    [
+                        'label' => 'Total',
+                        'format' => ['currency'],
+                        'value' => fn($item) => floatval($item['IRC_QTDPEDIDA']) * floatval($item['IRC_VALOR']),
+                        'contentOptions' => ['class' => 'text-end']
+                    ]
+                ]
             ]) ?>
         </div>
         <div class="card-footer bg-light text-end fw-semibold">

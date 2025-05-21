@@ -60,17 +60,11 @@ class ReqcompraRcoController extends Controller
                 $linha = 2;
                 foreach ($modelo->itens as $item) {
                     $sheet->fromArray([
-                        $item['IPC_ITEM'],
-                        $item['IPC_DESCRICAO'],
-                        $item['IPC_TXESPTECNICAMAPA'],
-                        $item['IPC_UNIDADE'],
-                        $item['IPC_QTD'],
-                        $item['IPC_QTDATEND'],
-                        $item['IPC_PRECO'],
-                        $item['IPC_VLDESCONTO'],
-                        $item['IPC_PERCDESC'] . '%',
-                        $item['IPC_PRECOSEMIMP'],
-                        Yii::$app->formatter->asDate($item['IPC_DTPARAENT'], 'php:d/m/Y'),
+                        $item['IRC_ITEM'],
+                        $item['IRC_DESCRICAO'],
+                        $item['IRC_UNIDADE'],
+                        $item['IRC_QTDPEDIDA'],
+                        $item['IRC_VALOR'],
                     ], null, 'A' . $linha++);
                 }
 

@@ -243,11 +243,24 @@ window.addEventListener('load', function() {
     if (!span) return;
 
     const numero = span.dataset.numero;
+    const key = 'status-' + numero;
+
+    // Se já tem em cache na sessão, usa direto
+    if (sessionStorage.getItem(key)) {
+        span.outerHTML = sessionStorage.getItem(key);
+        return;
+    }
+
     fetch('index.php?r=mxm/reqcompra-rco/status-requisicao-ajax&numero=' + numero)
         .then(response => response.json())
         .then(data => {
             if (data?.statusHtml) {
-                span.outerHTML = data.statusHtml;
+                sessionStorage.setItem(key, data.statusHtml);
+                span.style.transition = 'opacity 0.3s ease';
+                span.style.opacity = 0;
+                setTimeout(() => {
+                    span.outerHTML = data.statusHtml;
+                }, 300);
             }
         })
         .catch(() => {

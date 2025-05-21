@@ -2,6 +2,7 @@
 
 namespace app\controllers\processolicitatorio;
 
+use app\controllers\mxm\ReqcompraRcoController;
 use Yii;
 use app\models\base\Ramo;
 use app\models\base\ModalidadeValorlimite;
@@ -155,19 +156,6 @@ class ProcessoLicitatorioController extends Controller
         ]);
     }
 
-    public function actionViewGerencia($id)
-    {
-        $session = Yii::$app->session;
-        if ($session['sess_responsavelsetor'] == 0) { //Verifica se o colaborador é gerente
-            return $this->AccessoAdministrador();
-        }
-        $model = $this->findModel($id);
-
-        return $this->render('view-gerencia', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
     /**
      * Lists all ProcessoLicitatorio models.
      * @return mixed
@@ -237,28 +225,22 @@ class ProcessoLicitatorioController extends Controller
      */
     public function actionView($id)
     {
-        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-        $session = Yii::$app->session;
-        if ($session['sess_codunidade'] != 6) {
-            return $this->AccessoAdministrador();
+        $model = $this->findModel($id);
+        $requisicoes = [];
+
+        foreach ($model->requisicoesCodmxm as $numero) {
+            $requisicao = ReqcompraRcoController::carregarRequisicaoPorNumero($numero);
+
+            if ($requisicao !== null) {
+                $requisicoes[] = $requisicao;
+            } else {
+                Yii::warning("Requisição {$numero} não encontrada no cache individual.", __METHOD__);
+            }
         }
 
         return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    public function actionView2($id)
-    {
-        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-        $session = Yii::$app->session;
-        if ($session['sess_codunidade'] != 6) {
-            return $this->AccessoAdministrador();
-        }
-        $model = $this->findModel($id);
-
-        return $this->render('view2', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'requisicoes' => $requisicoes,
         ]);
     }
 
@@ -488,10 +470,18 @@ class ProcessoLicitatorioController extends Controller
         }
 
         $model->prolic_codmxm = $model->getRequisicoesCodmxm();
+        $requisicoes = [];
+        foreach ((array) $model->getRequisicoesCodmxm() as $numero) {
+            $requisicao = ReqcompraRcoController::carregarRequisicaoPorNumero(trim($numero));
+            if ($requisicao !== null) {
+                $requisicoes[] = $requisicao;
+            }
+        }
 
         return $this->render('update', array_merge(
             [
                 'model' => $model,
+                'requisicoes' => $requisicoes,
             ],
             $dadosAuxiliares
         ));

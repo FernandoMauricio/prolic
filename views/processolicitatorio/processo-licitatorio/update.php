@@ -6,17 +6,17 @@
 use yii\web\JqueryAsset;
 
 $this->title = 'Editar Processo #' . $model->id;
-$this->registerJsFile(
-    '@web/js/processolicitatorio.js',
-    ['depends' => [JqueryAsset::class]]
-);
+// $this->registerJsFile(
+//     '@web/js/processolicitatorio.js',
+//     ['depends' => [JqueryAsset::class]]
+// );
 
 $this->title = 'Atualizar Processo Licitatório: ' . $model->id . '';
 $this->params['breadcrumbs'][] = ['label' => 'Processo Licitatórios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Atualizar';
 
-$this->registerJs('var processoId = ' . (int) $model->id . ';', \yii\web\View::POS_HEAD);
+// $this->registerJs('var processoId = ' . (int) $model->id . ';', \yii\web\View::POS_HEAD);
 ?>
 <?php if (Yii::$app->session->hasFlash('empresaAtualizadaViaApi')): ?>
     <div class="alert alert-warning border-start border-4 border-warning d-flex align-items-center gap-2" role="alert">
@@ -40,6 +40,7 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', \yii\web\View::P
         'recurso' => $recurso,
         'comprador' => $comprador,
         'situacao' => $situacao,
+        'requisicoes' => $requisicoes,
     ]) ?>
 
 </div>

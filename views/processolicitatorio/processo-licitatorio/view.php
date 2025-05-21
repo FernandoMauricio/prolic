@@ -16,8 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
 // Estilos e scripts
 $this->registerCssFile('@web/css/requisicao-preview.css', ['depends' => [\yii\bootstrap5\BootstrapAsset::class]]);
 $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::class]]);
-$this->registerJs('var requisicoesSalvas = ' . json_encode($model->requisicoesCodmxm) . ';', View::POS_HEAD);
-$this->registerJs('carregarRequisicoesSalvas();', View::POS_READY);
+// $this->registerJs('var requisicoesSalvas = ' . json_encode($model->requisicoesCodmxm) . ';', View::POS_HEAD);
+// $this->registerJs('carregarRequisicoesSalvas();', View::POS_READY);
 $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
 ?>
 
@@ -247,12 +247,34 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                     </div>
                 </div>
             <?php endif; ?>
-
         </div>
 
-        <!-- Coluna Direita: Requisições -->
         <div class="col-lg-6 position-relative">
-            <!-- Feedback dentro do escopo local -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white fw-bold d-flex align-items-center"
+                    title="Somente requisições que já possuem pedido de compra serão exibidas">
+                    <i class="bi bi-file-earmark-text me-2 fs-5"></i>
+                    Consulta de Requisições Vinculadas (D-1)
+                </div>
+                <div class="card-body p-3">
+                    <?= $this->render('_accordion-requisicoes', ['requisicoes' => $requisicoes]) ?>
+                </div>
+                <div class="card-footer small text-muted px-3 py-2">
+                    <div class="d-flex justify-content-between flex-wrap">
+                        <div>
+                            <i class="bi bi-info-circle me-1"></i>
+                            <strong>Essas requisições são exibidas a partir do cache local</strong>.
+                        </div>
+                        <div class="text-end ms-auto">
+                            Alternar entre <em>resumo</em> e <em>detalhes</em>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna Direita: Requisições (Consulta a API PEDIDOS DE COMPRA) -->
+        <!-- <div class="col-lg-6 position-relative">
             <div id="requisicao-feedback" class="alert d-none position-absolute top-0 start-50 translate-middle-x mt-2 z-1051 shadow"></div>
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white fw-bold d-flex align-items-center"
@@ -281,6 +303,6 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>

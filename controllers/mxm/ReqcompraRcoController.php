@@ -20,23 +20,20 @@ class ReqcompraRcoController extends Controller
      * @return RequisicaoCache[]
      * @throws \Exception
      */
-    private function carregarTodasRequisicoes(): array
+    public static function carregarRequisicaoPorNumero(string $numero): ?RequisicaoCache
     {
-        $caminho = Yii::getAlias('@runtime/cache/requisicoes-cache.json');
-
+        $caminho = Yii::getAlias("@runtime/cache/requisicoes/{$numero}.json");
         if (!file_exists($caminho)) {
-            throw new \Exception('Arquivo de cache de requisições não encontrado.');
+            return null;
         }
 
-        $dadosBrutos = json_decode(file_get_contents($caminho), true);
-
-        if (!is_array($dadosBrutos)) {
-            throw new \Exception('Formato inválido no arquivo de cache.');
+        $json = json_decode(file_get_contents($caminho), true);
+        if (!is_array($json)) {
+            return null;
         }
 
-        return array_map(fn($row) => new RequisicaoCache($row), $dadosBrutos);
+        return new RequisicaoCache($json);
     }
-
 
     public function actionExportarItens($id)
     {

@@ -11,37 +11,46 @@ class CacheController extends Controller
 {
     public function actionRequisicoes()
     {
-        $this->stdout("Iniciando exportação de requisições...\n");
+        $this->stdout("Iniciando exportação de requisições individuais...\n");
+
+        $basePath = Yii::getAlias('@runtime/cache/requisicoes');
+        if (!is_dir($basePath)) {
+            mkdir($basePath, 0777, true);
+        }
 
         try {
             $requisicoes = Yii::$app->db_oracle->createCommand("
-            SELECT * FROM REQCOMPRA_RCO
-            WHERE RCO_TIPO IN ('RDSV', 'RDMC', 'RDBM')
-            AND RCO_DATA >= ADD_MONTHS(SYSDATE, -36)
-            ORDER BY RCO_DATA DESC
+                SELECT * FROM REQCOMPRA_RCO
+                WHERE RCO_TIPO IN ('RDSV', 'RDMC', 'RDBM')
+                AND RCO_DATA >= ADD_MONTHS(SYSDATE, -36)
+                ORDER BY RCO_DATA DESC
             ")->queryAll();
 
-            $dados = [];
+            $index = [];
 
             foreach ($requisicoes as $requisicao) {
+                $numero = $requisicao['RCO_NUMERO'];
                 $itens = Yii::$app->db_oracle->createCommand("
                     SELECT * FROM IREQCOMPRA_IRC
                     WHERE IRC_NUMERO = :numero
                     ORDER BY IRC_ITEM
-                ", [
-                    ':numero' => $requisicao['RCO_NUMERO'],
-                ])->queryAll();
+                ", [':numero' => $numero])->queryAll();
 
-                $dados[] = [
+                $data = [
                     'requisicao' => $this->convertEncodingRecursive($requisicao),
                     'itens' => $this->convertEncodingRecursive($itens),
                 ];
+
+                $arquivo = "$basePath/{$numero}.json";
+                file_put_contents($arquivo, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+                $index[] = $numero;
+                $this->stdout("Requisição $numero exportada...\n");
             }
 
-            $caminho = Yii::getAlias('@runtime/cache/requisicoes-cache.json');
-            file_put_contents($caminho, json_encode($dados, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
-            $this->stdout("Exportação finalizada com sucesso! Cache salvo em:\n$caminho\n");
+            // Gera o índice simples de requisições
+            file_put_contents("$basePath/requisicoes-index.json", json_encode($index, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            $this->stdout("Exportação concluída. Total: " . count($index) . " arquivos.\n");
         } catch (\Throwable $e) {
             $this->stderr("Erro ao gerar cache: " . $e->getMessage() . "\n");
         }

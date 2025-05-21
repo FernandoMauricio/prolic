@@ -88,7 +88,7 @@ class ReqcompraRcoController extends Controller
                 WHEN MXU.MXU_NOME IS NOT NULL THEN MXU.MXU_NOME
                 WHEN LAA.LAA_SQITEMAPROVACAO = 1 THEN ESF.ESF_DESCRICAO || '(aguardando designação de comprador)'
                 ELSE ESF.ESF_DESCRICAO
-                END AS APROVADOR,
+                END AS APROVADOR,          
                 LAA.LAA_DTAPROVACAO AS DATA_APROVACAO,
                 LAA.LAA_SQITEMAPROVACAO AS ORDEM,
                 CASE LAA.LAA_STATUS

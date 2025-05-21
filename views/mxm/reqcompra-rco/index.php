@@ -13,59 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <h1><?= Html::encode($this->title) ?></h1>
 
-<?php
-$this->registerJs(<<<JS
-let abortControllers = [];
-
-function carregarStatusRequisicoes() {
-    abortControllers.forEach(c => c.abort());
-    abortControllers = [];
-
-    const spans = document.querySelectorAll('.requisicao-status');
-    if (spans.length === 0) return;
-
-    spans.forEach(span => {
-        const numero = span.dataset.numero;
-        const controller = new AbortController();
-        abortControllers.push(controller);
-
-        console.log('Carregando status para:', numero);
-
-        fetch('index.php?r=mxm/reqcompra-rco/status-requisicao-ajax&numero=' + numero, {
-            signal: controller.signal
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data?.statusHtml) {
-                span.outerHTML = data.statusHtml;
-            }
-        })
-        .catch(error => {
-            if (error.name !== 'AbortError') {
-                span.outerHTML = '<span class="badge bg-danger px-2 py-1">Erro</span>';
-            }
-        });
-    });
-}
-
-// Executa imediatamente após o script ser registrado
-carregarStatusRequisicoes();
-
-document.addEventListener('pjax:end', carregarStatusRequisicoes);
-
-window.addEventListener('beforeunload', () => {
-    abortControllers.forEach(c => c.abort());
-    abortControllers = [];
-});
-
-document.addEventListener('pointerdown', () => {
-    abortControllers.forEach(c => c.abort());
-    abortControllers = [];
-});
-JS);
-?>
-
-
 <div class="mb-3">
     <?= Html::beginForm(['index'], 'get') ?>
     <div class="input-group">
@@ -108,15 +55,7 @@ JS);
             'label' => 'Justificativa',
             'value' => fn($model) => $model->get('RCO_JUSTIFICATIVA'),
         ],
-        [
-            'label' => 'Status (API)',
-            'format' => 'raw',
-            'value' => fn(RequisicaoCache $model) => Html::tag('span', 'Carregando...', [
-                'class' => 'badge bg-secondary px-2 py-1 requisicao-status',
-                'data-numero' => $model->getNumero()
-            ]),
-            'contentOptions' => ['class' => 'text-center'],
-        ],
+
 
         [
             'class' => 'yii\grid\ActionColumn',

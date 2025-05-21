@@ -98,10 +98,9 @@ function getStatusIcon($status)
         </div>
     </div>
 
-    <!-- Aprovadores -->
     <?php if (!empty($aprovacoesVisiveis)): ?>
         <div class="card border-start border-4 border-success mt-4 shadow-sm">
-            <div class="card-header bg-light fw-semibold text-success">
+            <div class="card-header bg-light text-uppercase small fw-bold text-success">
                 <i class="bi bi-people-fill me-2"></i> Aprovadores da Requisição
             </div>
             <div class="card-body p-0">
@@ -151,10 +150,11 @@ function getStatusIcon($status)
         </div>
     <?php endif; ?>
 
-    <!-- Itens da Requisição -->
     <div class="card shadow-sm mt-4">
         <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-box-seam me-2"></i> Itens da Requisição</span>
+            <span class="text-uppercase small fw-bold">
+                <i class="bi bi-box-seam me-2"></i> Itens da Requisição (<?= count($model->itens) ?>)
+            </span>
             <?= Html::a(
                 '<i class="bi bi-file-earmark-excel"></i> Exportar Itens',
                 ['exportar-itens', 'id' => $model->getNumero()],
@@ -182,18 +182,18 @@ function getStatusIcon($status)
                         'attribute' => 'IRC_VALOR',
                         'label' => 'Preço',
                         'format' => ['currency'],
-                        'contentOptions' => ['class' => 'text-end']
+                        'contentOptions' => ['class' => 'text-end fw-bold text-success']
                     ],
                     [
                         'label' => 'Total',
                         'format' => ['currency'],
                         'value' => fn($item) => floatval($item['IRC_QTDPEDIDA']) * floatval($item['IRC_VALOR']),
-                        'contentOptions' => ['class' => 'text-end']
+                        'contentOptions' => ['class' => 'text-end fw-semibold']
                     ]
                 ]
             ]) ?>
         </div>
-        <div class="card-footer bg-light text-end fw-semibold">
+        <div class="card-footer bg-light text-end fw-bold fs-6">
             Total Geral: <?= Yii::$app->formatter->asCurrency($total) ?>
         </div>
     </div>

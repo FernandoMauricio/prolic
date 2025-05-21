@@ -70,9 +70,10 @@ function getStatusIcon($status)
                     'Tipo' =>  $model->get('RCO_TIPO'),
                     'Setor' => $model->get('RCO_SETOR'),
                     'Requisitante' => $model->getRequisitante(),
-                    'Status (via API)' => Html::tag('span', 'Carregando...', [
+                    'Status (via API)' => Html::tag('span', '<span class="dot-bounce">Carregando<span class="dot dot1"></span><span class="dot dot2"></span><span class="dot dot3"></span></span>', [
                         'class' => 'badge bg-secondary px-3 py-2 requisicao-status',
                         'data-numero' => $model->getNumero(),
+                        'style' => 'min-width: 130px; display: inline-block; text-align: center;',
                     ])
                 ] as $label => $value
             ): ?>

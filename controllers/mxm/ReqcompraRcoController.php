@@ -84,7 +84,11 @@ class ReqcompraRcoController extends Controller
         $sql = <<<SQL
             SELECT
                 RAIR.RAIR_NUMITEM AS ITEM,
-                TRIM(MXU.MXU_NOME) AS APROVADOR,
+                CASE
+                WHEN MXU.MXU_NOME IS NOT NULL THEN MXU.MXU_NOME
+                WHEN LAA.LAA_SQITEMAPROVACAO = 1 THEN ESF.ESF_DESCRICAO || '(aguardando designação de comprador)'
+                ELSE ESF.ESF_DESCRICAO
+                END AS APROVADOR,
                 LAA.LAA_DTAPROVACAO AS DATA_APROVACAO,
                 LAA.LAA_SQITEMAPROVACAO AS ORDEM,
                 CASE LAA.LAA_STATUS
@@ -96,6 +100,7 @@ class ReqcompraRcoController extends Controller
             FROM RELAPROVIREQ_RAIR RAIR
             JOIN LINHAAPROVLOC_LAA LAA ON RAIR.RAIR_SQAPROVACAO = LAA.LAA_SQAPROVACAO
             LEFT JOIN MXS_USUARIO_MXU MXU ON LAA.LAA_APROVADOR = MXU.MXU_USUARIO
+            LEFT JOIN ESTRFUNC_ESF ESF ON ESF.ESF_CDEMPRESA = '02' AND ESF.ESF_CODIGO = LAA.LAA_ESTRFUNC
             WHERE RAIR.RAIR_NUMEROREQ = :NUMERO
             ORDER BY LAA.LAA_SQITEMAPROVACAO, LAA.LAA_DTAPROVACAO
         SQL;
@@ -114,6 +119,7 @@ class ReqcompraRcoController extends Controller
             ];
         }, $linhas);
     }
+
 
     /**
      * Lista filtrada de requisições.

@@ -5,17 +5,65 @@ use kartik\grid\GridView;
 use app\models\cache\RequisicaoCache;
 use yii\widgets\Pjax;
 
-
 $this->title = 'Consulta das Requisições';
 
 $this->params['breadcrumbs'][] = $this->title;
-
-
 
 ?>
 
 <h1><?= Html::encode($this->title) ?></h1>
 
+<?php
+$this->registerJs(<<<JS
+let abortControllers = [];
+
+function carregarStatusRequisicoes() {
+    abortControllers.forEach(c => c.abort());
+    abortControllers = [];
+
+    const spans = document.querySelectorAll('.requisicao-status');
+    if (spans.length === 0) return;
+
+    spans.forEach(span => {
+        const numero = span.dataset.numero;
+        const controller = new AbortController();
+        abortControllers.push(controller);
+
+        console.log('Carregando status para:', numero);
+
+        fetch('index.php?r=mxm/reqcompra-rco/status-requisicao-ajax&numero=' + numero, {
+            signal: controller.signal
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data?.statusHtml) {
+                span.outerHTML = data.statusHtml;
+            }
+        })
+        .catch(error => {
+            if (error.name !== 'AbortError') {
+                span.outerHTML = '<span class="badge bg-danger px-2 py-1">Erro</span>';
+            }
+        });
+    });
+}
+
+// Executa imediatamente após o script ser registrado
+carregarStatusRequisicoes();
+
+document.addEventListener('pjax:end', carregarStatusRequisicoes);
+
+window.addEventListener('beforeunload', () => {
+    abortControllers.forEach(c => c.abort());
+    abortControllers = [];
+});
+
+document.addEventListener('pointerdown', () => {
+    abortControllers.forEach(c => c.abort());
+    abortControllers = [];
+});
+JS);
+?>
 
 
 <div class="mb-3">
@@ -78,9 +126,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'urlCreator' => fn($action, $model, $key, $index) => ['view', 'id' => $model->getNumero()],
             'buttons' => [
                 'view' => function ($url, $model) {
-                    return Html::a('<i class="bi bi-eye-fill"></i>', $url, [
+                    return Html::a('<i class="bi bi-eye-fill"></i>', ['view', 'id' => $model->getNumero()], [
                         'class' => 'btn btn-outline-primary btn-sm',
                         'title' => 'Visualizar Requisição',
+                        'data-pjax' => '0',
                     ]);
                 },
             ],
@@ -88,21 +137,3 @@ $this->params['breadcrumbs'][] = $this->title;
     ],
 ]) ?>
 <?php Pjax::end(); ?>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.requisicao-status').forEach(span => {
-            const numero = span.dataset.numero;
-            fetch(`index.php?r=mxm/reqcompra-rco/status-requisicao-ajax&numero=${numero}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data?.statusHtml) {
-                        span.outerHTML = data.statusHtml;
-                    }
-                })
-                .catch(() => {
-                    span.outerHTML = '<span class="badge bg-danger px-2 py-1">Erro</span>';
-                });
-        });
-    });
-</script>

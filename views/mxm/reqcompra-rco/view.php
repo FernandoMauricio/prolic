@@ -70,7 +70,10 @@ function getStatusIcon($status)
                     'Tipo' =>  $model->get('RCO_TIPO'),
                     'Setor' => $model->get('RCO_SETOR'),
                     'Requisitante' => $model->getRequisitante(),
-                    'Status (via API)' => $model->getStatusBadge(),
+                    'Status (via API)' => Html::tag('span', 'Carregando...', [
+                        'class' => 'badge bg-secondary px-3 py-2 requisicao-status',
+                        'data-numero' => $model->getNumero(),
+                    ])
                 ] as $label => $value
             ): ?>
                 <div class="col">
@@ -231,3 +234,25 @@ function getStatusIcon($status)
         </div>
     </div>
 </div>
+
+<?php
+$this->registerJs(<<<JS
+window.addEventListener('load', function() {
+    const span = document.querySelector('.requisicao-status');
+    if (!span) return;
+
+    const numero = span.dataset.numero;
+    fetch('index.php?r=mxm/reqcompra-rco/status-requisicao-ajax&numero=' + numero)
+        .then(response => response.json())
+        .then(data => {
+            if (data?.statusHtml) {
+                span.outerHTML = data.statusHtml;
+            }
+        })
+        .catch(() => {
+            span.outerHTML = '<span class="badge bg-danger px-3 py-2">Erro</span>';
+        });
+});
+JS);
+
+?>

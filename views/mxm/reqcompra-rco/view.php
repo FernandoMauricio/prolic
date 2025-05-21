@@ -33,7 +33,6 @@ $aprovacoesVisiveis = array_filter($aprovacoesUnicas, function ($aprov) {
     );
 });
 
-// Calcular total geral
 $total = 0;
 foreach ($model->itens as $item) {
     $qtd = floatval($item['IRC_QTDPEDIDA'] ?? 0);
@@ -58,12 +57,11 @@ function getStatusIcon($status)
         <?= Html::a('<i class="bi bi-arrow-left"></i> Voltar', ['index'], ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
-    <!-- Detalhes da Requisição -->
     <div class="card border-start border-4 border-primary mb-4 shadow-sm">
-        <div class="card-header bg-light fw-semibold text-primary">
+        <div class="card-header bg-light text-uppercase small fw-bold text-primary">
             <i class="bi bi-info-circle-fill me-2"></i> Detalhes da Requisição
         </div>
-        <div class="card-body row row-cols-1 row-cols-md-2 g-3">
+        <div class="card-body row row-cols-1 row-cols-md-2 g-4 align-items-start">
             <?php foreach (
                 [
                     'Número' => $model->getNumero(),
@@ -73,7 +71,6 @@ function getStatusIcon($status)
                     'Requisitante' => $model->getRequisitante(),
                     'Status (via API)' => $model->getStatusBadge(),
                     'Observação' => $model->get('RCO_OBS'),
-                    'Justificativa' => $model->get('RCO_JUSTIFICATIVA'),
                 ] as $label => $value
             ): ?>
                 <div class="col">
@@ -89,6 +86,15 @@ function getStatusIcon($status)
                     </div>
                 </div>
             <?php endforeach; ?>
+
+            <div class="col-12">
+                <div class="border-bottom pb-2">
+                    <div class="fw-semibold small text-muted">Justificativa</div>
+                    <div class="text-dark">
+                        <?= Html::encode($model->get('RCO_JUSTIFICATIVA')) ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -55,6 +55,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => fn($model) => $model->get('RCO_JUSTIFICATIVA'),
         ],
         [
+            'label' => 'Status (API)',
+            'format' => 'raw',
+            'value' => fn(RequisicaoCache $model) => $model->getStatusBadge(),
+            'contentOptions' => ['class' => 'text-center'],
+            'headerOptions' => ['class' => 'text-center'],
+        ],
+        [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{view}',
             'header' => 'Ações',

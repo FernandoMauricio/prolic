@@ -132,7 +132,7 @@ class ReqcompraRcoController extends Controller
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $modelos,
-            'pagination' => ['pageSize' => 20],
+            'pagination' => ['pageSize' => 3],
             'sort' => [
                 'attributes' => [
                     'requisicao.RCO_NUMERO',

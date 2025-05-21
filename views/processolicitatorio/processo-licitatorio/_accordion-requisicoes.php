@@ -58,7 +58,7 @@ use yii\helpers\Html;
 </div>
 
 <div class="text-end mt-3">
-    <button id="toggleRequisicoes" class="btn btn-outline-primary btn-sm">
+    <button id="toggleRequisicoes" type="button" class="btn btn-outline-primary btn-sm">
         <i class="bi bi-list"></i> Ver resumo
     </button>
 </div>

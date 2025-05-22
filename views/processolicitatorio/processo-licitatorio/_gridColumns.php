@@ -134,16 +134,22 @@ return [
             'view' => fn($url) => Html::a('<i class="bi bi-eye"></i>', $url, [
                 'title' => 'Visualizar',
                 'class' => 'btn btn-sm btn-outline-primary me-1',
-                'data-pjax' => '0'
+                'data-pjax' => '0',
             ]),
-            'update' => fn($url) => Html::a('<i class="bi bi-pencil"></i>', $url, [
-                'title' => 'Editar',
-                'class' => 'btn btn-sm btn-outline-secondary me-1',
-                'data-pjax' => '0'
-            ]),
+            'update' => function ($url) {
+                if (\app\components\RbacHelper::isAdmin()) {
+                    return Html::a('<i class="bi bi-pencil"></i>', $url, [
+                        'title' => 'Editar',
+                        'class' => 'btn btn-sm btn-outline-secondary me-1',
+                        'data-pjax' => '0',
+                    ]);
+                }
+                return '';
+            },
         ],
         'header' => 'Ações',
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
     ],
+
 ];

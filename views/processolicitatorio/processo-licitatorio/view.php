@@ -1,6 +1,7 @@
 <?php
 // views/processolicitatorio/view.php
 
+use app\components\RbacHelper;
 use yii\helpers\Html;
 use yii\bootstrap5\Modal;
 use yii\helpers\Url;
@@ -8,6 +9,8 @@ use yii\web\View;
 
 /* @var $this View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
+
+$isAdmin = \app\components\RbacHelper::isAdmin();
 
 $this->title = $model->prolic_sequenciamodal;
 $this->params['breadcrumbs'][] = ['label' => 'Processos Licitatórios', 'url' => ['index']];
@@ -20,7 +23,6 @@ $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\
 // $this->registerJs('carregarRequisicoesSalvas();', View::POS_READY);
 $this->registerJsFile('@web/js/requisicoes-handler.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
-
 ?>
 
 <div class="processo-licitatorio-view container py-4">
@@ -36,38 +38,54 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                 'title' => 'Voltar',
                 'aria-label' => 'Voltar'
             ]) ?>
-            <?= Html::a('<i class="bi bi-pencil"></i>', ['update', 'id' => $model->id], [
-                'class' => 'btn btn-primary me-2',
-                'title' => 'Editar',
-                'aria-label' => 'Editar'
-            ]) ?>
+            <?= Html::a(
+                '<i class="bi bi-pencil"></i>',
+                ['update', 'id' => $model->id],
+                [
+                    'class' => 'btn btn-primary me-2' . (!$isAdmin ? ' disabled' : ''),
+                    'title' => $isAdmin ? 'Editar' : 'Apenas administradores podem editar',
+                    'aria-label' => 'Editar',
+                    'onclick' => $isAdmin ? null : 'return false;',
+                ]
+            ) ?>
+
             <div class="btn-group">
                 <?= Html::button('<i class="bi bi-three-dots-vertical"></i>', [
-                    'class' => 'btn btn-outline-secondary dropdown-toggle',
-                    'data-bs-toggle' => 'dropdown',
-                    'aria-expanded' => false,
-                    'title' => 'Mais ações',
+                    'class' => 'btn btn-outline-secondary dropdown-toggle' . (!$isAdmin ? ' disabled' : ''),
+                    'data-bs-toggle' => $isAdmin ? 'dropdown' : '',
+                    'aria-expanded' => 'false',
+                    'title' => $isAdmin ? 'Mais ações' : 'Apenas administradores podem acessar',
                     'aria-label' => 'Mais ações',
+                    'onclick' => $isAdmin ? null : 'return false;',
                 ]) ?>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><?= Html::button('<i class="bi bi-chat-left-text me-1"></i> Observação', [
-                            'class' => 'dropdown-item',
-                            'value' => Url::to(['observacoes', 'id' => $model->id]),
-                            'id' => 'modalButton'
-                        ]) ?></li>
-                    <li><?= Html::button('<i class="bi bi-printer-fill me-1"></i> Gerar Capa', [
-                            'class' => 'dropdown-item',
-                            'value' => Url::to(['processolicitatorio/capas/gerar-relatorio', 'id' => $model->id]),
-                            'id' => 'modalButton2'
-                        ]) ?></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><?= Html::button('<i class="bi bi-printer me-1"></i> Imprimir', [
-                            'class' => 'dropdown-item',
-                            'onclick' => 'window.print()'
-                        ]) ?></li>
-                </ul>
+
+                <?php if ($isAdmin): ?>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <?= Html::button('<i class="bi bi-chat-left-text me-1"></i> Observação', [
+                                'class' => 'dropdown-item',
+                                'value' => Url::to(['observacoes', 'id' => $model->id]),
+                                'id' => 'modalButton',
+                            ]) ?>
+                        </li>
+                        <li>
+                            <?= Html::button('<i class="bi bi-printer-fill me-1"></i> Gerar Capa', [
+                                'class' => 'dropdown-item',
+                                'value' => Url::to(['processolicitatorio/capas/gerar-relatorio', 'id' => $model->id]),
+                                'id' => 'modalButton2',
+                            ]) ?>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <?= Html::button('<i class="bi bi-printer me-1"></i> Imprimir', [
+                                'class' => 'dropdown-item',
+                                'onclick' => 'window.print()',
+                            ]) ?>
+                        </li>
+                    </ul>
+                <?php endif; ?>
             </div>
         </div>
     </div>

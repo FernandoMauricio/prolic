@@ -61,16 +61,24 @@ $gridColumns = require(__DIR__ . '/_gridColumns.php');
     $this->registerCss(".offcanvas-end { width: 460px; }");
     ?>
 
+    <?php
+    $showCreateButton = \app\components\RbacHelper::isAdmin();
+    $toolbarClass = $showCreateButton
+        ? 'd-flex justify-content-between align-items-center flex-wrap gap-2 mb-3'
+        : 'd-flex justify-content-end align-items-center flex-wrap gap-2 mb-3';
+    ?>
 
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <?= Html::button(
-            '<i class="bi bi-plus-circle me-1"></i> Processo Licitatório',
-            [
-                'value' => Url::to(['processolicitatorio/processo-licitatorio/create']),
-                'class' => 'btn btn-success shadow-sm',
-                'id' => 'modalButton'
-            ]
-        ) ?>
+    <div class="<?= $toolbarClass ?>">
+        <?php if ($showCreateButton): ?>
+            <?= Html::button(
+                '<i class="bi bi-plus-circle me-1"></i> Processo Licitatório',
+                [
+                    'value' => Url::to(['processolicitatorio/processo-licitatorio/create']),
+                    'class' => 'btn btn-success shadow-sm',
+                    'id' => 'modalButton'
+                ]
+            ) ?>
+        <?php endif; ?>
 
         <?php Modal::begin([
             'id' => 'modal',

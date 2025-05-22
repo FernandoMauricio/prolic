@@ -22,6 +22,19 @@ $this->title = 'Processos Licitatórios - PROLIC';
         <?php if ($session['sess_codunidade'] == 6): ?>
             <!-- Admin - Cards completos -->
 
+            <!-- Consulta de Requisições -->
+            <div class="col-md-4">
+                <a href="<?= Url::to(['/mxm/reqcompra-rco/index']) ?>" class="text-decoration-none">
+                    <div class="card bg-light shadow-lg border-0 hover-shadow rounded-4 h-100 p-4">
+                        <div class="card-body text-center">
+                            <i class="bi bi-basket2-fill text-danger display-4 mb-3"></i>
+                            <h5 class="card-title text-dark">Requisições de Compras</h5>
+                            <p class="card-text text-muted">Consulte e acompanhe as requisições registradas no MXM.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
             <!-- Processos Licitatórios -->
             <div class="col-md-4">
                 <a href="<?= Url::to(['/processolicitatorio/processo-licitatorio/index']) ?>" class="text-decoration-none">
@@ -76,7 +89,20 @@ $this->title = 'Processos Licitatórios - PROLIC';
 
         <?php else: ?>
             <!-- Usuário comum - apenas consulta -->
-            <div class="col-md-6">
+            <!-- Consulta de Requisições -->
+            <div class="col-md-4">
+                <a href="<?= Url::to(['/mxm/reqcompra-rco/index']) ?>" class="text-decoration-none">
+                    <div class="card bg-light shadow-lg border-0 hover-shadow rounded-4 h-100 p-4">
+                        <div class="card-body text-center">
+                            <i class="bi bi-basket2-fill text-danger display-4 mb-3"></i>
+                            <h5 class="card-title text-dark">Requisições de Compras</h5>
+                            <p class="card-text text-muted">Consulte e acompanhe as requisições registradas no MXM.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4">
                 <a href="<?= Url::to(['/processolicitatorio/processo-licitatorio/consulta-processos-licitatorios']) ?>" class="text-decoration-none">
                     <div class="card bg-light shadow-lg border-0 hover-shadow rounded-4 h-100 p-4">
                         <div class="card-body text-center">

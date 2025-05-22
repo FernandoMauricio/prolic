@@ -2,6 +2,7 @@
 
 namespace app\controllers\processolicitatorio;
 
+use app\components\RbacHelper;
 use app\controllers\mxm\ReqcompraRcoController;
 use Yii;
 use app\models\base\Ramo;
@@ -18,7 +19,6 @@ use app\models\processolicitatorio\ProcessoLicitatorio;
 use app\models\processolicitatorio\ProcessoLicitatorioSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\helpers\Json;
 use app\models\api\WebManagerService;
 use yii\helpers\Url;
@@ -34,14 +34,19 @@ class ProcessoLicitatorioController extends Controller
      */
     public function behaviors()
     {
-        $this->AccessAllow(); //Irá ser verificado se o usuário está logado no sistema
-
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
+            'access' => [
+                'class' => \yii\filters\AccessControl::class,
+                'only' => ['create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'matchCallback' => fn() => \app\components\RbacHelper::isAdmin(),
+                    ],
                 ],
+                'denyCallback' => function () {
+                    return Yii::$app->controller->redirect(['site/acesso-negado']);
+                },
             ],
         ];
     }
@@ -117,10 +122,7 @@ class ProcessoLicitatorioController extends Controller
         $session = Yii::$app->session;
 
         //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
-        $session = Yii::$app->session;
-        if ($session['sess_codunidade'] != 6) {
-            return $this->AccessoAdministrador();
-        }
+        RbacHelper::ensureAdminAccess();
 
         $model = new Observacoes();
         $processolicitatorio = $this->findModel($id);
@@ -161,7 +163,6 @@ class ProcessoLicitatorioController extends Controller
      */
     public function actionIndex()
     {
-
         $searchModel = new ProcessoLicitatorioSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->sort = ['defaultOrder' => ['id' => SORT_DESC]];
@@ -358,9 +359,6 @@ class ProcessoLicitatorioController extends Controller
     public function actionCreate()
     {
         $session = Yii::$app->session;
-        if ($session['sess_codunidade'] != 6) {
-            return $this->AccessoAdministrador();
-        }
 
         $model = new ProcessoLicitatorio();
         $dadosAuxiliares = $this->carregarDadosAuxiliares();
@@ -417,9 +415,6 @@ class ProcessoLicitatorioController extends Controller
     public function actionUpdate($id)
     {
         $session = Yii::$app->session;
-        if ($session['sess_codunidade'] != 6) {
-            return $this->AccessoAdministrador();
-        }
 
         $model = $this->findModel($id);
 
@@ -717,29 +712,5 @@ class ProcessoLicitatorioController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    public function AccessAllow()
-    {
-        $session = Yii::$app->session;
-        if (
-            !isset($session['sess_codusuario'])
-            && !isset($session['sess_codcolaborador'])
-            && !isset($session['sess_codunidade'])
-            && !isset($session['sess_nomeusuario'])
-            && !isset($session['sess_coddepartamento'])
-            && !isset($session['sess_codcargo'])
-            && !isset($session['sess_cargo'])
-            && !isset($session['sess_setor'])
-            && !isset($session['sess_unidade'])
-            && !isset($session['sess_responsavelsetor'])
-        ) {
-            return $this->redirect('https://portalsenac.am.senac.br');
-        }
-    }
-
-    public function AccessoAdministrador()
-    {
-        return $this->render('/site/acesso-negado');
     }
 }

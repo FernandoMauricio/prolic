@@ -16,6 +16,7 @@ $config = [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
+        '@app/components' => '@app/components',
     ],
     'modules' => [
         'gridview' =>  [

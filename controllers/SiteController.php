@@ -76,6 +76,10 @@ class SiteController extends Controller
         return $this->render('parametros');
     }
 
+    public function actionAcessoNegado()
+    {
+        return $this->render('acesso-negado');
+    }
 
     public function AccessAllow()
     {

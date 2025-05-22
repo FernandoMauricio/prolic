@@ -227,6 +227,7 @@ class ProcessoLicitatorioController extends Controller
     {
         $model = $this->findModel($id);
         $requisicoes = [];
+        $naoEncontradas = [];
 
         foreach ($model->requisicoesCodmxm as $numero) {
             $requisicao = ReqcompraRcoController::carregarRequisicaoPorNumero($numero);
@@ -234,13 +235,13 @@ class ProcessoLicitatorioController extends Controller
             if ($requisicao !== null) {
                 $requisicoes[] = $requisicao;
             } else {
-                Yii::warning("Requisição {$numero} não encontrada no cache individual.", __METHOD__);
+                $naoEncontradas[] = $numero;
             }
         }
-
         return $this->render('view', [
             'model' => $model,
             'requisicoes' => $requisicoes,
+            'faltando' => $naoEncontradas,
         ]);
     }
 
@@ -665,17 +666,22 @@ class ProcessoLicitatorioController extends Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         try {
-            $model = $this->findModel($id); // seu ProcessoLicitatorio
+            $model = $this->findModel($id);
             $requisicoes = [];
+            $faltando = [];
+
             foreach ($model->getRequisicoesCodmxm() as $numero) {
                 $req = \app\controllers\mxm\ReqcompraRcoController::carregarRequisicaoPorNumero($numero);
                 if ($req !== null) {
                     $requisicoes[] = $req;
+                } else {
+                    $faltando[] = $numero;
                 }
             }
 
             $html = $this->renderPartial('_accordion-requisicoes', [
-                'requisicoes' => $requisicoes
+                'requisicoes' => $requisicoes,
+                'faltando' => $faltando,
             ]);
 
             return ['html' => $html];

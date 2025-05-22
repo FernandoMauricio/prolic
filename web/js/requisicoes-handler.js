@@ -20,7 +20,7 @@ $(document).ready(function () {
         type: 'GET',
         dataType: 'json',
         success: function (response) {
-            if (response.html) {
+            if (typeof response.html !== 'undefined') {
                 $('#accordion-requisicoes-container').html(response.html);
                 fadeInOnReady({
                     loaderSelector: '#loading-requisicoes',

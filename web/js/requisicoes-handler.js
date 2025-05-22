@@ -66,6 +66,9 @@ $(document).on('click', '#toggleRequisicoes', function () {
             resumo.addClass('d-none');
             detalhadas.removeClass('d-none').hide().fadeIn(250, () => {
                 destacar(detalhadas);
+                $('html, body').animate({
+                    scrollTop: destinoScroll.offset().top - 100
+                }, 300);
                 botao.html('<i class="bi bi-list"></i> Ver resumo');
             });
         });
@@ -74,6 +77,9 @@ $(document).on('click', '#toggleRequisicoes', function () {
             detalhadas.addClass('d-none');
             resumo.removeClass('d-none').hide().fadeIn(250, () => {
                 destacar(resumo);
+                $('html, body').animate({
+                    scrollTop: destinoScroll.offset().top - 100
+                }, 300);
                 botao.html('<i class="bi bi-card-text"></i> Ver detalhes');
             });
         });

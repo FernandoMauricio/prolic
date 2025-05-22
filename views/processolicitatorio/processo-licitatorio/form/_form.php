@@ -112,6 +112,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                 ]) ?>
             </div>
         </div>
+        <!-- Coluna Direita: Requisições (Consulta em CACHE REQUISIÇÕES DE COMPRA) -->
         <div class="col-lg-6 position-relative">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white fw-bold d-flex align-items-center"
@@ -119,9 +120,20 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                     <i class="bi bi-file-earmark-text me-2 fs-5"></i>
                     Consulta de Requisições Vinculadas (D-1)
                 </div>
-                <div class="card-body p-3">
-                    <?= $this->render('../_accordion-requisicoes', ['requisicoes' => $requisicoes]) ?>
+
+                <div id="loading-requisicoes">
+                    <?= \app\widgets\SkeletonLoader::widget([
+                        'blocks' => 4,
+                        'lines' => 3,
+                    ]) ?>
                 </div>
+
+                <div class="card-body p-3 d-none" id="conteudo-requisicoes">
+                    <div id="accordion-requisicoes-container">
+                        <!-- Conteúdo será carregado via AJAX -->
+                    </div>
+                </div>
+
                 <div class="card-footer small text-muted px-3 py-2">
                     <div class="d-flex justify-content-between flex-wrap">
                         <div>
@@ -135,6 +147,7 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                 </div>
             </div>
         </div>
+
         <!-- Coluna Direita: Requisições -->
         <!-- <div class="col-lg-6 position-relative">
             <div id="requisicao-feedback" class="alert d-none position-absolute top-0 start-50 translate-middle-x mt-2 z-1051 shadow"></div>

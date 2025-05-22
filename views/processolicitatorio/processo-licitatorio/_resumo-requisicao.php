@@ -32,6 +32,14 @@ $temFaltando = !empty($faltando);
                         <div>
                             <strong><?= Html::encode($req->getNumero()) ?></strong><br>
                             <small><?= Html::encode($req->getRequisitante()) ?> — <?= Html::encode($req->getDataFormatada()) ?></small>
+
+                            <div class="mt-2">
+                                <?= Html::a(
+                                    '<i class="bi bi-box-arrow-up-right me-1"></i> Detalhes',
+                                    ['mxm/reqcompra-rco/view', 'id' => $req->getNumero()],
+                                    ['class' => 'btn btn-sm btn-outline-secondary btn-icon', 'target' => '_blank']
+                                ) ?>
+                            </div>
                         </div>
                         <div>
                             <?= $req->getStatusBadgeHtml() ?>

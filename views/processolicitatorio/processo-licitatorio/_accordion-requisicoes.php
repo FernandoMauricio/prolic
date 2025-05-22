@@ -37,6 +37,13 @@ use yii\helpers\Html;
                         <div id="collapse-<?= $i ?>" class="accordion-collapse collapse"
                             aria-labelledby="heading-<?= $i ?>" data-bs-parent="#accordionPreview">
                             <div class="accordion-body">
+                                <div class="mt-3 text-end">
+                                    <?= Html::a(
+                                        '<i class="bi bi-box-arrow-up-right me-1"></i> Ver requisição completa',
+                                        ['mxm/reqcompra-rco/view', 'id' => $req->getNumero()],
+                                        ['class' => 'btn btn-sm btn-outline-primary', 'target' => '_blank']
+                                    ) ?>
+                                </div>
                                 <strong>Data:</strong> <?= $req->getDataFormatada() ?><br>
                                 <strong>Requisitante:</strong> <?= Html::encode($req->getRequisitante()) ?><br>
                                 <strong>Justificativa:</strong><br>

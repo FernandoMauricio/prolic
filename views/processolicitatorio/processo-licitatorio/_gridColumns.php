@@ -75,6 +75,10 @@ return [
     ],
 
     [
+        'attribute' => 'prolic_objeto',
+    ],
+
+    [
         'attribute' => 'prolic_valorestimado',
         'label' => 'Estimado',
         'format' => 'currency',

@@ -145,7 +145,6 @@ class ProcessoLicitatorioController extends Controller
         if ($session['sess_responsavelsetor'] == 0) { //Verifica se o colaborador é gerente
             return $this->AccessoAdministrador();
         }
-        $this->layout = 'main-full';
         $searchModel = new ProcessoLicitatorioSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->sort = ['defaultOrder' => ['id' => SORT_DESC]];
@@ -162,7 +161,6 @@ class ProcessoLicitatorioController extends Controller
      */
     public function actionIndex()
     {
-        $this->layout = 'main-full';
 
         $searchModel = new ProcessoLicitatorioSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

@@ -310,3 +310,55 @@ a.desc:after {
         opacity: 1;
     }
 }
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+.skeleton-loader.fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.skeleton-card {
+    background-color: #f8f9fa;
+}
+
+.skeleton-title,
+.skeleton-line,
+.skeleton-avatar,
+.skeleton-icon-square {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite linear;
+    border-radius: 4px;
+}
+
+.skeleton-title {
+    height: 18px;
+}
+
+.skeleton-line {
+    height: 14px;
+}
+
+.skeleton-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.skeleton-icon-square {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+}
+.rotate-animation {
+    animation: rotateIcon 0.3s ease-in-out;
+}
+@keyframes rotateIcon {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(180deg); }
+}
+

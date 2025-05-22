@@ -18,7 +18,9 @@ $this->registerCssFile('@web/css/requisicao-preview.css', ['depends' => [\yii\bo
 $this->registerJsFile('@web/js/processolicitatorio.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 // $this->registerJs('var requisicoesSalvas = ' . json_encode($model->requisicoesCodmxm) . ';', View::POS_HEAD);
 // $this->registerJs('carregarRequisicoesSalvas();', View::POS_READY);
+$this->registerJsFile('@web/js/requisicoes-handler.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
+
 ?>
 
 <div class="processo-licitatorio-view container py-4">
@@ -258,9 +260,11 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                     Consulta de Requisições Vinculadas (D-1)
                 </div>
 
-                <div class="text-center text-muted py-5" id="loading-requisicoes">
-                    <div class="spinner-border text-primary mb-3" role="status"></div>
-                    <div>Carregando requisições vinculadas...</div>
+                <div id="loading-requisicoes">
+                    <?= \app\widgets\SkeletonLoader::widget([
+                        'blocks' => 4,
+                        'lines' => 3,
+                    ]) ?>
                 </div>
 
                 <div class="card-body p-3 d-none" id="conteudo-requisicoes">
@@ -317,70 +321,3 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
         </div> -->
     </div>
 </div>
-
-<?php
-$this->registerJs(<<<JS
-$(document).ready(function () {
-    $.ajax({
-        url: 'index.php?r=processolicitatorio%2Fprocesso-licitatorio%2Frequisicoes-ajax&id=' + processoId,
-        type: 'GET',
-        dataType: 'json',
-        success: function (response) {
-            if (response.html) {
-                $('#accordion-requisicoes-container').html(response.html);
-                $('#conteudo-requisicoes').removeClass('d-none');
-                $('#loading-requisicoes').addClass('d-none');
-            } else {
-                $('#accordion-requisicoes-container').html('<div class="alert alert-warning mb-0">Nenhuma requisição vinculada encontrada.</div>');
-            }
-        },
-        error: function () {
-            $('#accordion-requisicoes-container').html('<div class="alert alert-danger mb-0">Erro ao carregar requisições vinculadas.</div>');
-        }
-    });
-});
-
-JS);
-?>
-<?php
-$this->registerJs(<<<JS
-$(document).on('click', '#toggleRequisicoes', function () {
-    const resumo = $('#requisicoes-resumo');
-    const detalhadas = $('#requisicoes-detalhadas');
-    const mostrandoResumo = !resumo.hasClass('d-none');
-    const destinoScroll = $('#conteudo-requisicoes');
-
-    function destacar(elemento) {
-        elemento
-            .css('box-shadow', '0 0 0.5rem rgba(0, 123, 255, 0.6)')
-            .animate({ boxShadow: '0 0 0 rgba(0,0,0,0)' }, 1500, function () {
-                elemento.css('box-shadow', '');
-            });
-    }
-
-    if (mostrandoResumo) {
-        resumo.fadeOut(200, function () {
-            resumo.addClass('d-none');
-            detalhadas.removeClass('d-none').hide().fadeIn(200, function () {
-                destacar(detalhadas);
-                $('html, body').animate({
-                    scrollTop: destinoScroll.offset().top - 100
-                }, 400);
-            });
-        });
-        $('#toggleRequisicoes').html('<i class="bi bi-list"></i> Ver resumo');
-    } else {
-        detalhadas.fadeOut(200, function () {
-            detalhadas.addClass('d-none');
-            resumo.removeClass('d-none').hide().fadeIn(200, function () {
-                destacar(resumo);
-                $('html, body').animate({
-                    scrollTop: destinoScroll.offset().top - 100
-                }, 400);
-            });
-        });
-        $('#toggleRequisicoes').html('<i class="bi bi-card-text"></i> Ver detalhes');
-    }
-});
-JS);
-?>

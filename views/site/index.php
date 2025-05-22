@@ -103,12 +103,12 @@ $this->title = 'Processos Licitatórios - PROLIC';
             </div>
 
             <div class="col-md-4">
-                <a href="<?= Url::to(['/processolicitatorio/processo-licitatorio/consulta-processos-licitatorios']) ?>" class="text-decoration-none">
+                <a href="<?= Url::to(['/processolicitatorio/processo-licitatorio/index']) ?>" class="text-decoration-none">
                     <div class="card bg-light shadow-lg border-0 hover-shadow rounded-4 h-100 p-4">
                         <div class="card-body text-center">
-                            <i class="bi bi-file-text-fill text-primary display-4 mb-3"></i>
-                            <h5 class="card-title text-dark">Consultar Processos</h5>
-                            <p class="card-text text-muted">Acesse os processos licitatórios disponíveis para consulta.</p>
+                            <i class="bi bi-file-text text-primary display-4 mb-3"></i>
+                            <h5 class="card-title text-dark">Processos Licitatórios</h5>
+                            <p class="card-text text-muted">Consulte os processos vinculados ao seu setor.</p>
                         </div>
                     </div>
                 </a>

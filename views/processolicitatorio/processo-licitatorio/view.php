@@ -249,6 +249,7 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
             <?php endif; ?>
         </div>
 
+        <!-- Coluna Direita: Requisições (Consulta em CACHE REQUISIÇÕES DE COMPRA) -->
         <div class="col-lg-6 position-relative">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white fw-bold d-flex align-items-center"
@@ -256,9 +257,18 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                     <i class="bi bi-file-earmark-text me-2 fs-5"></i>
                     Consulta de Requisições Vinculadas (D-1)
                 </div>
-                <div class="card-body p-3">
-                    <?= $this->render('_accordion-requisicoes', ['requisicoes' => $requisicoes]) ?>
+
+                <div class="text-center text-muted py-5" id="loading-requisicoes">
+                    <div class="spinner-border text-primary mb-3" role="status"></div>
+                    <div>Carregando requisições vinculadas...</div>
                 </div>
+
+                <div class="card-body p-3 d-none" id="conteudo-requisicoes">
+                    <div id="accordion-requisicoes-container">
+                        <!-- Conteúdo será carregado via AJAX -->
+                    </div>
+                </div>
+
                 <div class="card-footer small text-muted px-3 py-2">
                     <div class="d-flex justify-content-between flex-wrap">
                         <div>
@@ -272,6 +282,7 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                 </div>
             </div>
         </div>
+
 
         <!-- Coluna Direita: Requisições (Consulta a API PEDIDOS DE COMPRA) -->
         <!-- <div class="col-lg-6 position-relative">
@@ -306,3 +317,70 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
         </div> -->
     </div>
 </div>
+
+<?php
+$this->registerJs(<<<JS
+$(document).ready(function () {
+    $.ajax({
+        url: 'index.php?r=processolicitatorio%2Fprocesso-licitatorio%2Frequisicoes-ajax&id=' + processoId,
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            if (response.html) {
+                $('#accordion-requisicoes-container').html(response.html);
+                $('#conteudo-requisicoes').removeClass('d-none');
+                $('#loading-requisicoes').addClass('d-none');
+            } else {
+                $('#accordion-requisicoes-container').html('<div class="alert alert-warning mb-0">Nenhuma requisição vinculada encontrada.</div>');
+            }
+        },
+        error: function () {
+            $('#accordion-requisicoes-container').html('<div class="alert alert-danger mb-0">Erro ao carregar requisições vinculadas.</div>');
+        }
+    });
+});
+
+JS);
+?>
+<?php
+$this->registerJs(<<<JS
+$(document).on('click', '#toggleRequisicoes', function () {
+    const resumo = $('#requisicoes-resumo');
+    const detalhadas = $('#requisicoes-detalhadas');
+    const mostrandoResumo = !resumo.hasClass('d-none');
+    const destinoScroll = $('#conteudo-requisicoes');
+
+    function destacar(elemento) {
+        elemento
+            .css('box-shadow', '0 0 0.5rem rgba(0, 123, 255, 0.6)')
+            .animate({ boxShadow: '0 0 0 rgba(0,0,0,0)' }, 1500, function () {
+                elemento.css('box-shadow', '');
+            });
+    }
+
+    if (mostrandoResumo) {
+        resumo.fadeOut(200, function () {
+            resumo.addClass('d-none');
+            detalhadas.removeClass('d-none').hide().fadeIn(200, function () {
+                destacar(detalhadas);
+                $('html, body').animate({
+                    scrollTop: destinoScroll.offset().top - 100
+                }, 400);
+            });
+        });
+        $('#toggleRequisicoes').html('<i class="bi bi-list"></i> Ver resumo');
+    } else {
+        detalhadas.fadeOut(200, function () {
+            detalhadas.addClass('d-none');
+            resumo.removeClass('d-none').hide().fadeIn(200, function () {
+                destacar(resumo);
+                $('html, body').animate({
+                    scrollTop: destinoScroll.offset().top - 100
+                }, 400);
+            });
+        });
+        $('#toggleRequisicoes').html('<i class="bi bi-card-text"></i> Ver detalhes');
+    }
+});
+JS);
+?>

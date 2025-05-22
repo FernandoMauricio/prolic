@@ -660,6 +660,31 @@ class ProcessoLicitatorioController extends Controller
         return $resultado;
     }
 
+    public function actionRequisicoesAjax($id)
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        try {
+            $model = $this->findModel($id); // seu ProcessoLicitatorio
+            $requisicoes = [];
+            foreach ($model->getRequisicoesCodmxm() as $numero) {
+                $req = \app\controllers\mxm\ReqcompraRcoController::carregarRequisicaoPorNumero($numero);
+                if ($req !== null) {
+                    $requisicoes[] = $req;
+                }
+            }
+
+            $html = $this->renderPartial('_accordion-requisicoes', [
+                'requisicoes' => $requisicoes
+            ]);
+
+            return ['html' => $html];
+        } catch (\Throwable $e) {
+            Yii::error("Erro ao carregar requisições: " . $e->getMessage(), __METHOD__);
+            return ['html' => '<div class="alert alert-danger">Erro ao carregar requisições vinculadas.</div>'];
+        }
+    }
+
     /**
      * Deletes an existing ProcessoLicitatorio model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

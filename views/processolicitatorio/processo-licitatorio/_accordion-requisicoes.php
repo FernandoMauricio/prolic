@@ -62,22 +62,3 @@ use yii\helpers\Html;
         <i class="bi bi-list"></i> Ver resumo
     </button>
 </div>
-
-<?php
-$this->registerJs(<<<JS
-    const toggleBtn = document.getElementById('toggleRequisicoes');
-    const detalhadas = document.getElementById('requisicoes-detalhadas');
-    const resumo = document.getElementById('requisicoes-resumo');
-
-    toggleBtn.addEventListener('click', () => {
-        const mostrandoResumo = !resumo.classList.contains('d-none');
-
-        resumo.classList.toggle('d-none');
-        detalhadas.classList.toggle('d-none');
-
-        toggleBtn.innerHTML = mostrandoResumo
-            ? '<i class="bi bi-list"></i> Ver resumo'
-            : '<i class="bi bi-card-text"></i> Ver detalhes';
-    });
-JS);
-?>

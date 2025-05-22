@@ -36,19 +36,31 @@ $gridColumns = require(__DIR__ . '/_gridColumns.php');
         Acompanhamento de <span class="text-dark">Processos Licitatórios</span>
     </h1>
 
-    <?= Accordion::widget([
-        'options' => ['class' => 'accordion w-50 mx-auto shadow-sm mb-4'],
-        'items' => [
-            [
-                'label' => '<i class="bi bi-funnel-fill me-2"></i> Pesquisa Avançada',
-                'content' => $this->render('_search', ['model' => $searchModel]),
-                'contentOptions' => ['class' => 'bg-light p-3'],
-                'options' => ['class' => 'mb-2'],
-                'encode' => false,
-                'expand' => false,
-            ],
-        ],
-    ]) ?>
+    <!-- Botão que abre o Offcanvas -->
+    <div class="mb-3 text-end">
+        <button class="btn btn-outline-primary shadow-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#pesquisaAvancada" aria-controls="pesquisaAvancada">
+            <i class="bi bi-funnel-fill me-1"></i> Pesquisa Avançada
+        </button>
+    </div>
+
+    <!-- Offcanvas de Pesquisa -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="pesquisaAvancada" aria-labelledby="pesquisaAvancadaLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title fw-semibold text-primary" id="pesquisaAvancadaLabel">
+                <i class="bi bi-funnel-fill me-2"></i> Filtros Avançados
+            </h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+        </div>
+        <div class="offcanvas-body">
+            <?= $this->render('_search', ['model' => $searchModel]) ?>
+        </div>
+    </div>
+
+    <?php
+    // Estilo para ajustar largura do canvas
+    $this->registerCss(".offcanvas-end { width: 460px; }");
+    ?>
+
 
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <?= Html::button(

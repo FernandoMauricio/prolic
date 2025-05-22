@@ -72,7 +72,6 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
         </div>
     </div>
 
-
     <!-- Modais -->
     <?php Modal::begin(['title' => '<h5>Observação - Processo ' . $model->id . '</h5>', 'id' => 'modal', 'size' => 'modal-lg']); ?>
     <div id="modalContent"></div>
@@ -100,10 +99,28 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                             'Comprador'  => $model->comprador->comp_descricao,
                             'Modalidade' => $model->modalidadeValorlimite->modalidade->mod_descricao,
                             'Segmento'   => $model->modalidadeValorlimite->ramo->ram_descricao,
+                            'Requisições' => function () use ($model) {
+                                $codigos = array_filter(explode(';', $model->prolic_codmxm));
+                                if (!empty($codigos)) {
+                                    return implode(' ', array_map(
+                                        fn($codigo) =>
+                                        Html::tag('span', Html::encode($codigo), ['class' => 'badge bg-primary me-1']),
+                                        $codigos
+                                    ));
+                                }
+                                return '<span class="text-danger fst-italic">(não definido)</span>';
+                            },
+
                         ];
                         foreach ($fields as $label => $value):
-                            $display = ($value !== null && $value !== '') ? $value : '<span class="text-danger fst-italic">(não definido)</span>';
-                            $raw = ($label === 'Situação');
+                            if ($value instanceof \Closure) {
+                                $display = call_user_func($value);
+                            } else {
+                                $display = $value;
+                            }
+
+                            $display = ($display !== null && $display !== '') ? $display : '<span class="text-danger fst-italic">(não definido)</span>';
+                            $raw = ($label === 'Situação' || $label === 'Requisições');
                         ?>
                             <div class="col-6 col-md-4">
                                 <small class="text-muted"><?= $label ?></small>

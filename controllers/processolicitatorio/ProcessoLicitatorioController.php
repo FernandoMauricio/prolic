@@ -503,7 +503,7 @@ class ProcessoLicitatorioController extends Controller
                     $cnpjFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $docLimpo);
                     $empresaFormatada = $cnpjFormatado . ' - ' . $dadosApi['razaoSocial'];
 
-                    // ✅ Só atualiza se for diferente da original
+                    // Só atualiza se for diferente da original
                     if (trim($empresaOriginal) !== $empresaFormatada) {
                         $houveAtualizacao = true;
                         Yii::info("Empresa atualizada: '$empresaOriginal' => '$empresaFormatada'", __METHOD__);

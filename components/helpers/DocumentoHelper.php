@@ -17,7 +17,6 @@ class DocumentoHelper
     public static function formatarDocumento(string $entrada, bool $consultarApi = true): string
     {
         $entrada = trim($entrada);
-        $docLimpo = preg_replace('/\D/', '', $entrada);
 
         // Verifica se contém um CPF ou CNPJ válido no meio da string
         if (preg_match('/\b\d{11}\b/', $entrada, $matchCpf)) {
@@ -64,10 +63,10 @@ class DocumentoHelper
             return $cnpjFormatado;
         }
 
-        // Nenhum CPF ou CNPJ encontrado → retorna como está
+        // Nenhum CPF ou CNPJ encontrado → gera aviso e retorna original
+        self::registrarFlashUnico('warning', "A empresa \"$entrada\" não possui CPF ou CNPJ válido informado.");
         return $entrada;
     }
-
 
     /**
      * Aplica a formatação a uma lista de empresas.

@@ -62,7 +62,7 @@ $gridColumns = require(__DIR__ . '/_gridColumns.php');
     ?>
 
     <?php
-    $showCreateButton = \app\components\RbacHelper::isAdmin();
+    $showCreateButton = \app\components\helpers\RbacHelper::isAdmin();
     $toolbarClass = $showCreateButton
         ? 'd-flex justify-content-between align-items-center flex-wrap gap-2 mb-3'
         : 'd-flex justify-content-end align-items-center flex-wrap gap-2 mb-3';

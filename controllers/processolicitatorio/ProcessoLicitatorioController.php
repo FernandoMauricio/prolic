@@ -2,7 +2,8 @@
 
 namespace app\controllers\processolicitatorio;
 
-use app\components\RbacHelper;
+use app\components\helpers\DocumentoHelper;
+use app\components\helpers\RbacHelper;
 use app\controllers\mxm\ReqcompraRcoController;
 use Yii;
 use app\models\base\Ramo;
@@ -42,7 +43,7 @@ class ProcessoLicitatorioController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'matchCallback' => fn() => \app\components\RbacHelper::isAdmin(),
+                        'matchCallback' => fn() => \app\components\helpers\RbacHelper::isAdmin(),
                     ],
                 ],
                 'denyCallback' => function () {
@@ -431,9 +432,9 @@ class ProcessoLicitatorioController extends Controller
         // Carregamento dos dados auxiliares da view
         $dadosAuxiliares = $this->carregarDadosAuxiliares();
 
-        //Atualiza automaticamente as empresas antifas e salva no formato correto
+        // Atualiza automaticamente as empresas via helper, apenas em requisições GET
         if (Yii::$app->request->isGet) {
-            $model->prolic_empresa = $this->atualizarEmpresasViaApi((array) $model->prolic_empresa);
+            $model->prolic_empresa = DocumentoHelper::formatarListaEmpresas((array) $model->prolic_empresa);
         }
 
         // Pré-processamento dos campos múltiplos
@@ -480,46 +481,6 @@ class ProcessoLicitatorioController extends Controller
             ],
             $dadosAuxiliares
         ));
-    }
-
-    private function atualizarEmpresasViaApi(array $empresas): array
-    {
-        $empresasAtualizadas = [];
-        $houveAtualizacao = false;
-
-        foreach ($empresas as $empresaOriginal) {
-            $empresa = trim($empresaOriginal);
-            $docLimpo = preg_replace('/\D/', '', $empresa);
-
-            if (strlen($docLimpo) === 14) {
-                $dadosApi = WebManagerService::consultarFornecedor($docLimpo);
-
-                if ($dadosApi && isset($dadosApi['razaoSocial'])) {
-                    $cnpjFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $docLimpo);
-                    $empresaFormatada = $cnpjFormatado . ' - ' . $dadosApi['razaoSocial'];
-
-                    // Só atualiza se for diferente da original
-                    if (trim($empresaOriginal) !== $empresaFormatada) {
-                        $houveAtualizacao = true;
-                        Yii::info("Empresa atualizada: '$empresaOriginal' => '$empresaFormatada'", __METHOD__);
-                    }
-
-                    $empresasAtualizadas[] = $empresaFormatada;
-                    continue;
-                }
-            }
-
-            $empresasAtualizadas[] = $empresaOriginal;
-        }
-
-        if ($houveAtualizacao) {
-            Yii::info('Flash empresaAtualizadaViaApi definido como TRUE', __METHOD__);
-            Yii::$app->session->setFlash('empresaAtualizadaViaApi', true);
-        } else {
-            Yii::info('Nenhuma empresa atualizada via API — flash não será definido.', __METHOD__);
-        }
-
-        return array_unique($empresasAtualizadas);
     }
 
     private function formatarRequisicoesParaSalvar($lista): string

@@ -10,7 +10,7 @@ use yii\web\View;
 /* @var $this View */
 /* @var $model app\models\processolicitatorio\ProcessoLicitatorio */
 
-$isAdmin = \app\components\RbacHelper::isAdmin();
+$isAdmin = \app\components\helpers\RbacHelper::isAdmin();
 
 $this->title = $model->prolic_sequenciamodal;
 $this->params['breadcrumbs'][] = ['label' => 'Processos Licitatórios', 'url' => ['index']];

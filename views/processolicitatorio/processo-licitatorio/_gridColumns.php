@@ -137,7 +137,7 @@ return [
                 'data-pjax' => '0',
             ]),
             'update' => function ($url) {
-                if (\app\components\RbacHelper::isAdmin()) {
+                if (\app\components\helpers\RbacHelper::isAdmin()) {
                     return Html::a('<i class="bi bi-pencil"></i>', $url, [
                         'title' => 'Editar',
                         'class' => 'btn btn-sm btn-outline-secondary me-1',

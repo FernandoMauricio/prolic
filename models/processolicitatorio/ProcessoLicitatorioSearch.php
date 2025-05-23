@@ -108,7 +108,7 @@ class ProcessoLicitatorioSearch extends ProcessoLicitatorio
             ->andFilterWhere(['like', 'prolic_empresa', $this->prolic_empresa]);
 
         // Restringe os resultados se não for admin
-        if (!\app\components\RbacHelper::isAdmin()) {
+        if (!\app\components\helpers\RbacHelper::isAdmin()) {
             $unidadeUsuario = Yii::$app->session->get('sess_codunidade');
             if ($unidadeUsuario) {
                 $query->andWhere(['like', 'prolic_destino', $unidadeUsuario]);

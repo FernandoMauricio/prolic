@@ -24,9 +24,17 @@ class DocumentoHelper
             $cnpjFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $docLimpo);
 
             if ($consultarApi) {
-                $dadosApi = WebManagerService::consultarFornecedor($docLimpo);
-                if ($dadosApi && isset($dadosApi['razaoSocial'])) {
-                    return $cnpjFormatado . ' - ' . $dadosApi['razaoSocial'];
+                try {
+                    $dadosApi = WebManagerService::consultarFornecedor($docLimpo);
+                    if ($dadosApi && isset($dadosApi['razaoSocial'])) {
+                        return $cnpjFormatado . ' - ' . $dadosApi['razaoSocial'];
+                    } else {
+                        Yii::warning("CNPJ não encontrado na API: $docLimpo", __METHOD__);
+                        self::registrarFlashUnico('warning', "CNPJ $cnpjFormatado não encontrado na base de fornecedores.");
+                    }
+                } catch (\Throwable $e) {
+                    Yii::error("Erro ao consultar fornecedor: $docLimpo. " . $e->getMessage(), __METHOD__);
+                    self::registrarFlashUnico('error', "Erro ao consultar fornecedor $cnpjFormatado.");
                 }
             }
 
@@ -38,7 +46,7 @@ class DocumentoHelper
             return preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "$1.$2.$3-$4", $docLimpo);
         }
 
-        // Retorna o valor original se não for CNPJ nem CPF
+        // Retorna o valor original
         return $entrada;
     }
 
@@ -65,9 +73,22 @@ class DocumentoHelper
         }
 
         if ($houveAtualizacao) {
-            Yii::$app->session->setFlash('empresaAtualizadaViaApi', true);
+            self::registrarFlashUnico('info', 'Algumas empresas foram atualizadas automaticamente com base na API do MXM.');
         }
 
         return array_unique($atualizadas);
+    }
+
+    /**
+     * Garante que uma mensagem de flash só seja adicionada uma vez por tipo.
+     */
+    private static function registrarFlashUnico(string $tipo, string $mensagem): void
+    {
+        $session = Yii::$app->session;
+        $flashes = (array) $session->getFlash($tipo, []);
+
+        if (!in_array($mensagem, (array) $flashes, true)) {
+            $session->setFlash($tipo, array_merge((array) $flashes, [$mensagem]));
+        }
     }
 }

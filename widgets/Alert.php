@@ -1,7 +1,9 @@
 <?php
+
 namespace app\widgets;
 
 use Yii;
+use yii\bootstrap5\Alert as BootstrapAlert;
 
 /**
  * Alert widget renders a message from session flash. All flash messages are displayed
@@ -24,34 +26,39 @@ use Yii;
  */
 class Alert extends \yii\bootstrap5\Widget
 {
-    /**
-     * @var array the alert types configuration for the flash messages.
-     * This array is setup as $key => $value, where:
-     * - key: the name of the session flash variable
-     * - value: the bootstrap alert type (i.e. danger, success, info, warning)
-     */
     public $alertTypes = [
         'error'   => 'alert-danger',
         'danger'  => 'alert-danger',
         'success' => 'alert-success',
         'info'    => 'alert-info',
-        'warning' => 'alert-warning'
+        'warning' => 'alert-warning',
     ];
-    /**
-     * @var array the options for rendering the close button tag.
-     * Array will be passed to [[\yii\bootstrap5\Alert::closeButton]].
-     */
+
     public $closeButton = [];
 
-
-    /**
-     * {@inheritdoc}
-     */
     public function run()
     {
         $session = Yii::$app->session;
         $flashes = $session->getAllFlashes();
+
+        // Trata flash personalizada
+        if (isset($flashes['empresaAtualizadaViaApi'])) {
+            $flashes['info'] = array_merge(
+                (array) ($flashes['info'] ?? []),
+                (array) $flashes['empresaAtualizadaViaApi']
+            );
+            unset($flashes['empresaAtualizadaViaApi']);
+        }
+
         $appendClass = isset($this->options['class']) ? ' ' . $this->options['class'] : '';
+
+        $icons = [
+            'success' => 'check-circle-fill',
+            'info' => 'info-circle-fill',
+            'warning' => 'exclamation-triangle-fill',
+            'danger' => 'x-circle-fill',
+            'error' => 'x-circle-fill',
+        ];
 
         foreach ($flashes as $type => $flash) {
             if (!isset($this->alertTypes[$type])) {
@@ -59,12 +66,15 @@ class Alert extends \yii\bootstrap5\Widget
             }
 
             foreach ((array) $flash as $i => $message) {
-                echo \yii\bootstrap5\Alert::widget([
-                    'body' => $message,
+                $icon = isset($icons[$type]) ? "<i class='bi bi-{$icons[$type]} me-2'></i>" : '';
+
+                echo BootstrapAlert::widget([
+                    'body' => $icon . $message,
                     'closeButton' => $this->closeButton,
                     'options' => array_merge($this->options, [
                         'id' => $this->getId() . '-' . $type . '-' . $i,
-                        'class' => $this->alertTypes[$type] . $appendClass,
+                        'class' => $this->alertTypes[$type] . ' alert-dismissible fade show' . $appendClass,
+                        'role' => 'alert',
                     ]),
                 ]);
             }

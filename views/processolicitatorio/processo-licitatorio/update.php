@@ -23,15 +23,7 @@ $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' 
 $this->params['breadcrumbs'][] = 'Atualizar';
 
 ?>
-<?php if (Yii::$app->session->hasFlash('empresaAtualizadaViaApi')): ?>
-    <div class="alert alert-warning border-start border-4 border-warning d-flex align-items-center gap-2" role="alert">
-        <i class="bi bi-exclamation-triangle-fill fs-4 text-warning"></i>
-        <div>
-            <strong>Dados atualizados:</strong><br>
-            Detectamos que esta requisição possuía dados antigos de empresa. Eles foram atualizados automaticamente com base na API do MXM.
-        </div>
-    </div>
-<?php endif; ?>
+<?= \app\widgets\Alert::widget() ?>
 
 <div class="processo-licitatorio-update">
 

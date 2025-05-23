@@ -19,21 +19,44 @@ class DocumentoHelper
         $entrada = trim($entrada);
         $docLimpo = preg_replace('/\D/', '', $entrada);
 
-        // CNPJ
-        if (strlen($docLimpo) === 14) {
-            $cnpjFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $docLimpo);
+        // Verifica se contém um CPF ou CNPJ válido no meio da string
+        if (preg_match('/\b\d{11}\b/', $entrada, $matchCpf)) {
+            $cpf = $matchCpf[0];
+            $cpfFormatado = preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "$1.$2.$3-$4", $cpf);
 
             if ($consultarApi) {
                 try {
-                    $dadosApi = WebManagerService::consultarFornecedor($docLimpo);
+                    $dadosApi = WebManagerService::consultarFornecedor($cpf);
+                    if ($dadosApi && isset($dadosApi['razaoSocial'])) {
+                        return $cpfFormatado . ' - ' . $dadosApi['razaoSocial'];
+                    } else {
+                        Yii::warning("CPF não encontrado na API: $cpf", __METHOD__);
+                        self::registrarFlashUnico('warning', "CPF $cpfFormatado não encontrado na base de fornecedores.");
+                    }
+                } catch (\Throwable $e) {
+                    Yii::error("Erro ao consultar fornecedor (CPF): $cpf. " . $e->getMessage(), __METHOD__);
+                    self::registrarFlashUnico('error', "Erro ao consultar fornecedor $cpfFormatado.");
+                }
+            }
+
+            return $cpfFormatado;
+        }
+
+        if (preg_match('/\b\d{14}\b/', $entrada, $matchCnpj)) {
+            $cnpj = $matchCnpj[0];
+            $cnpjFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $cnpj);
+
+            if ($consultarApi) {
+                try {
+                    $dadosApi = WebManagerService::consultarFornecedor($cnpj);
                     if ($dadosApi && isset($dadosApi['razaoSocial'])) {
                         return $cnpjFormatado . ' - ' . $dadosApi['razaoSocial'];
                     } else {
-                        Yii::warning("CNPJ não encontrado na API: $docLimpo", __METHOD__);
+                        Yii::warning("CNPJ não encontrado na API: $cnpj", __METHOD__);
                         self::registrarFlashUnico('warning', "CNPJ $cnpjFormatado não encontrado na base de fornecedores.");
                     }
                 } catch (\Throwable $e) {
-                    Yii::error("Erro ao consultar fornecedor: $docLimpo. " . $e->getMessage(), __METHOD__);
+                    Yii::error("Erro ao consultar fornecedor (CNPJ): $cnpj. " . $e->getMessage(), __METHOD__);
                     self::registrarFlashUnico('error', "Erro ao consultar fornecedor $cnpjFormatado.");
                 }
             }
@@ -41,14 +64,10 @@ class DocumentoHelper
             return $cnpjFormatado;
         }
 
-        // CPF
-        if (strlen($docLimpo) === 11) {
-            return preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "$1.$2.$3-$4", $docLimpo);
-        }
-
-        // Retorna o valor original
+        // Nenhum CPF ou CNPJ encontrado → retorna como está
         return $entrada;
     }
+
 
     /**
      * Aplica a formatação a uma lista de empresas.
@@ -59,20 +78,23 @@ class DocumentoHelper
     public static function formatarListaEmpresas(array $empresas): array
     {
         $atualizadas = [];
-        $houveAtualizacao = false;
+        $houveAtualizacaoComApi = false;
 
         foreach ($empresas as $empresa) {
-            $formatado = self::formatarDocumento($empresa);
+            $original = trim($empresa);
+            $formatado = self::formatarDocumento($original);
 
-            if (trim($empresa) !== $formatado) {
-                Yii::info("Empresa atualizada: '$empresa' => '$formatado'", __METHOD__);
-                $houveAtualizacao = true;
+            // Considera como atualização "com sucesso" se veio formatado + nome da API
+            if ($formatado !== $original && strpos($formatado, ' - ') !== false) {
+                $houveAtualizacaoComApi = true;
+                Yii::info("Empresa atualizada: '$original' => '$formatado'", __METHOD__);
             }
 
             $atualizadas[] = $formatado;
         }
 
-        if ($houveAtualizacao) {
+        // Apenas se teve pelo menos uma atualização bem-sucedida
+        if ($houveAtualizacaoComApi) {
             self::registrarFlashUnico('info', 'Algumas empresas foram atualizadas automaticamente com base na API do MXM.');
         }
 

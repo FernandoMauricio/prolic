@@ -163,7 +163,12 @@ $sumUrl = Url::to(['/processolicitatorio/processo-licitatorio/get-sum-limite']);
         <?= Html::a('<i class="bi bi-x-circle me-1"></i> Cancelar', ['index'], ['class' => 'btn btn-outline-secondary me-2']) ?>
         <?= Html::submitButton(
             '<span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true" id="spinner-botao"></span><i class="bi bi-check-circle me-1"></i> Salvar e Continuar',
-            ['class' => 'btn btn-primary', 'name' => 'submit-button', 'id' => 'botao-submit']
+            [
+                'class' => 'btn btn-primary',
+                'id' => 'botao-submit',
+                'type' => 'submit',
+                'name' => 'submit-button',
+            ]
         ) ?>
     </div>
 </div>

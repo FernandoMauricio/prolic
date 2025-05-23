@@ -28,6 +28,9 @@ $dataProviderAnteriores->query->andWhere(['<', 'processo_licitatorio.ano', $anoA
 
 $gridColumns = require(__DIR__ . '/_gridColumns.php');
 ?>
+<?php
+$this->registerJsFile('@web/js/saldo-validacao.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+?>
 
 <div class="processo-licitatorio-index">
     <h1 class="fs-3 fw-bold text-primary d-flex align-items-center gap-2 mb-4">

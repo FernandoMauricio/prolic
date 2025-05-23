@@ -616,6 +616,23 @@ class ProcessoLicitatorioController extends Controller
         return $resultado;
     }
 
+    public function actionBuscarArtigoTipo($id)
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $artigo = Artigo::findOne((int) $id);
+
+        if ($artigo) {
+            return [
+                'success' => true,
+                'descricao' => $artigo->art_descricao,
+                'tipo' => $artigo->art_tipo,
+            ];
+        }
+
+        return ['success' => false, 'mensagem' => 'Artigo não encontrado.'];
+    }
+
     public function actionRequisicoesAjax($id)
     {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;

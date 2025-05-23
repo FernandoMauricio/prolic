@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use yii\web\View;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
@@ -125,7 +124,11 @@ $sumUrl = Url::to(['/processolicitatorio/processo-licitatorio/get-sum-limite']);
 
             <!-- Artigo -->
             <div class="col-md-12">
-                <?= $form->field($model, 'artigo_id')->widget(Select2::class, [
+                <label class="form-label" for="processolicitatorio-artigo_id">
+                    Artigo
+                    <span id="badge-artigo-tipo" class="badge bg-secondary ms-2 align-middle d-none"></span>
+                </label>
+                <?= $form->field($model, 'artigo_id', ['template' => '{input}{error}'])->widget(Select2::class, [
                     'data' => ArrayHelper::map($artigo, 'id', 'art_descricao'),
                     'options' => ['placeholder' => 'Informe o Artigo…'],
                     'pluginOptions' => [
@@ -143,11 +146,17 @@ $sumUrl = Url::to(['/processolicitatorio/processo-licitatorio/get-sum-limite']);
 
         <div id="saldo-alerta-container"></div>
 
-        <?= $this->render('/processolicitatorio/processo-licitatorio/_cards-financeiros', [
-            'valorLimite' => $model->valor_limite,
-            'valorLimiteApurado' => $model->valor_limite_apurado,
-            'valorSaldo' => $model->valor_saldo,
-        ]) ?>
+        <div id="cards-financeiros">
+            <?= $this->render('/processolicitatorio/processo-licitatorio/_cards-financeiros', [
+                'valorLimite' => $model->valor_limite,
+                'valorLimiteApurado' => $model->valor_limite_apurado,
+                'valorSaldo' => $model->valor_saldo,
+            ]) ?>
+        </div>
+        <div id="info-artigo-situacao" class="alert alert-info d-none mt-3" role="alert">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            Este processo será cadastrado com base em <strong>situação específica</strong>. Valores financeiros não se aplicam.
+        </div>
 
     </div>
     <div class="card-footer bg-light d-flex justify-content-end">
@@ -160,3 +169,48 @@ $sumUrl = Url::to(['/processolicitatorio/processo-licitatorio/get-sum-limite']);
 </div>
 
 <?php ActiveForm::end(); ?>
+
+<?php
+$urlBuscarArtigo = Url::to(['processolicitatorio/processo-licitatorio/buscar-artigo-tipo']);
+$this->registerJs(<<<JS
+$('#processolicitatorio-artigo_id').on('change', function () {
+    var artigoId = $(this).val();
+    var badge = $('#badge-artigo-tipo');
+    var cards = $('#cards-financeiros');
+    var infoSituacao = $('#info-artigo-situacao');
+    var alerta = $('#saldo-alerta');
+
+    if (!artigoId) {
+        badge.addClass('d-none').text('');
+        cards.show();
+        infoSituacao.addClass('d-none');
+        alerta.show();
+        return;
+    }
+
+    $.getJSON('{$urlBuscarArtigo}', { id: artigoId }, function (data) {
+        if (data.success && data.tipo) {
+            badge.removeClass('d-none').text(data.tipo);
+            $('#processolicitatorio-artigo_id').data('tipo-artigo', data.tipo);
+            if (data.tipo.toLowerCase().includes('situação')) {
+                cards.hide();
+                infoSituacao.removeClass('d-none');
+                alerta.hide();
+                $('#saldo-alerta-container').html('');
+            } else {
+                cards.show();
+                infoSituacao.addClass('d-none');
+                alerta.show();
+            }
+        } else {
+            badge.addClass('d-none').text('');
+            cards.show();
+            infoSituacao.addClass('d-none');
+            alerta.show();
+        }
+    });
+});
+
+JS);
+
+?>

@@ -6,7 +6,6 @@ use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\Url;
 use yii\bootstrap5\Modal;
-use yii\bootstrap5\Accordion;
 use yii\bootstrap5\Tabs;
 
 /* @var $this yii\web\View */

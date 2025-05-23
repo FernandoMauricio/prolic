@@ -1,16 +1,35 @@
 function configurarValidacaoSaldo() {
     const $form = $('#form-gerar-processo');
-    const $spinner = $('#spinner-botao');
-    const $botao = $('#botao-submit');
+    const $cards = $('#cards-financeiros');
+    const $infoSituacao = $('#info-artigo-situacao');
+    const $alertaSaldo = $('#saldo-alerta');
 
     if ($form.length === 0) return;
 
     $form.off('beforeSubmit.saldo'); // evita múltiplos binds
     $form.on('beforeSubmit.saldo', function () {
         const saldo = parseFloat($('#processolicitatorio-valor_saldo').val()) || 0;
+        const tipoArtigo = $('#processolicitatorio-artigo_id').data('tipo-artigo') || '';
+
+        const ehSituacao = tipoArtigo.toLowerCase().includes('situação');
+
+        if (ehSituacao) {
+            // Oculta cards financeiros e alerta
+            $cards.hide();
+            $alertaSaldo.hide();
+            $infoSituacao.removeClass('d-none');
+
+            console.log('Validação ignorada: artigo do tipo "situação".');
+            return true; // ignora a validação
+        } else {
+            // Restaura normalmente
+            $cards.show();
+            $alertaSaldo.show();
+            $infoSituacao.addClass('d-none');
+        }
 
         if (saldo <= 0) {
-            $('#saldo-alerta').addClass('animate__shakeX'); // erro já tratado
+            $alertaSaldo.addClass('animate__shakeX');
             return false;
         }
 
@@ -34,7 +53,6 @@ function configurarValidacaoSaldo() {
 
         return true;
     });
-
 }
 
 // executa ao carregar a página

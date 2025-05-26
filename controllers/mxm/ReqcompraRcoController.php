@@ -204,7 +204,13 @@ class ReqcompraRcoController extends Controller
             return [
                 'item' => $linha['ITEM'] ?? null,
                 'ordem' => $linha['ORDEM'] ?? '-',
-                'aprovador' => $linha['APROVADOR'] ?? '(não atribuído)',
+                'aprovador' => isset($linha['APROVADOR'])
+                    ? preg_replace(
+                        '/aguardando designa.{1,5}o de comprador/ui',
+                        'aguardando designação de comprador',
+                        $linha['APROVADOR']
+                    )
+                    : '(não atribuído)',
                 'data_aprovacao' => $linha['DATA_APROVACAO'] ?? null,
                 'status' => $linha['STATUS'] ?? 'Desconhecido',
             ];

@@ -144,7 +144,10 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
         }
     }
 
-
+    public function isArtigoSituacao()
+    {
+        return $this->artigo && stripos($this->artigo->art_tipo, 'Situação') !== false;
+    }
 
     /**
      * @return array the behaviors

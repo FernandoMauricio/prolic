@@ -20,11 +20,13 @@ $this->registerJsFile('@web/js/alertas.js', ['depends' => [\yii\web\JqueryAsset:
     ->hiddenInput(['id' => 'processolicitatorio-valor_saldo'])
     ->label(false) ?>
 
-<?= $this->render('/processolicitatorio/processo-licitatorio/_cards-financeiros', [
-    'valorLimite' => $model->valor_limite,
-    'valorLimiteApurado' => $model->valor_limite_apurado,
-    'valorSaldo' => $model->valor_saldo,
-]) ?>
+<div id="cards-financeiros">
+    <?= $this->render('/processolicitatorio/processo-licitatorio/_cards-financeiros', [
+        'valorLimite' => $model->valor_limite,
+        'valorLimiteApurado' => $model->valor_limite_apurado,
+        'valorSaldo' => $model->valor_saldo,
+    ]) ?>
+</div>
 
 <hr>
 

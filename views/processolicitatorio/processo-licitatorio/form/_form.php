@@ -59,6 +59,10 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
                         <div class="card-header bg-soft-custom text-white border-bottom">
                             <h6 class="mb-0"><i class="bi bi-currency-dollar me-2"></i> Valores Financeiros</h6>
                         </div>
+                        <div id="info-artigo-situacao" class="alert alert-info d-none mt-3" role="alert">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            Este processo está vinculado a uma <strong>situação específica</strong>. Valores financeiros não se aplicam.
+                        </div>
                         <div class="card-body">
                             <?= $this->render('_valores', compact('form', 'model')) ?>
                         </div>

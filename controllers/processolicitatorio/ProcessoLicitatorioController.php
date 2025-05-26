@@ -455,6 +455,15 @@ class ProcessoLicitatorioController extends Controller
             $model->prolic_codmxm = $this->formatarRequisicoesParaSalvar($model->prolic_codmxm);
             $model->prolic_empresa = $this->formatarEmpresasParaSalvar($model->prolic_empresa);
 
+            /**
+             * EXCEÇÃO DE VALIDAÇÃO POR ARTIGO
+             * Se o artigo selecionado tiver tipo com "Situação", libera o valor
+             */
+            if ($model->artigo && stripos($model->artigo->art_tipo, 'Situação') !== false) {
+                // Caso queira desconsiderar limite legal:
+                $model->valor_limite = 999999999.99; // ou qualquer valor que represente "sem limite"
+            }
+
             if ($model->validate()) {
                 $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);

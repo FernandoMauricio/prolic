@@ -38,15 +38,26 @@ foreach ($artigo as $a) {
         ]) ?>
     </div>
 
+    <?php
+    $tipoSelecionado = null;
+    foreach ($artigo as $a) {
+        if ($a->id == $model->artigo_id) {
+            $tipoSelecionado = $a->art_tipo;
+            break;
+        }
+    }
+    $this->registerJs("window.tipoSelecionado = " . json_encode($tipoSelecionado) . ";", \yii\web\View::POS_HEAD);
+    ?>
+
     <div class="col-lg-12">
         <?= $form->field($model, 'artigo_id', [
             'template' => "{label} " .
-                "<span id=\"artigo-type-badge\" class=\"badge d-none ms-2 align-middle\"></span>\n" .
+                "<span id=\"artigo-type-badge\" class=\"badge ms-2 align-middle bg-warning text-dark\"></span>\n" .
                 "{input}\n{error}\n{hint}",
         ])->widget(Select2::class, [
             'data' => ArrayHelper::map($artigo, 'id', 'art_descricao'),
             'options' => [
-                'id' => 'artigo-id',
+                'id' => 'processolicitatorio-artigo_id',
                 'placeholder' => 'Informe o Artigo…',
             ],
             'pluginOptions' => [
@@ -67,8 +78,9 @@ foreach ($artigo as $a) {
                       var tipo = e.params.data.type;
                       var badge = $("#artigo-type-badge");
                       badge
-                        .removeClass("d-none badge-success badge-warning")
-                        .addClass(tipo === "Valor" ? "badge-success" : "badge-warning")
+                      badge
+                        .removeClass('d-none bg-success bg-warning text-dark text-white')
+                        .addClass(tipo === 'Valor' ? 'bg-success text-white' : 'bg-warning text-dark')
                         .text(tipo);
                     }
                 JS),
@@ -158,7 +170,7 @@ $this->registerJsFile('https://cdn.jsdelivr.net/npm/inputmask@5.0.9/dist/inputma
 <?php
 $js = <<<JS
 (function(){
-  var \$sel   = \$('#artigo-id');
+  var \$sel   = \$('#processolicitatorio-artigo_id');
   var \$badge = \$('#artigo-type-badge');
 
   function updateBadge(data){
@@ -183,4 +195,78 @@ $js = <<<JS
 })();
 JS;
 $this->registerJs($js);
+?>
+
+<?php
+
+$urlBuscarArtigo = Url::to(['processolicitatorio/processo-licitatorio/buscar-artigo-tipo']);
+
+$this->registerJs(<<<JS
+function verificarTipoArtigo(artigoId) {
+    var badge = $('#artigo-type-badge');
+    var cards = $('#cards-financeiros');
+    var infoSituacao = $('#info-artigo-situacao');
+    var alerta = $('#saldo-alerta');
+
+    if (!artigoId) {
+        badge.addClass('d-none').text('');
+        cards.removeClass('d-none');
+        infoSituacao.addClass('d-none');
+        alerta.show();
+        return;
+    }
+
+    $.getJSON('{$urlBuscarArtigo}', { id: artigoId }, function (data) {
+        if (data.success && data.tipo) {
+            console.log('Tipo do artigo:', data.tipo);
+            $('#processolicitatorio-artigo_id').data('tipo-artigo', data.tipo);
+
+            if (data.tipo.toLowerCase().includes('situação')) {
+                cards.addClass('d-none');
+                infoSituacao.removeClass('d-none');
+                alerta.hide();
+                $('#saldo-alerta-container').html('');
+            } else {
+                cards.removeClass('d-none');
+                infoSituacao.addClass('d-none');
+                alerta.show();
+            }
+        } else {
+            cards.removeClass('d-none');
+            infoSituacao.addClass('d-none');
+            alerta.show();
+        }
+    });
+}
+
+
+
+$('#processolicitatorio-artigo_id').on('change', function () {
+    verificarTipoArtigo($(this).val());
+});
+
+$(document).ready(function () {
+    const artigoId = $('#processolicitatorio-artigo_id').val();
+    if (artigoId) {
+        verificarTipoArtigo(artigoId);
+    }
+});
+JS);
+?>
+
+<?php
+$this->registerJs(<<<JS
+$(document).ready(function () {
+    // Atualiza badge ao carregar
+    const badge = $('#artigo-type-badge');
+    const tipo = window.tipoSelecionado;
+
+    if (tipo) {
+        badge
+            .removeClass('d-none badge-success badge-warning')
+            .addClass(tipo === 'Valor' ? 'badge-success' : 'badge-warning')
+            .text(tipo);
+    }
+});
+JS);
 ?>

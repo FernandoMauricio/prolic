@@ -54,11 +54,12 @@ use kartik\select2\Select2;
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <?= $form->field($model, 'ramo_id')->widget(Select2::class, [
-                                        'data' => ArrayHelper::map($ramo, 'id', 'ram_descricao'),
+                                        'data' => $ramo,
                                         'options' => ['placeholder' => 'Selecione o Segmento...'],
                                         'pluginOptions' => ['allowClear' => true],
                                         'disabled' => !$model->isNewRecord,
                                     ]) ?>
+
                                 </div>
                             </div>
 

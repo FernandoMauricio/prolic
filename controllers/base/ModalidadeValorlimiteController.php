@@ -168,8 +168,27 @@ class ModalidadeValorlimiteController extends Controller
     {
         $model = $this->findModel($id);
 
-        $modalidade = Modalidade::find()->where(['mod_status' => 1])->orderBy('mod_descricao')->all();
-        $ramo = Ramo::find()->where(['ram_status' => 1])->orderBy('ram_descricao')->all();
+        $modalidade = Modalidade::find()
+            ->where(['mod_status' => 1])
+            ->orderBy('mod_descricao')
+            ->all();
+
+        // Buscar todos os ramos (ativos + o do model)
+        $ramoList = Ramo::find()
+            ->where([
+                'or',
+                ['ram_status' => 1],
+                ['id' => $model->ramo_id],
+            ])
+            ->orderBy('ram_descricao')
+            ->all();
+
+        // Construir array com label "[Inativo]" se necessário
+        $ramoData = [];
+        foreach ($ramoList as $r) {
+            $label = $r->ram_status ? $r->ram_descricao : '[Inativo] ' . $r->ram_descricao;
+            $ramoData[$r->id] = $label;
+        }
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', 'Valor limite atualizado com sucesso!');
@@ -179,7 +198,7 @@ class ModalidadeValorlimiteController extends Controller
         return $this->render('update', [
             'model' => $model,
             'modalidade' => $modalidade,
-            'ramo' => $ramo,
+            'ramo' => $ramoData,
         ]);
     }
 

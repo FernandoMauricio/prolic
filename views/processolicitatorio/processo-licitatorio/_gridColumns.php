@@ -28,25 +28,6 @@ return [
     ],
 
     [
-        'attribute' => 'prolic_dataprocesso',
-        'format'    => ['date', 'php:d/m/Y'],
-        'filterType' => GridView::FILTER_DATE,
-        'filterWidgetOptions' => [
-            'pluginOptions' => [
-                'autoclose'     => true,
-                'format'        => 'dd/mm/yyyy',
-                'todayHighlight' => true,
-            ],
-        ],
-        'filterInputOptions' => [
-            'placeholder' => 'dd/mm/aaaa',
-            'class'       => 'form-control'
-        ],
-        'width' => '150px',
-        'hAlign' => 'center',
-    ],
-
-    [
         'attribute' => 'prolic_codprocesso',
         'label' => 'Processo',
         'width' => '80px',
@@ -55,7 +36,8 @@ return [
 
     [
         'attribute' => 'prolic_sequenciamodal',
-        'label' => 'Código',
+        'label' => 'Número<br>Sequencial <i class="bi bi-info-circle text-primary ms-1" data-bs-toggle="tooltip" title="Número sequencial do processo dentro da modalidade."></i>',
+        'encodeLabel' => false,
         'width' => '80px',
         'hAlign' => 'center',
     ],
@@ -75,8 +57,43 @@ return [
     ],
 
     [
-        'attribute' => 'prolic_objeto',
+        'label' => 'Tipo de<br> Artigo <i class="bi bi-info-circle text-primary ms-1" data-bs-toggle="tooltip" title="Define se o artigo se refere a uma situação específica ou modalidade genérica."></i>',
+        'encodeLabel' => false,
+        'width' => '50px',
+        'attribute' => 'artigo_id',
+        'format' => 'raw',
+        'value' => function ($model) {
+            $tipo = $model->artigo->art_tipo ?? '(não definido)';
+            $badgeClass = '';
+
+            if (stripos($tipo, 'situação') !== false) {
+                $badgeClass = 'warning text-dark';
+            } elseif ($tipo !== '(não definido)') {
+                $badgeClass = 'success';
+            } else {
+                $badgeClass = 'secondary';
+            }
+
+            return "<span class='badge bg-$badgeClass'>$tipo</span>";
+        },
     ],
+
+    [
+        'attribute' => 'prolic_objeto',
+        'format' => 'raw',
+        'value' => function ($model) {
+            $textoCompleto = $model->prolic_objeto;
+            $resumo = \yii\helpers\StringHelper::truncate($textoCompleto, 20);
+            return Html::tag('span', Html::encode($resumo), [
+                'title' => $textoCompleto,
+                'data-bs-toggle' => 'tooltip',
+                'data-bs-placement' => 'top',
+                'style' => 'cursor: help;',
+            ]);
+        },
+        'contentOptions' => ['style' => 'max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'],
+    ],
+
 
     [
         'attribute' => 'prolic_valorestimado',

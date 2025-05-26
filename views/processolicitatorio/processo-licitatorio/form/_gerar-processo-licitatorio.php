@@ -219,3 +219,60 @@ $('#processolicitatorio-artigo_id').on('change', function () {
 JS);
 
 ?>
+<?php
+$artigoMap = [];
+foreach ($artigo as $a) {
+    $artigoMap[$a->id] = $a->art_tipo;
+}
+$artigoJson = json_encode($artigoMap);
+?>
+
+<?php
+$this->registerJs(<<<JS
+    function atualizarBadgeArtigoTipo(texto) {
+        const badge = $('#badge-artigo-tipo');
+        let classe = 'bg-secondary';
+        let label = '';
+
+        if (!texto) {
+            badge.addClass('d-none').removeClass('bg-warning bg-success text-dark bg-secondary').text('');
+            return;
+        }
+
+        if (texto.toLowerCase().includes('situação')) {
+            classe = 'bg-warning text-dark';
+            label = 'Situação';
+        } else if (texto.toLowerCase().includes('valor')) {
+            classe = 'bg-success';
+            label = 'Valor';
+        } else {
+            classe = 'bg-secondary';
+            label = texto;
+        }
+
+        badge
+            .removeClass('bg-warning bg-success text-dark bg-secondary d-none')
+            .addClass(classe)
+            .text(label);
+    }
+
+    // Ao carregar e ao mudar
+    const select = $('#processolicitatorio-artigo_id');
+    const artigoMap = JSON.parse('{$artigoJson}');
+
+    function obterTextoArtigo(id) {
+        return artigoMap[id] || '';
+    }
+
+    select.on('change', function () {
+        const texto = obterTextoArtigo($(this).val());
+        atualizarBadgeArtigoTipo(texto);
+    });
+
+    // Dispara ao carregar
+    const artigoInicial = select.val();
+    if (artigoInicial) {
+        atualizarBadgeArtigoTipo(obterTextoArtigo(artigoInicial));
+    }
+JS);
+?>

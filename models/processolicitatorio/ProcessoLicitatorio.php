@@ -88,10 +88,11 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
                 'compareAttribute' => 'valor_limite',
                 'operator'         => '<=',
                 'type'             => 'number',
-                'when'             => function ($model) {
-                    return $model->artigo->art_tipo == 'Valor';
-                },
-                'message'          => 'Ultrapassa valor limite!'
+                'when'             => fn($model) => !$model->isArtigoSituacao(),
+                'whenClient'       => "function (attribute, value) {
+                    return $('#artigo-type-badge').text().trim().toLowerCase() === 'valor';
+                }",
+                'message'          => 'Ultrapassa valor limite!',
             ],
             [
                 'prolic_valorefetivo',
@@ -99,13 +100,27 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
                 'compareAttribute' => 'valor_saldo',
                 'operator'         => '<',
                 'type'             => 'number',
-                'when'             => function ($model) {
-                    return $model->artigo->art_tipo == 'Valor';
-                },
-                'message'          => 'Modalidade sem saldo!'
+                'when'             => fn($model) => !$model->isArtigoSituacao(),
+                'whenClient'       => "function (attribute, value) {
+                    return $('#artigo-type-badge').text().trim().toLowerCase() === 'valor';
+                }",
+                'message'          => 'Modalidade sem saldo!',
             ],
         ];
     }
+
+    public function beforeValidate()
+    {
+        if (parent::beforeValidate()) {
+            if ($this->artigo_id && $this->artigo === null) {
+                $this->populateRelation('artigo', Artigo::findOne($this->artigo_id));
+            }
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * Valida se as requisições são únicas
      * @param string $attribute

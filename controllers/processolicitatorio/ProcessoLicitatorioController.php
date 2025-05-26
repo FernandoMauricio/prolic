@@ -455,6 +455,9 @@ class ProcessoLicitatorioController extends Controller
             $model->prolic_codmxm = $this->formatarRequisicoesParaSalvar($model->prolic_codmxm);
             $model->prolic_empresa = $this->formatarEmpresasParaSalvar($model->prolic_empresa);
 
+            // Se o artigo foi selecionado, verifica se é do tipo "Situação"
+            $model->artigo = \app\models\base\Artigo::findOne($model->artigo_id);
+
             /**
              * EXCEÇÃO DE VALIDAÇÃO POR ARTIGO
              * Se o artigo selecionado tiver tipo com "Situação", libera o valor

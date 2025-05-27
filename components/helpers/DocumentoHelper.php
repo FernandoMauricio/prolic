@@ -17,10 +17,11 @@ class DocumentoHelper
     public static function formatarDocumento(string $entrada, bool $consultarApi = true): string
     {
         $entrada = trim($entrada);
+        $entradaNumeros = preg_replace('/\D/', '', $entrada); // Remove tudo que não for dígito
 
-        // Verifica se contém um CPF ou CNPJ válido no meio da string
-        if (preg_match('/\b\d{11}\b/', $entrada, $matchCpf)) {
-            $cpf = $matchCpf[0];
+        // CPF (11 dígitos)
+        if (strlen($entradaNumeros) === 11) {
+            $cpf = $entradaNumeros;
             $cpfFormatado = preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "$1.$2.$3-$4", $cpf);
 
             if ($consultarApi) {
@@ -41,8 +42,9 @@ class DocumentoHelper
             return $cpfFormatado;
         }
 
-        if (preg_match('/\b\d{14}\b/', $entrada, $matchCnpj)) {
-            $cnpj = $matchCnpj[0];
+        // CNPJ (14 dígitos)
+        if (strlen($entradaNumeros) === 14) {
+            $cnpj = $entradaNumeros;
             $cnpjFormatado = preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "$1.$2.$3/$4-$5", $cnpj);
 
             if ($consultarApi) {
@@ -63,10 +65,11 @@ class DocumentoHelper
             return $cnpjFormatado;
         }
 
-        // Nenhum CPF ou CNPJ encontrado → gera aviso e retorna original
+        // Nenhum CPF ou CNPJ válido encontrado
         self::registrarFlashUnico('warning', "A empresa \"$entrada\" não possui CPF ou CNPJ válido informado.");
         return $entrada;
     }
+
 
     /**
      * Aplica a formatação a uma lista de empresas.

@@ -20,7 +20,6 @@ use kartik\select2\Select2;
         <div class="row g-3">
             <div class="col-md-8">
                 <?= $form->field($model, 'art_descricao')->textInput([
-                    'readonly' => !$model->isNewRecord,
                     'placeholder' => 'Informe a descrição do artigo...',
                 ]) ?>
             </div>

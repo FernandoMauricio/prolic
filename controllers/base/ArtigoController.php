@@ -79,7 +79,14 @@ class ArtigoController extends Controller
             return ['success' => false, 'message' => 'Artigo não encontrado'];
         }
 
+        $wasInactive = $model->art_status == 0;
         $model->art_status = $model->art_status ? 0 : 1;
+
+        // Se estava inativo e agora será ativado, revoga homologação
+        if ($wasInactive && $model->art_status == 1) {
+            $model->art_homologacaousuario = null;
+            $model->art_homologacaodata = null;
+        }
 
         if ($model->save(false)) {
             return ['success' => true, 'status' => $model->art_status];

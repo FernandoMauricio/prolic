@@ -7,10 +7,7 @@ use yii\helpers\ArrayHelper;
 <div class="card shadow-sm mb-4">
     <div class="card-body">
         <div class="row g-3">
-            <div class="col-lg-2">
-                <?= $form->field($model, 'prolic_cotacoes')->textInput(['type' => 'number']) ?>
-            </div>
-            <div class="col-lg-5">
+            <div class="col-lg-6">
                 <?= $form->field($model, 'prolic_centrocusto')->widget(Select2::class, [
                     'data' => ArrayHelper::map($centrocusto, 'cen_centrocustoreduzido', 'cen_centrocustoreduzido'),
                     'options' => [
@@ -20,7 +17,7 @@ use yii\helpers\ArrayHelper;
                     'pluginOptions' => ['allowClear' => true],
                 ]) ?>
             </div>
-            <div class="col-lg-5">
+            <div class="col-lg-6">
                 <?= $form->field($model, 'prolic_elementodespesa')->widget(JqueryTagsInput::class, [
                     'clientOptions' => [
                         'defaultText' => '',

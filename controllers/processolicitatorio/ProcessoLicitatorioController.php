@@ -501,11 +501,19 @@ class ProcessoLicitatorioController extends Controller
         return ';' . implode(';', $filtrados) . ';';
     }
 
-    private function carregarDadosAuxiliares()
+    private function carregarDadosAuxiliares($model = null)
     {
+        $ramoId = $model ? $model->ramo_id : null;
+        $artigoId = $model ? $model->artigo_id : null;
+        $valorLimiteId = $model ? $model->modalidade_valorlimite_id : null;
+
         return [
             'ramo' => Ramo::find()
-                ->where(['ram_status' => 1])
+                ->where([
+                    'or',
+                    ['ram_status' => 1],
+                    ['id' => $ramoId]
+                ])
                 ->orderBy(['ram_descricao' => SORT_DESC])
                 ->all(),
 
@@ -516,16 +524,30 @@ class ProcessoLicitatorioController extends Controller
 
             'valorlimite' => ModalidadeValorlimite::find()
                 ->innerJoinWith('modalidade')
-                ->where(['mod_status' => 1])
-                ->andWhere(['!=', 'tipo_modalidade', ''])
-                ->andWhere(['!=', 'homologacao_usuario', ''])
+                ->where([
+                    'or',
+                    [
+                        'and',
+                        ['mod_status' => 1],
+                        ['!=', 'tipo_modalidade', ''],
+                        ['!=', 'homologacao_usuario', ''],
+                    ],
+                    ['modalidade_valorlimite.id' => $valorLimiteId]
+                ])
                 ->orderBy(['modalidade.mod_descricao' => SORT_DESC])
                 ->all(),
 
             'artigo' => Artigo::find()
                 ->select(['id', 'art_descricao', 'art_tipo'])
-                ->where(['art_status' => 1])
-                ->andWhere(['!=', 'art_homologacaousuario', ''])
+                ->where([
+                    'or',
+                    [
+                        'and',
+                        ['art_status' => 1],
+                        ['!=', 'art_homologacaousuario', ''],
+                    ],
+                    ['id' => $artigoId]
+                ])
                 ->orderBy(['art_descricao' => SORT_DESC])
                 ->all(),
 
@@ -550,6 +572,7 @@ class ProcessoLicitatorioController extends Controller
                 ->all(),
         ];
     }
+
 
     private function ajustarSequenciaModalidade($model)
     {

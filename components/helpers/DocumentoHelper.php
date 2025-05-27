@@ -84,9 +84,15 @@ class DocumentoHelper
 
         foreach ($empresas as $empresa) {
             $original = trim($empresa);
+
+            // Ignora entradas vazias
+            if ($original === '') {
+                continue;
+            }
+
             $formatado = self::formatarDocumento($original);
 
-            // Considera como atualização "com sucesso" se veio formatado + nome da API
+            // Considera como atualização se veio formatado + nome da API
             if ($formatado !== $original && strpos($formatado, ' - ') !== false) {
                 $houveAtualizacaoComApi = true;
                 Yii::info("Empresa atualizada: '$original' => '$formatado'", __METHOD__);
@@ -95,7 +101,6 @@ class DocumentoHelper
             $atualizadas[] = $formatado;
         }
 
-        // Apenas se teve pelo menos uma atualização bem-sucedida
         if ($houveAtualizacaoComApi) {
             self::registrarFlashUnico('info', 'Algumas empresas foram atualizadas automaticamente com base na API do MXM.');
         }

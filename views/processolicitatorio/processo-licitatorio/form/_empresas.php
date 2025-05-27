@@ -80,8 +80,13 @@ use yii\helpers\Url;
 
 <script>
     function atualizarQuantidadeCotacoes() {
-        const empresasSelecionadas = $('#processolicitatorio-prolic_empresa').val();
-        const total = empresasSelecionadas ? empresasSelecionadas.length : 0;
+        const empresasSelecionadas = $('#processolicitatorio-prolic_empresa').val() || [];
+        // Remove entradas vazias
+        const empresasValidas = empresasSelecionadas.filter(function(item) {
+            return item.trim() !== '';
+        });
+        const total = empresasValidas.length;
+
         $('#processolicitatorio-prolic_cotacoes').val(total);
         $('#badge-cotacoes').text('Cotações: ' + total);
     }

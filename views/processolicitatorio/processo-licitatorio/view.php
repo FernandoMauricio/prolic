@@ -166,21 +166,20 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                         </div>
 
                         <!-- Artigo -->
-                        <div class="col-12 mt-4">
+                        <div class="col-12 mt-3">
+                            <small class="text-muted">Artigo</small>
+                            <?= Html::tag(
+                                'span',
+                                Html::encode($model->artigo->art_tipo ?: '(não definido)'),
+                                [
+                                    'class' => 'badge align-self-center ' . (
+                                        $model->artigo->art_tipo === 'Valor'
+                                        ? 'bg-info'
+                                        : 'bg-warning text-dark'
+                                    ),
+                                ]
+                            ) ?>
                             <div class="fw-semibold d-flex align-items-start flex-wrap gap-2">
-                                <small class="text-muted">Artigo</small>
-
-                                <?= Html::tag(
-                                    'span',
-                                    Html::encode($model->artigo->art_tipo ?: '(não definido)'),
-                                    [
-                                        'class' => 'badge align-self-center ' . (
-                                            $model->artigo->art_tipo === 'Valor'
-                                            ? 'bg-info'
-                                            : 'bg-warning text-dark'
-                                        ),
-                                    ]
-                                ) ?>
                                 <span>
                                     <?= Html::encode($model->artigo->art_descricao ?: '(não definido)') ?>
                                 </span>

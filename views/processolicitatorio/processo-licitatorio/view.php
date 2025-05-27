@@ -219,7 +219,7 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
             </div>
 
             <!-- Financeiro -->
-            <div class="card shadow-sm mb-4">
+            <div class="card shadow-sm mb-1">
                 <div class="card-header bg-light fw-bold"><i class="bi bi-currency-dollar me-1"></i> Financeiro</div>
                 <div class="card-body text-center">
                     <div class="row g-3">
@@ -242,7 +242,7 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                                 $labelClass = 'text-muted';
                             }
                         ?>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="<?= $cardClass ?> border rounded p-2">
                                     <small class="<?= $labelClass ?> d-block"><?= $k ?></small>
                                     <div class="fw-semibold <?= ($labelClass === 'text-white' ? 'text-white' : '') ?>">
@@ -261,7 +261,7 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
             </div>
 
             <!-- Itens Complementares -->
-            <div class="card shadow-sm mb-4">
+            <div class="card shadow-sm mt-4">
                 <div class="card-header bg-light fw-bold"><i class="bi bi-list-columns me-1"></i> Itens Complementares</div>
                 <div class="card-body text-center">
                     <div class="row g-3">

@@ -40,19 +40,27 @@ foreach ($artigo as $a) {
 
     <?php
     $tipoSelecionado = null;
+    $badgeClass = 'd-none';
+    $badgeText = '';
+
     foreach ($artigo as $a) {
         if ($a->id == $model->artigo_id) {
             $tipoSelecionado = $a->art_tipo;
+            if ($tipoSelecionado === 'Valor') {
+                $badgeClass = 'bg-success text-white';
+            } elseif ($tipoSelecionado === 'Situação') {
+                $badgeClass = 'bg-warning text-dark';
+            }
+            $badgeText = $tipoSelecionado;
             break;
         }
     }
-    $this->registerJs("window.tipoSelecionado = " . json_encode($tipoSelecionado) . ";", \yii\web\View::POS_HEAD);
     ?>
 
     <div class="col-lg-12">
         <?= $form->field($model, 'artigo_id', [
             'template' => "{label} " .
-                "<span id=\"artigo-type-badge\" class=\"badge ms-2 align-middle bg-warning text-dark\"></span>\n" .
+                "<span id=\"artigo-type-badge\" class=\"badge ms-2 align-middle {$badgeClass}\">{$badgeText}</span>\n" .
                 "{input}\n{error}\n{hint}",
         ])->widget(Select2::class, [
             'data' => ArrayHelper::map($artigo, 'id', 'art_descricao'),

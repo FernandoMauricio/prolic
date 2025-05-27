@@ -214,6 +214,20 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                                 ?>
                             </div>
                         </div>
+                        <div class="col-12">
+                            <small class="text-muted">Empresa Ganhadora</small>
+                            <div class="d-flex flex-wrap align-items-center gap-2 fw-semibold">
+                                <?php
+                                $ganhadora = $model->prolic_empresa_ganhadora;
+                                if (!empty($ganhadora)) {
+                                    echo Html::tag('span', Html::encode($ganhadora), ['class' => 'badge bg-success fs-7 px-2 py-2 fw-light']);
+                                } else {
+                                    echo '<span class="text-danger fst-italic">(não definido)</span>';
+                                }
+                                ?>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

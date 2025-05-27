@@ -34,6 +34,8 @@ use app\models\base\Empresa;
  * @property string $prolic_datahomologacao
  * @property string $prolic_motivo
  * @property int|null $empresa_id
+ * @property string|null prolic_empresa
+ * @property string|null prolic_empresa_ganhadora
  * @property string $prolic_usuariocriacao
  * @property string $prolic_datacriacao
  * @property string $prolic_usuarioatualizacao
@@ -74,7 +76,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [['ano', 'modalidade_valorlimite_id', 'prolic_sequenciamodal', 'artigo_id', 'prolic_cotacoes', 'recursos_id', 'comprador_id', 'situacao_id', 'prolic_codprocesso'], 'integer'],
             [['prolic_objeto', 'prolic_elementodespesa', 'prolic_motivo'], 'string'],
             [['prolic_valorestimado', 'prolic_valorefetivo', 'valor_limite', 'valor_limite_apurado', 'valor_saldo'], 'number'],
-            [['prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_datacriacao', 'prolic_dataatualizacao', 'prolic_destino', 'prolic_centrocusto', 'modalidade', 'ramo', 'ciclototal', 'ciclocertame', 'prolic_empresa', 'prolic_codmxm'], 'safe'],
+            [['prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_datacriacao', 'prolic_dataatualizacao', 'prolic_destino', 'prolic_centrocusto', 'modalidade', 'ramo', 'ciclototal', 'ciclocertame', 'prolic_empresa', 'prolic_empresa_ganhadora', 'prolic_codmxm'], 'safe'],
             [['prolic_usuariocriacao', 'prolic_usuarioatualizacao'], 'string', 'max' => 255],
             [['artigo_id'], 'exist', 'skipOnError' => true, 'targetClass' => Artigo::className(), 'targetAttribute' => ['artigo_id' => 'id']],
             [['comprador_id'], 'exist', 'skipOnError' => true, 'targetClass' => Comprador::className(), 'targetAttribute' => ['comprador_id' => 'id']],
@@ -404,6 +406,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'prolic_usuarioatualizacao' => 'Usuario Atualização',
             'prolic_dataatualizacao' => 'Data Atualização',
             'prolic_empresa' => 'Empresa',
+            'prolic_empresa_ganhadora' => 'Empresa Ganhadora',
             'modalidade' => 'Modalidade',
             'ramo' => 'Segmento',
             'ciclototal' => 'Ciclo Total',

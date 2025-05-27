@@ -174,26 +174,14 @@ class ReqcompraRcoController extends Controller
     {
         $sql = <<<SQL
             SELECT
-                RAIR.RAIR_NUMITEM AS ITEM,
-                CASE
-                    WHEN MXU.MXU_NOME IS NOT NULL THEN MXU.MXU_NOME
-                    WHEN LAA.LAA_SQITEMAPROVACAO = 1 THEN ESF.ESF_DESCRICAO || '(aguardando designação de comprador)'
-                    ELSE ESF.ESF_DESCRICAO
-                END AS APROVADOR,
-                LAA.LAA_DTAPROVACAO AS DATA_APROVACAO,
-                LAA.LAA_SQITEMAPROVACAO AS ORDEM,
-                CASE LAA.LAA_STATUS
-                    WHEN 1 THEN 'Aprovado'
-                    WHEN 2 THEN 'Cancelado'
-                    WHEN 3 THEN 'Reprovado'
-                    ELSE 'Pendente'
-                END AS STATUS
-            FROM RELAPROVIREQ_RAIR RAIR
-            JOIN LINHAAPROVLOC_LAA LAA ON RAIR.RAIR_SQAPROVACAO = LAA.LAA_SQAPROVACAO
-            LEFT JOIN MXS_USUARIO_MXU MXU ON LAA.LAA_APROVADOR = MXU.MXU_USUARIO
-            LEFT JOIN ESTRFUNC_ESF ESF ON ESF.ESF_CDEMPRESA = '02' AND ESF.ESF_CODIGO = LAA.LAA_ESTRFUNC
-            WHERE RAIR.RAIR_NUMEROREQ = :NUMERO
-            ORDER BY LAA.LAA_SQITEMAPROVACAO, LAA.LAA_DTAPROVACAO
+                rair_numeroreq AS ITEM,
+                ordem AS ORDEM,
+                aprovador AS APROVADOR,
+                data_aprovacao AS DATA_APROVACAO,
+                status AS STATUS
+            FROM vw_aprovacao_am
+            WHERE rair_numeroreq = :NUMERO
+            ORDER BY ordem, data_aprovacao
         SQL;
 
         $linhas = Yii::$app->db_oracle
@@ -204,12 +192,8 @@ class ReqcompraRcoController extends Controller
             return [
                 'item' => $linha['ITEM'] ?? null,
                 'ordem' => $linha['ORDEM'] ?? '-',
-                'aprovador' => isset($linha['APROVADOR'])
-                    ? preg_replace(
-                        '/aguardando designa.{1,5}o de comprador/ui',
-                        'aguardando designação de comprador',
-                        $linha['APROVADOR']
-                    )
+                'aprovador' => !empty(trim($linha['APROVADOR'] ?? ''))
+                    ? mb_convert_encoding($linha['APROVADOR'], 'UTF-8', 'ISO-8859-1')
                     : '(não atribuído)',
                 'data_aprovacao' => $linha['DATA_APROVACAO'] ?? null,
                 'status' => $linha['STATUS'] ?? 'Desconhecido',

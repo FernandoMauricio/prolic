@@ -120,13 +120,20 @@ class ModalidadeValorlimiteController extends Controller
         }
 
         $model = $this->findModel($id);
-        $model->status = !$model->status;
+        $wasInactive = $model->status == 0;
+        $model->status = $model->status ? 0 : 1;
+
+        // Se estava inativo e agora será ativado, revoga homologação
+        if ($wasInactive && $model->status == 1) {
+            $model->homologacao_usuario = null;
+            $model->homologacao_data = null;
+        }
 
         if ($model->save(false)) {
             return ['success' => true, 'status' => $model->status];
         }
 
-        return ['success' => false];
+        return ['success' => false, 'error' => 'Erro ao salvar'];
     }
 
     /**
@@ -190,9 +197,16 @@ class ModalidadeValorlimiteController extends Controller
             $ramoData[$r->id] = $label;
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Valor limite atualizado com sucesso!');
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            // Se o registro está ativo, e houve alteração, revoga a homologação
+            if ($model->status == 1) {
+                $model->homologacao_usuario = null;
+                $model->homologacao_data = null;
+            }
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'Valor limite atualizado com sucesso!');
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [

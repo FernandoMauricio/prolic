@@ -21,8 +21,6 @@ $this->registerCssFile('@web/css/requisicao-preview.css', [
         'validateOnBlur'     => true,
         'validateOnType'     => true,
     ]); ?>
-    <?php echo var_dump($model->artigo->art_tipo); ?>
-
 
     <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
     <?= Html::activeHiddenInput($model, 'id') ?>

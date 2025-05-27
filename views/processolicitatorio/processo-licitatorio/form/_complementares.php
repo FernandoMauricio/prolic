@@ -29,5 +29,31 @@ use yii\helpers\ArrayHelper;
                 ]) ?>
             </div>
         </div>
+        <div class="row g-3">
+            <div class="col-lg-12">
+                <?= $form->field($model, 'prolic_responsavel_licitacao', [
+                    'template' => '
+                        <label class="form-label" for="prolic_responsavel_licitacao">
+                            Responsável pela Licitação
+                            <i class="bi bi-info-circle-fill text-muted ms-1"
+                            data-bs-toggle="tooltip"
+                            title="Opcional – preencha apenas se houver licitação."></i>
+                        </label>
+                        {input}{error}{hint}
+                    ',
+                ])->widget(Select2::class, [
+                    'data' => [
+                        'Comissão de Licitação de Obras' => 'Comissão de Licitação de Obras',
+                        'Comissão Permanente de Licitação' => 'Comissão Permanente de Licitação',
+                        'Laís Lopes' => 'Laís Lopes',
+                        'Vinicius Fernandes' => 'Vinicius Fernandes',
+                    ],
+                    'options' => [
+                        'placeholder' => 'Informe o responsável pela licitação...',
+                    ],
+                    'pluginOptions' => ['allowClear' => true],
+                ]) ?>
+            </div>
+        </div>
     </div>
 </div>

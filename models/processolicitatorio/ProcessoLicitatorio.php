@@ -40,7 +40,8 @@ use app\models\base\Empresa;
  * @property string $prolic_datacriacao
  * @property string $prolic_usuarioatualizacao
  * @property string $prolic_dataatualizacao
- *
+ * @property string|null $prolic_responsavel_licitacao
+ * 
  * @property Observacoes[] $observacoes
  * @property Artigo $artigo
  * @property Comprador $comprador
@@ -77,7 +78,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             [['prolic_objeto', 'prolic_elementodespesa', 'prolic_motivo'], 'string'],
             [['prolic_valorestimado', 'prolic_valorefetivo', 'valor_limite', 'valor_limite_apurado', 'valor_saldo'], 'number'],
             [['prolic_dataprocesso', 'prolic_datacertame', 'prolic_datadevolucao', 'prolic_datahomologacao', 'prolic_datacriacao', 'prolic_dataatualizacao', 'prolic_destino', 'prolic_centrocusto', 'modalidade', 'ramo', 'ciclototal', 'ciclocertame', 'prolic_empresa', 'prolic_empresa_ganhadora', 'prolic_codmxm'], 'safe'],
-            [['prolic_usuariocriacao', 'prolic_usuarioatualizacao'], 'string', 'max' => 255],
+            [['prolic_usuariocriacao', 'prolic_usuarioatualizacao', 'prolic_responsavel_licitacao'], 'string', 'max' => 255],
             [['artigo_id'], 'exist', 'skipOnError' => true, 'targetClass' => Artigo::className(), 'targetAttribute' => ['artigo_id' => 'id']],
             [['comprador_id'], 'exist', 'skipOnError' => true, 'targetClass' => Comprador::className(), 'targetAttribute' => ['comprador_id' => 'id']],
             [['modalidade_valorlimite_id'], 'exist', 'skipOnError' => true, 'targetClass' => ModalidadeValorlimite::className(), 'targetAttribute' => ['modalidade_valorlimite_id' => 'id']],
@@ -411,6 +412,7 @@ class ProcessoLicitatorio extends \yii\db\ActiveRecord
             'ramo' => 'Segmento',
             'ciclototal' => 'Ciclo Total',
             'ciclocertame' => 'Ciclo Certame',
+            'prolic_responsavel_licitacao' => 'Responsável pela Licitação',
         ];
     }
 

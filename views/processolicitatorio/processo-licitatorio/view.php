@@ -192,7 +192,7 @@ $this->registerJs('var processoId = ' . (int) $model->id . ';', View::POS_HEAD);
                                 <?php
                                 $empresas = $model->prolic_empresa;
                                 if ($empresas) {
-                                    foreach (explode(', ', $empresas) as $emp) {
+                                    foreach (explode(';', $empresas) as $emp) {
                                         echo Html::tag('span', Html::encode($emp), ['class' => 'badge bg-secondary fs-7 px-2 py-2 fw-light']);
                                     }
                                 } else {

@@ -517,6 +517,7 @@ class ProcessoLicitatorioController extends Controller
             'valorlimite' => ModalidadeValorlimite::find()
                 ->innerJoinWith('modalidade')
                 ->where(['mod_status' => 1])
+                ->andWhere(['!=', 'tipo_modalidade', ''])
                 ->andWhere(['!=', 'homologacao_usuario', ''])
                 ->orderBy(['modalidade.mod_descricao' => SORT_DESC])
                 ->all(),

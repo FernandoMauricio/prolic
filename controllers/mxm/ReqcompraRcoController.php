@@ -103,7 +103,9 @@ class ReqcompraRcoController extends Controller
                 if (
                     !$termo ||
                     stripos($model->getNumero(), $termo) !== false ||
-                    stripos($model->getRequisitante(), $termo) !== false
+                    stripos($model->getRequisitante(), $termo) !== false ||
+                    stripos($model->getTipo(), $termo) !== false ||
+                    stripos($model->getSetor(), $termo) !== false
                 ) {
                     $modelos[] = $model;
                 }
@@ -117,6 +119,8 @@ class ReqcompraRcoController extends Controller
                 'attributes' => [
                     'requisicao.RCO_NUMERO',
                     'requisicao.RCO_DATA',
+                    'requisicao.RCO_TIPO',
+                    'requisicao.RCO_SETOR',
                     'requisicao.RCO_REQUISITANTE'
                 ]
             ]
@@ -174,14 +178,26 @@ class ReqcompraRcoController extends Controller
     {
         $sql = <<<SQL
             SELECT
-                rair_numeroreq AS ITEM,
-                ordem AS ORDEM,
-                aprovador AS APROVADOR,
-                data_aprovacao AS DATA_APROVACAO,
-                status AS STATUS
-            FROM vw_aprovacao_am
-            WHERE rair_numeroreq = :NUMERO
-            ORDER BY ordem, data_aprovacao
+                RAIR.RAIR_NUMITEM AS ITEM,
+                CASE
+                    WHEN MXU.MXU_NOME IS NOT NULL THEN MXU.MXU_NOME
+                    WHEN LAA.LAA_SQITEMAPROVACAO = 1 THEN ESF.ESF_DESCRICAO || '(aguardando designação de comprador)'
+                    ELSE ESF.ESF_DESCRICAO
+                END AS APROVADOR,
+                LAA.LAA_DTAPROVACAO AS DATA_APROVACAO,
+                LAA.LAA_SQITEMAPROVACAO AS ORDEM,
+                CASE LAA.LAA_STATUS
+                    WHEN 1 THEN 'Aprovado'
+                    WHEN 2 THEN 'Cancelado'
+                    WHEN 3 THEN 'Reprovado'
+                    ELSE 'Pendente'
+                END AS STATUS
+            FROM RELAPROVIREQ_RAIR RAIR
+            JOIN LINHAAPROVLOC_LAA LAA ON RAIR.RAIR_SQAPROVACAO = LAA.LAA_SQAPROVACAO
+            LEFT JOIN MXS_USUARIO_MXU MXU ON LAA.LAA_APROVADOR = MXU.MXU_USUARIO
+            LEFT JOIN ESTRFUNC_ESF ESF ON ESF.ESF_CDEMPRESA = '02' AND ESF.ESF_CODIGO = LAA.LAA_ESTRFUNC
+            WHERE RAIR.RAIR_NUMEROREQ = :NUMERO
+            ORDER BY LAA.LAA_SQITEMAPROVACAO, LAA.LAA_DTAPROVACAO
         SQL;
 
         $linhas = Yii::$app->db_oracle

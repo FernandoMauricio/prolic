@@ -33,6 +33,16 @@ class RequisicaoCache extends Model
         return $this->get('RCO_REQUISITANTE');
     }
 
+    public function getTipo()
+    {
+        return $this->requisicao['RCO_TIPO'] ?? '';
+    }
+
+    public function getSetor()
+    {
+        return $this->requisicao['RCO_SETOR'] ?? '';
+    }
+
     public function getDataFormatada()
     {
         return isset($this->requisicao['RCO_DATA'])

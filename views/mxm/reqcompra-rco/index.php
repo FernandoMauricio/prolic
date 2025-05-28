@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="mb-3">
     <?= Html::beginForm(['index'], 'get') ?>
     <div class="input-group">
-        <?= Html::textInput('q', $searchTerm ?? '', ['class' => 'form-control', 'placeholder' => 'Buscar por número ou requisitante...']) ?>
+        <?= Html::textInput('q', $searchTerm ?? '', ['class' => 'form-control', 'placeholder' => 'Buscar por número, tipo, setor ou requisitante...']) ?>
         <button class="btn btn-primary" type="submit">Buscar</button>
     </div>
     <?= Html::endForm() ?>

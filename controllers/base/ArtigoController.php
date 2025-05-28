@@ -157,24 +157,29 @@ class ArtigoController extends Controller
      */
     public function actionUpdate($id)
     {
-        //VERIFICA SE O COLABORADOR FAZ PARTE DA EQUIPE DE COMPRAS (GMA)
         $session = Yii::$app->session;
         if ($session['sess_codunidade'] != 6) {
             return $this->render('/site/acesso-negado');
-        } else {
-
-            $model = $this->findModel($id);
-
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                Yii::$app->session->setFlash('success', '<b>SUCESSO! </b> Artigo atuaizado!</b>');
-                return $this->redirect(['index']);
-            }
-
-            return $this->render('update', [
-                'model' => $model,
-            ]);
         }
+
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            $model->art_status = 1;
+            $model->art_homologacaousuario = null;
+            $model->art_homologacaodata = null;
+            $model->save(false);
+
+            Yii::$app->session->setFlash('success', '<b>SUCESSO!</b> Artigo atualizado!');
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
+
 
     /**
      * Deletes an existing Artigo model.

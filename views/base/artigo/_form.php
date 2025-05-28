@@ -31,13 +31,6 @@ use kartik\select2\Select2;
                     'pluginOptions' => ['allowClear' => true],
                 ]) ?>
             </div>
-
-            <div class="col-md-12">
-                <?= $form->field($model, 'art_status')->radioList(
-                    ['1' => 'Ativo', '0' => 'Inativo'],
-                    ['class' => 'd-flex gap-4']
-                ) ?>
-            </div>
         </div>
     </div>
 
